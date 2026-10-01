@@ -41,4 +41,3 @@ RU: "Выполни KITBASH GREEBLE CITY по шагам 1-5 с проверка
 EN: "Run KITBASH GREEBLE CITY steps 1-5 with checks"
 ```
 
-## 🔗 Setup 01, Setup 08, INDEX

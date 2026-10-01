@@ -2,6 +2,7 @@
 id: setup_07_ci_cd
 lang: ru
 category: setups
+type: setup
 status: full
 tags: [ci, setup]
 ---
@@ -11,383 +12,62 @@ tags: [ci, setup]
 
 ---
 
-## 🎯 ЦЕЛЬ
-Интеграция Blender в CI/CD пайплайны: автотесты, рендер, экспорт, деплой
+> Когда применять: когда сцену или набор ассетов нужно регулярно рендерить и экспортировать, а ручной прогон перестал быть воспроизводимым: у кого-то другой Blender, у кого-то другие текстуры, и «у меня работает» больше не аргумент.
 
----
+## 🎯 ЦЕЛЬ
+
+Собрать пайплайн, где Blender запускается в фоновом режиме из командной строки, выполняет заранее записанные в репозитории скрипты рендера и экспорта, отдаёт артефакты и при этом **ломает сборку**, если сцена невалидна.
+
+Настраиваем три вещи. Первая — разделение данных и логики: скрипты живут в git, а `.blend` считается входным артефактом, версия которого тоже в репозитории. Вторая — окружение: зафиксированная версия Blender и headless-драйверы, чтобы GPU-рендер и CPU-рендер не были разными сценами. Третья — уровни проверок: дешёвая валидация на каждом pull request и полный рендер по расписанию или тегу.
+
+Принцип, из которого следует всё остальное: **CI не должен уметь рендерить красиво — он должен уметь повторяться**. Любой параметр, влияющий на результат, задаётся скриптом. Значение, набранное в окне настроек и сохранённое в `.blend`, воспроизвести невозможно: другой человек откроет файл, увидит то же самое и не догадается, что это было решением, а не дефолтом.
+
+## 📋 ЧТО ПОНАДОБИТСЯ
+
+| Компонент | Версия / состояние | Зачем |
+|---|---|---|
+| Blender | зафиксированная версия, распакованная из tar-архива дистрибутива | рендер должен идти тем же билдом, что и локально |
+| Python из поставки Blender | bundled | системный Python не видит модуль `bpy` |
+| `xvfb` | пакет Ubuntu | виртуальный X-сервер для EEVEE; Cycles в `-b` обычно обходится без него |
+| `ffmpeg` | системный или статический | сборка превью из отрендеренных кадров |
+| Раннер с GPU | опционально, отдельный пул | Cycles на CPU считает, но на порядок медленнее |
+| Хранилище артефактов | встроенное у CI-провайдера | выгрузка превью, кадров и экспортированных ассетов |
 
 ## 📋 CI/CD СЦЕНАРИИ
 
 | Сценарий | Триггер | Действия |
 |----------|---------|----------|
-| **PR Validation** | Pull Request | Линт, тесты, быстрый рендер превью |
-| **Nightly Build** | Schedule (cron) | Полный рендер, регрессионные тесты |
-| **Release** | Tag push | Финальный рендер, экспорт ассетов, деплой |
-| **Asset Update** | Asset changed | Пересборка зависимых сцен |
+| **PR Validation** | Pull Request | линт скриптов, проверка сцены, быстрый рендер одного кадра |
+| **Nightly Build** | расписание (cron) | полный рендер, регрессионные тесты, метрики |
+| **Release** | push тега | финальный рендер, экспорт ассетов, публикация |
+| **Asset Update** | изменение текстур или скриптов | пересборка только зависимых сцен |
 
----
+## 🛠️ НАСТРОЙКА
 
-## 🔧 GITHUB ACTIONS
+### Шаг 1. Зафиксировать версию Blender
 
-### .github/workflows/blender.yml
+Версия и URL архива задаются переменными окружения, а не зашиты в команды. Сам список релизов лежит на `https://download.blender.org/release/` — там же лежат файлы `.tar.xz` для Linux и `.zip` для Windows.
+
 ```yaml
-name: Blender CI/CD
-
-on:
-  push:
-    branches: [main, develop]
-    paths:
-      - 'scenes/**/*.blend'
-      - 'assets/**/*'
-      - 'scripts/**/*.py'
-      - '.github/workflows/blender.yml'
-  pull_request:
-    branches: [main]
-    paths:
-      - 'scenes/**/*.blend'
-      - 'assets/**/*'
-      - 'scripts/**/*.py'
-  schedule:
-    - cron: '0 2 * * *'  # Nightly at 2 AM
-  workflow_dispatch:  # Manual trigger
-
 env:
   BLENDER_VERSION: "4.2"
-  BLENDER_DOWNLOAD_URL: "https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz"
-
-jobs:
-  # ===== LINT & TESTS =====
-  lint-and-test:
-    name: Lint & Unit Tests
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      
-      - name: Install dependencies
-        run: |
-          pip install -r requirements-test.txt
-          pip install flake8 black isort pytest pytest-cov
-      
-      - name: Lint (flake8)
-        run: flake8 scripts/ --max-line-length=120 --ignore=E501,W503
-      
-      - name: Format check (black)
-        run: black --check scripts/
-      
-      - name: Import sort check (isort)
-        run: isort --check-only scripts/
-      
-      - name: Run unit tests
-        run: pytest tests/ -v --cov=scripts --cov-report=xml
-      
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage.xml
-
-  # ===== QUICK RENDER PREVIEW (PR) =====
-  render-preview:
-    name: Render Preview (PR)
-    needs: lint-and-test
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Blender
-        uses: ./.github/actions/setup-blender
-      
-      - name: Render Preview (Frame 1, Low Samples)
-        run: |
-          xvfb-run -a blender -b scenes/main.blend \
-            -E CYCLES \
-            -o //preview/preview_ \
-            -F PNG \
-            -f 1 \
-            -P scripts/render_preview.py
-      
-      - name: Upload Preview
-        uses: actions/upload-artifact@v4
-        with:
-          name: render-preview
-          path: preview/
-          retention-days: 7
-
-  # ===== FULL RENDER (MAIN/RELEASE) =====
-  render-full:
-    name: Full Render
-    needs: lint-and-test
-    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    
-    strategy:
-      matrix:
-        resolution: ["1080p", "4k"]
-        samples: [128, 256]
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Blender
-        uses: ./.github/actions/setup-blender
-      
-      - name: Render Full Quality
-        run: |
-          xvfb-run -a blender -b scenes/main.blend \
-            -E CYCLES \
-            -o //renders/${{ matrix.resolution }}_${{ matrix.samples }}s/frame_#### \
-            -E CYCLES \
-            -P scripts/render_full.py \
-            -- \
-            --resolution ${{ matrix.resolution }} \
-            --samples ${{ matrix.samples }} \
-            --output //renders/${{ matrix.resolution }}_${{ matrix.samples }}s/
-      
-      - name: Create Video (MP4)
-        run: |
-          ffmpeg -framerate 30 -i renders/${{ matrix.resolution }}_${{ matrix.samples }}s/frame_%04d.png \
-            -c:v libx264 -pix_fmt yuv420p -crf 18 \
-            renders/main_${{ matrix.resolution }}_${{ matrix.samples }}s.mp4
-      
-      - name: Upload Renders
-        uses: actions/upload-artifact@v4
-        with:
-          name: renders-${{ matrix.resolution }}-${{ matrix.samples }}s
-          path: renders/
-          retention-days: 30
-
-  # ===== EXPORT ASSETS =====
-  export-assets:
-    name: Export Game Assets
-    needs: render-full
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Blender
-        uses: ./.github/actions/setup-blender
-      
-      - name: Export Game Assets (GLTF/FBX/USD)
-        run: |
-          xvfb-run -a blender -b scenes/main.blend \
-            -P scripts/export_assets.py \
-            -- \
-            --output-dir exports/ \
-            --formats GLTF,FBX,USDZ \
-            --formats GLTF,FBX,USDZ
-      
-      - name: Validate Exports
-        run: |
-          python scripts/validate_exports.py exports/
-      
-      - name: Upload Exports
-        uses: actions/upload-artifact@v4
-        with:
-          name: game-assets
-          path: exports/
-          retention-days: 30
-
-  # ===== DEPLOY =====
-  deploy:
-    name: Deploy to CDN
-    needs: [export-assets, render-full]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: production
-    
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: game-assets
-          path: exports/
-      
-      - name: Deploy to CDN
-        run: |
-          # AWS S3 / Cloudflare R2 / Netlify / Vercel
-          aws s3 sync exports/ s3://my-game-assets/latest/ --delete
-          aws cloudfront create-invalidation --distribution-id $CF_DIST_ID --paths "/*"
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          CF_DIST_ID: ${{ secrets.CF_DIST_ID }}
-
-  # ===== NOTIFICATIONS =====
-  notify:
-    name: Notify
-    needs: [lint-and-test, render-preview, render-full, export-assets, deploy]
-    if: always()
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send Discord/Slack notification
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          channel: '#blender-ci'
-          text: "Blender CI/CD: ${{ job.status }}"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+  # Полный список релизов: https://download.blender.org/release/
+  BLENDER_URL: "https://download.blender.org/release/Blender4.2/blender-4.2.3-linux-x64.tar.xz"
 ```
 
----
+> [!NOTE]
+> Проверь конкретный патч-номер по списку релизов перед фиксацией в YAML. Сборка,
+> которая работала месяц, падает через месяц только потому, что файл перестал
+> существовать или его переименовали. Если команда не готова обновляться
+> намеренно, хранить стоит не «последнюю», а конкретную проверенную версию —
+> и отдельным шагом описывать процедуру апгрейда.
 
-## 🎬 RENDER SCRIPTS
+### Шаг 2. Композитное действие для установки
 
-### scripts/render_preview.py
-```python
-import bpy
-import sys
+Отдельное composite-действие переиспользуется всеми джобами: иначе блок установки копируется в три места и через месяц разъезжается.
 
-# Парсинг аргументов после --
-argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-
-scene = bpy.context.scene
-scene.render.engine = 'CYCLES'
-scene.cycles.samples = 32  # Быстрый превью
-scene.cycles.use_denoising = True
-scene.cycles.denoiser = 'OPTIX'
-
-scene.render.resolution_x = 1280
-scene.render.resolution_y = 720
-scene.render.resolution_percentage = 100
-scene.render.filepath = "//preview/preview_"
-scene.render.image_settings.file_format = 'PNG'
-scene.render.image_settings.color_mode = 'RGBA'
-
-# Быстрый рендер кадра 1
-bpy.ops.render.render(write_still=True)
-print("Preview rendered!")
-```
-
-### scripts/render_full.py
-```python
-import bpy
-import sys
-import argparse
-
-# Парсинг аргументов
-argv = sys.argv[sys.argv.index("--") + 1:]
-parser = argparse.ArgumentParser()
-parser.add_argument("--resolution", choices=["1080p", "4k"], default="1080p")
-parser.add_argument("--samples", type=int, default=256)
-parser.add_argument("--output", default="//renders/")
-args = parser.parse_args(argv)
-
-scene = bpy.context.scene
-
-# Resolution
-res_map = {"1080p": (1920, 1080), "4k": (3840, 2160)}
-scene.render.resolution_x, scene.render.resolution_y = res_map[args.resolution]
-scene.render.resolution_percentage = 100
-
-# Cycles Settings
-scene.render.engine = 'CYCLES'
-scene.cycles.device = 'GPU'
-scene.cycles.samples = args.samples
-scene.cycles.use_denoising = True
-scene.cycles.denoiser = 'OPTIX'
-scene.cycles.denoising_prefilter = 'ACCURATE'
-scene.cycles.use_adaptive_sampling = True
-scene.cycles.adaptive_threshold = 0.01
-scene.cycles.adaptive_min_samples = 32
-
-# Output
-scene.render.filepath = args.output
-scene.render.image_settings.file_format = 'OPEN_EXR_MULTILAYER'
-scene.render.image_settings.color_mode = 'RGBA'
-scene.render.image_settings.color_depth = '32'
-scene.render.image_settings.exr_codec = 'ZIP'
-scene.render.image_settings.use_preview = True
-
-# Color Management
-scene.view_settings.view_transform = 'Filmic'
-scene.view_settings.look = 'Medium High Contrast'
-
-# Animation range
-scene.frame_start = 1
-scene.frame_end = 250
-
-# Render Animation
-bpy.ops.render.render(animation=True, write_still=False)
-print(f"Full render complete: {args.resolution} @ {args.samples} samples")
-```
-
-### scripts/export_assets.py
-```python
-import bpy
-import os
-import sys
-import argparse
-
-argv = sys.argv[sys.argv.index("--") + 1:]
-parser = argparse.ArgumentParser()
-parser.add_argument("--output-dir", default="exports/")
-parser.add_argument("--formats", nargs="+", default=["GLTF", "FBX", "USDZ"])
-args = parser.parse_args(argv)
-
-os.makedirs(args.output_dir, exist_ok=True)
-
-# Найти все объекты для экспорта
-export_objects = [obj for obj in bpy.data.objects if obj.get("export", True)]
-
-for fmt in args.formats:
-    fmt_dir = os.path.join(args.output_dir, fmt.lower())
-    os.makedirs(fmt_dir, exist_ok=True)
-    
-    for obj in export_objects:
-        name = obj.name.replace(" ", "_")
-        filepath = os.path.join(fmt_dir, f"{name}.{fmt.lower()}")
-        
-        # Select only this object
-        bpy.ops.object.select_all(action='DESELECT')
-        obj.select_set(True)
-        bpy.context.view_layer.objects.active = obj
-        
-        if fmt == "GLTF":
-            bpy.ops.export_scene.gltf(
-                filepath=filepath,
-                export_format='GLB',
-                use_selection=True,
-                export_apply=True,
-                export_tangents=True,
-                export_materials='EXPORT',
-            )
-        elif fmt == "FBX":
-            bpy.ops.export_scene.fbx(
-                filepath=filepath,
-                use_selection=True,
-                apply_unit_scale=True,
-                apply_scale_options='FBX_SCALE_ALL',
-                bake_space_transform=True,
-                object_types={'ARMATURE', 'MESH'},
-                add_leaf_bones=False,
-            )
-        elif fmt == "USDZ":
-            bpy.ops.wm.usd_export(
-                filepath=filepath,
-                export_selected=True,
-            )
-
-print(f"Exported {len(export_objects)} objects to {args.output_dir}")
-```
-
----
-
-## 🔧 CUSTOM GITHUB ACTION
-
-### .github/actions/setup-blender/action.yml
 ```yaml
+# .github/actions/setup-blender/action.yml
 name: "Setup Blender"
 description: "Install and configure Blender for CI"
 inputs:
@@ -395,10 +75,6 @@ inputs:
     description: "Blender version"
     required: false
     default: "4.2"
-  cuda:
-    description: "Enable CUDA"
-    required: false
-    default: "true"
 
 runs:
   using: "composite"
@@ -419,97 +95,334 @@ runs:
     - name: Verify Blender
       run: |
         blender --version
-        blender -b --version
       shell: bash
 ```
 
----
+### Шаг 3. Скрипт валидации сцены
 
-## 🔧 GITLAB CI
+Это самый дешёвый и самый полезный скрипт в пайплайне: он ловит битые пути к текстурам, пустые материалы, объекты вне кадра и несохранённые изменения — раньше, чем потрачены часы рендера.
 
-### .gitlab-ci.yml
+```python
+# scripts/validate_scene.py — запускается как: blender -b scene.blend -P scripts/validate_scene.py
+import bpy, os, sys
+
+errors = []
+report = []
+
+# 1. Разрешить //-пути относительно самого blend-файла, а не рабочего каталога
+bpy.ops.file.make_paths_absolute()
+
+# 2. Пропавшие текстуры
+for img in bpy.data.images:
+    if img.source == 'FILE' and not os.path.exists(bpy.path.abspath(img.filepath)):
+        errors.append(f"missing image: {img.name} -> {img.filepath}")
+
+# 3. Объекты с материалом, но без геометрии / с пустым мешем
+for ob in bpy.data.objects:
+    if ob.type == 'MESH' and len(ob.data.polygons) == 0:
+        errors.append(f"empty mesh: {ob.name}")
+
+# 4. Объекты без материала — почти всегда недосделанная работа
+for ob in bpy.data.objects:
+    if ob.type == 'MESH' and len(ob.data.materials) == 0:
+        report.append(f"no material (warn): {ob.name}")
+
+# 5. Камера и рендер-движок
+if not bpy.context.scene.camera:
+    errors.append("scene has no camera")
+
+for line in report:
+    print("WARN:", line)
+for line in errors:
+    print("ERROR:", line)
+
+print(f"validate_scene: {len(errors)} errors, {len(report)} warnings")
+
+if errors:
+    # В фоновом режиме SystemExit прерывает Blender, и процесс возвращает
+    # ненулевой код выхода — именно его читает CI.
+    sys.exit(1)
+```
+
+> [!NOTE]
+> Проверь фактический код возврата в своей версии Blender одной командой:
+> запусти скрипт с `sys.exit(1)` вручную и посмотри на `$?` (в PowerShell — на
+> `$LASTEXITCODE`). Если ненулевой код не доходит до CI, замени завершение на
+> `bpy.ops.wm.quit_blender()` в конце скрипта и проверь ещё раз.
+
+### Шаг 4. Скрипт превью
+
+```python
+# scripts/render_preview.py
+import bpy
+import sys
+
+argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+
+scene = bpy.context.scene
+scene.render.engine = 'CYCLES'
+scene.cycles.samples = 32                    # превью: дёшево и шумно, это нормально
+scene.cycles.use_denoising = True
+scene.render.resolution_x = 1280
+scene.render.resolution_y = 720
+scene.render.resolution_percentage = 50      # превью не обязано быть полным размером
+scene.render.filepath = "//preview/preview_"
+scene.render.image_settings.file_format = 'PNG'
+scene.render.image_settings.color_mode = 'RGBA'
+
+bpy.ops.render.render(write_still=True)
+print("preview rendered:", scene.render.filepath)
+```
+
+### Шаг 5. Скрипт полного рендера
+
+```python
+# scripts/render_full.py
+import bpy, sys, argparse
+
+argv = sys.argv[sys.argv.index("--") + 1:]
+parser = argparse.ArgumentParser()
+parser.add_argument("--resolution", choices=["1080p", "4k"], default="1080p")
+parser.add_argument("--samples", type=int, default=256)
+parser.add_argument("--output", default="//renders/")
+parser.add_argument("--device", choices=["CPU", "GPU"], default="CPU")
+args = parser.parse_args(argv)
+
+scene = bpy.context.scene
+scene.render.engine = 'CYCLES'
+scene.cycles.device = args.device
+scene.cycles.samples = args.samples
+scene.cycles.use_adaptive_sampling = True
+scene.cycles.adaptive_threshold = 0.01
+scene.cycles.use_denoising = True
+
+res_map = {"1080p": (1920, 1080), "4k": (3840, 2160)}
+scene.render.resolution_x, scene.render.resolution_y = res_map[args.resolution]
+scene.render.resolution_percentage = 100
+
+scene.render.filepath = args.output
+scene.render.image_settings.file_format = 'OPEN_EXR_MULTILAYER'
+scene.render.image_settings.color_mode = 'RGBA'
+scene.render.image_settings.color_depth = '32'
+
+bpy.ops.render.render(animation=True)
+print("full render complete:", args.resolution, "@", args.samples, "samples")
+```
+
+> [!NOTE]
+> Про денойзер: в Cycles доступно несколько реализаций (`OPTIX`, `OPENIMAGEDENOISE`,
+> а в части сборок ещё один). `OPTIX` требует NVIDIA-карту и на CPU-раннере упадёт,
+> поэтому в общем пайплайне оставляй денойзер по умолчанию и включай конкретный
+> только в джобе с GPU. Полный список значений этого поля смотри в
+> `Render Properties → Sampling → Denoiser` своей версии.
+
+### Шаг 6. Скрипт экспорта
+
+```python
+# scripts/export_assets.py
+import bpy, os, sys, argparse
+
+argv = sys.argv[sys.argv.index("--") + 1:]
+parser = argparse.ArgumentParser()
+parser.add_argument("--output-dir", default="exports/")
+parser.add_argument("--formats", nargs="+", default=["GLB"])
+args = parser.parse_args(argv)
+
+os.makedirs(args.output_dir, exist_ok=True)
+
+for obj in bpy.data.objects:
+    if obj.type != 'MESH' or not obj.get("export", True):
+        continue
+
+    for fmt in args.formats:
+        fmt_dir = os.path.join(args.output_dir, fmt.lower())
+        os.makedirs(fmt_dir, exist_ok=True)
+        filepath = os.path.join(fmt_dir, obj.name.replace(" ", "_") + "." + fmt.lower())
+
+        bpy.ops.object.select_all(action='DESELECT')
+        obj.select_set(True)
+        bpy.context.view_layer.objects.active = obj
+
+        if fmt == "GLB":
+            bpy.ops.export_scene.gltf(filepath=filepath, export_format='GLB',
+                                      use_selection=True, export_apply=True)
+        elif fmt == "FBX":
+            bpy.ops.export_scene.fbx(filepath=filepath, use_selection=True,
+                                    apply_unit_scale=True,
+                                    object_types={'ARMATURE', 'MESH'})
+
+print("export done ->", args.output_dir)
+```
+
+> [!NOTE]
+> Набор аргументов у операторов экспорта разный и менялся между версиями
+> (`bpy.ops.export_scene.gltf`, `bpy.ops.export_scene.fbx`, экспорт в USD
+> вынесен в отдельную группу операторов). Не переноси флаги из одной версии в
+> другую списком — вызови оператор один раз, открой его параметры через
+> `bpy.ops.export_scene.gltf.get_rna_type().properties`, и сверяйся с тем, что
+> реально есть. Нераспознанный именованный аргумент в Python — это `TypeError`,
+> и пайплайн упадёт целиком, а не «предупредит и продолжит».
+
+### Шаг 7. Workflow
+
 ```yaml
-stages:
-  - test
-  - render
-  - export
-  - deploy
+# .github/workflows/blender.yml
+name: Blender CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scenes/**/*.blend'
+      - 'scripts/**/*.py'
+      - '.github/workflows/blender.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scenes/**/*.blend'
+      - 'scripts/**/*.py'
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate scene
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-blender
+      - name: Validate
+        run: |
+          xvfb-run -a blender -b scenes/main.blend -P scripts/validate_scene.py
+      - name: Lint render scripts
+        run: |
+          python -m pip install --upgrade pip flake8
+          flake8 scripts/ --max-line-length=120 --ignore=E501,W503
+
+  render-preview:
+    name: Render preview (PR)
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-blender
+      - name: Preview
+        run: |
+          xvfb-run -a blender -b scenes/main.blend -P scripts/render_preview.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: render-preview
+          path: preview/
+          retention-days: 7
+
+  render-full:
+    name: Full render
+    needs: validate
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-blender
+      - name: Full render
+        run: |
+          xvfb-run -a blender -b scenes/main.blend -P scripts/render_full.py -- \
+            --resolution 1080p --samples 256 --device CPU --output //renders/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: renders
+          path: renders/
+          retention-days: 30
+```
+
+### Шаг 8. Порядок аргументов командной строки
+
+Это место, где чаще всего теряется час: `-f 1`, `-a` и `-P` выполняются именно в том порядке, в котором написаны.
+
+```bash
+# НЕПРАВИЛЬНО: кадр 1 отрендерится раньше, чем скрипт поменяет настройки,
+# и на выходе будет кадр из дефолтов сцены
+blender -b scene.blend -f 1 -P scripts/render_preview.py
+
+# ПРАВИЛЬНО: сначала выполняется скрипт, затем рендерится кадр
+blender -b scene.blend -P scripts/render_preview.py -f 1
+
+# Аргументы после "--" уходят в sys.argv скрипта, а не в сам Blender
+blender -b scene.blend -P scripts/render_full.py -- --samples 512
+```
+
+### Шаг 9. GitLab CI
+
+Тот же пайплайн в терминах GitLab — стадии вместо джоб, `artifacts` вместо `upload-artifact`.
+
+```yaml
+stages: [test, render, export, deploy]
 
 variables:
   BLENDER_VERSION: "4.2"
 
 before_script:
   - apt-get update -qq && apt-get install -y -qq blender xvfb ffmpeg
-  - blender --version
 
-lint:
+validate:
   stage: test
   script:
-    - pip install flake8 black isort pytest
-    - flake8 scripts/
-    - black --check scripts/
-    - pytest tests/
+    - xvfb-run -a blender -b scenes/main.blend -P scripts/validate_scene.py
 
 render_preview:
   stage: render
   script:
-    - xvfb-run -a blender -b $SCENE_FILE -E CYCLES -o //preview/ -f 1 -P scripts/render_preview.py
+    - xvfb-run -a blender -b scenes/main.blend -P scripts/render_preview.py
   artifacts:
-    paths:
-      - preview/
+    paths: [preview/]
     expire_in: 1 week
-
-render_full:
-  stage: render
-  script:
-    - xvfb-run -a blender -b $SCENE_FILE -E CYCLES -o //renders/ -a -P scripts/render_full.py
-  artifacts:
-    paths:
-      - renders/
-    expire_in: 1 month
-
-export_assets:
-  stage: export
-  script:
-    - blender -b $SCENE_FILE -P scripts/export_assets.py -- --output-dir exports/
-  artifacts:
-    paths:
-      - exports/
-    expire_in: 1 month
 
 deploy:
   stage: deploy
   script:
-    - aws s3 sync exports/ s3://my-bucket/latest/ --delete
-  only:
-    - main
+    - aws s3 sync exports/ "$ASSET_BUCKET/latest/" --delete
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
   when: manual
 ```
 
----
+> [!NOTE]
+> Дистрибутивный пакет `blender` в репозиториях Ubuntu отстаёт от официального
+> релиза на несколько версий. Если важна именно новая версия, ставь её из
+> архива дистрибутива (Шаг 2), а не из `apt`.
 
-## 📊 МОНИТОРИНГ И МЕТРИКИ
+## ⚙️ КЛЮЧЕВЫЕ КОМАНДЫ И ПАРАМЕТРЫ
 
-### Prometheus Metrics (Python)
-```python
-# scripts/metrics.py
-from prometheus_client import Counter, Histogram, Gauge, push_to_gateway
+| Параметр | Значение | Когда менять |
+|---|---|---|
+| `cycles.samples` (превью) | 24–64 | превью нужно для оценки композиции, а не качества |
+| `cycles.samples` (финал) | 128–1024 | ниже 128 сцена с SSS или стеклом будет шумной |
+| `resolution_percentage` | 50 для превью | вдвое меньше линейного разрешения вчетверо дешевле по времени |
+| `render.image_settings.file_format` | `OPEN_EXR_MULTILAYER` для финала, `PNG` для превью | EXR нужен, чтобы пересобирать грейд без повторного рендера |
+| `cycles.device` | `CPU` по умолчанию | `GPU` ставится отдельной джобе, где гарантированно есть карта |
+| `timeout-minutes` | 15 для валидации, 240 для полного рендера | слишком маленький таймаут убивает длинный рендер на середине |
+| `retention-days` | 7 для превью, 30 для релизов | артефакты съедают место квотированного хранилища |
+| `BLENDER_VERSION` | одна зафиксированная версия на все джобы | рассинхрон версий даёт артефакты, которые не воспроизводятся локально |
 
-RENDER_DURATION = Histogram('blender_render_duration_seconds', 'Render time', ['scene', 'resolution'])
-RENDER_FRAMES = Counter('blender_render_frames_total', 'Frames rendered', ['scene', 'status'])
-VRAM_USAGE = Gauge('blender_vram_usage_bytes', 'VRAM usage', ['device'])
+## ⚠️ ТИПОВЫЕ ОШИБКИ
 
-def record_render(scene, resolution, duration, frames, status):
-    RENDER_DURATION.labels(scene=scene, resolution=resolution).observe(duration)
-    RENDER_FRAMES.labels(scene=scene, status=status).inc(frames)
-    push_to_gateway('pushgateway:9091', job='blender_render', registry=registry)
-```
-
----
+| Симптом | Причина | Решение |
+|---|---|---|
+| CI зелёный, картинка неправильная | скрипт выполнялся после `-f 1` и не успел поменять настройки | `-P script.py` всегда раньше `-f`/`-a` |
+| `TypeError` на неизвестном аргументе экспорта | флаги скопированы из другой версии Blender | сверяться с `get_rna_type().properties` оператора в своей версии |
+| Текстуры «пропали» в CI, локально есть | `//`-пути не разрешились: рабочий каталог раннера другой | `bpy.ops.file.make_paths_absolute()` перед экспортом и рендером |
+| Денойзер падает на CPU-раннере | выбран GPU-специфичный денойзер | оставить денойзер по умолчанию, GPU-настройки — в отдельной джобе |
+| Пайплайн зелёный, артефакта нет | скрипт вернул 0, но ничего не отрендерил | проверять ненулевой код возврата и наличие файлов в `preview/` |
+| Рендер в 20 раз медленнее локального | раннер без GPU при `device = 'GPU'` | явный `CPU` на дешёвых раннерах, GPU — на отдельном пуле |
+| Полный рендер съедает квоту и падает | нет `paths`-фильтра, тянутся все файлы сцены | сузить `paths` в триггере до `scenes/**` и `scripts/**` |
+| Уведомление всегда «зелёное» | в job уведомлений `${{ job.status }}` — статус самого этого джоба | прокидывать статусы через `needs.*.result` или отдельную сводку |
+| Windows-локально работает, Linux-раннер падает | в пути есть русские буквы или пробелы | держать в репозитории только ASCII-пути |
 
 ## 🔗 СВЯЗИ
 
 - **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)](setup_10_compositing_roundtrip.md)
 - **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 11: BLENDER + TOUCHDESIGNER REALTIME VISUALS](setup_11_touchdesigner.md), [SETUP 12: BLENDER + UNREAL ENGINE 5 LIVE LINK](setup_12_unreal_livelink.md)
 - **Теги:** #blender, #ci, #setup
-

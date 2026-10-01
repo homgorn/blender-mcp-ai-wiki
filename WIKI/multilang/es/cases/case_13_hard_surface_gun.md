@@ -63,4 +63,3 @@ EN: Bevel weights, boolean, baked normals
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

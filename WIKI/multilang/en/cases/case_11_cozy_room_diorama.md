@@ -36,4 +36,3 @@ EN: 10x10см feel, tilt-shift, warm practicals
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

@@ -36,4 +36,3 @@ EN: Modular kit 2м grid, trim sheets, LOD
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

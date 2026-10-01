@@ -63,4 +63,3 @@ EN: Studio HDRI rig, paint flakes, turntable
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

@@ -41,4 +41,3 @@ RU: "Выполни SOUND-SYNC EDIT по шагам 1-5 с проверками"
 EN: "Run SOUND-SYNC EDIT steps 1-5 with checks"
 ```
 
-## 🔗 Setup 01, Setup 08, INDEX

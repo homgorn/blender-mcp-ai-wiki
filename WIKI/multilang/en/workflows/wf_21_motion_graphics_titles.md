@@ -41,4 +41,3 @@ RU: "Выполни MOTION GRAPHICS TITLES по шагам 1-5 с проверк
 EN: "Run MOTION GRAPHICS TITLES steps 1-5 with checks"
 ```
 
-## 🔗 Setup 01, Setup 08, INDEX

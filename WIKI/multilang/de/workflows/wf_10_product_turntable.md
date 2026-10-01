@@ -68,4 +68,3 @@ RU: "Выполни PRODUCT TURNTABLE по шагам 1-5 с проверкам�
 EN: "Run PRODUCT TURNTABLE steps 1-5 with checks"
 ```
 
-## 🔗 Setup 01, Setup 08, INDEX

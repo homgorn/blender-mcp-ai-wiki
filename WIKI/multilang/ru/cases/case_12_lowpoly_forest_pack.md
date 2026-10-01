@@ -36,4 +36,3 @@ EN: 5 trees+bushes+rocks, atlas, wind sway
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

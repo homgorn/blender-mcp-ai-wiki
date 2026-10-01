@@ -63,4 +63,3 @@ EN: SSS broth, steam sim, condensation drops
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

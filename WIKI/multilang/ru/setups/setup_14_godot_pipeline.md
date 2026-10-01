@@ -63,4 +63,3 @@ RU: "Экспортируй в GLB для Godot 4: apply transforms, запек�
 EN: "Export GLB for Godot 4: apply transforms, bake anims, Draco off, KTX2/Basis textures"
 ```
 
-## 🔗 Setup 08, WF-07, Case 02

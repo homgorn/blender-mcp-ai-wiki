@@ -63,4 +63,3 @@ EN: PBR hand-paint, 1.2k tris, Unity export
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

@@ -250,8 +250,26 @@ if unbalanced:
 else:
     ok("every fenced code block is closed")
 
+print("== 15. No heading with an empty body ==")
+# A `##` with nothing under it renders as an empty section on the page. 166 files
+# had one, left over from an earlier repair that emptied the body but not the
+# heading — a pass that recognises prose has nothing left to match once the prose
+# is gone. Cheap to check and impossible to spot by reading the markdown.
+EMPTY_HEAD = re.compile(
+    r"^##[ \t]*[^\n]*(?:\U0001F517|СВЯЗИ|Связи|LINKS)[^\n]*\n(.*?)(?=^## |\Z)",
+    re.MULTILINE | re.DOTALL)
+empty_heads = []
+for f in sorted(WIKI.rglob("*.md")):
+    if any(m.group(1).strip() == "" for m in EMPTY_HEAD.finditer(f.read_text(encoding="utf-8"))):
+        empty_heads.append(f.relative_to(WIKI).as_posix())
+if empty_heads:
+    fail(f"{len(empty_heads)} file(s) have a heading with an empty body: {empty_heads[:5]}")
+else:
+    ok("no heading has an empty body")
+
 print()
 if fails:
     print(f"RESULT: FAIL ({len(fails)} issues)")
     sys.exit(1)
+print("RESULT: OK")
 print("RESULT: OK")

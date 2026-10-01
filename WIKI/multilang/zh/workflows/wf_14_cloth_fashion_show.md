@@ -68,4 +68,3 @@ RU: "Выполни CLOTH FASHION SHOW по шагам 1-5 с проверкам
 EN: "Run CLOTH FASHION SHOW steps 1-5 with checks"
 ```
 
-## 🔗 Setup 01, Setup 08, INDEX

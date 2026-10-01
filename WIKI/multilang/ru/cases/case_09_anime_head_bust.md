@@ -36,4 +36,3 @@ EN: Anime proportions, toon shader, shape keys 20
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

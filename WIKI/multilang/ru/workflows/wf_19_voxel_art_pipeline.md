@@ -41,4 +41,3 @@ RU: "Выполни VOXEL ART PIPELINE по шагам 1-5 с проверкам
 EN: "Run VOXEL ART PIPELINE steps 1-5 with checks"
 ```
 
-## 🔗 Setup 01, Setup 08, INDEX

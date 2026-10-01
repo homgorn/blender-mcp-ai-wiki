@@ -68,4 +68,3 @@ RU: "Выполни DATAVIZ 3D CHARTS по шагам 1-5 с проверкам�
 EN: "Run DATAVIZ 3D CHARTS steps 1-5 with checks"
 ```
 
-## 🔗 Setup 01, Setup 08, INDEX

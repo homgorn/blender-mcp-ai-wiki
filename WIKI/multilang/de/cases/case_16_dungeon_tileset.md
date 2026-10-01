@@ -63,4 +63,3 @@ EN: 2x2м tiles, trim, atlas, Unity grid snap
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

@@ -63,4 +63,3 @@ EN: Macro stitching, knit normal, lace curves
 - [ ] Свет/камера/рендер
 - [ ] Экспорт GLB/FBX + превью
 
-## 🔗 WF-07, Setup 01/08, INDEX

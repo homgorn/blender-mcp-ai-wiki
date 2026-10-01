@@ -41,4 +41,3 @@ RU: "Выполни REALTIME VJ LOOP по шагам 1-5 с проверками
 EN: "Run REALTIME VJ LOOP steps 1-5 with checks"
 ```
 
-## 🔗 Setup 01, Setup 08, INDEX
