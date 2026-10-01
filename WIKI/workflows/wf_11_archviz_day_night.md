@@ -59,6 +59,14 @@ def drive(owner, path, index, expr):
     return d
 ```
 
+> [!NOTE]
+> Шаг с `id` — не формальность. У `DriverTarget` есть отдельное поле `id_type`, и его
+> значение по умолчанию — `'OBJECT'`: присваивание сцены проверяется по нему и падает с
+> `TypeError: DriverTarget.id expected a Object type, not Scene` (проверено на 5.2.1 LTS).
+> Если в твоей версии ругается именно на эту строку, поставь рядом
+> `v.targets[0].id_type = 'SCENE'` **до** присваивания `id`. Список допустимых значений:
+> `[i.identifier for i in v.targets[0].bl_rna.properties["id_type"].enum_items]`.
+
 ### Этап 2. Солнце: высота, энергия, температура
 
 ```python
@@ -226,6 +234,59 @@ bpy.ops.render.render(animation=True)
 Переход «день→ночь» как видео делается анимацией одного ключа на `scene["daynight"]`
 с линейным интерпейсом: 48 кадров (2 с при 24 fps) — и микшёр сам разедет свет,
 HDRIs, эмиссию и фонари синхронно.
+
+Проверяется одним скриптом. Он делает три вещи: пересчитывает драйверы и печатает,
+что каждый источник действительно поехал; считает драйверы по всем объектам сцены
+(ползунок есть, а половина света его не слушает — самая частая поломка этой схемы);
+сверяет, что на диске лежат оба состояния и вся серия перехода.
+
+```python
+import bpy, os, glob
+
+scene = bpy.context.scene
+sun   = bpy.data.objects["Sun"]
+
+# 1. Пересчёт драйверов. В фоновом режиме (-b) одного
+#    view_layer.update() мало: сцену надо пометить update_tag, иначе
+#    значения остаются от предыдущего вызова.
+def apply_daynight(t):
+    scene["daynight"] = t
+    scene.update_tag()
+    bpy.context.evaluated_depsgraph_get().update()
+
+for t in (1.0, 0.5, 0.0):
+    apply_daynight(t)
+    print("t=%.1f наклон=%.3f рад энергия=%.3f красный=%.3f"
+          % (t, sun.rotation_euler.x, sun.data.energy, sun.data.color[0]))
+
+# 2. Все ли источники подписаны на ползунок
+def driven(owner):
+    ad = getattr(owner, "animation_data", None)
+    return len(ad.drivers) if ad else 0
+
+lamps = [n for n in ("Lamp_01", "Lamp_02") if n in bpy.data.objects]
+print("драйверов Sun.data:", driven(sun.data),
+      "| фонарей:", sum(driven(bpy.data.objects[n].data) for n in lamps),
+      "из", len(lamps))
+
+# Драйвер на «Emission Strength» висит на дереве нод, а не на самой ноде
+win = bpy.data.materials["Mat_Window"]
+pb  = next(n for n in win.node_tree.nodes if n.type == 'BSDF_PRINCIPLED')
+print("драйверов на 'Emission Strength':", driven(pb.inputs["Emission Strength"].id_data))
+
+# 3. Файлы на диске
+out = bpy.path.abspath("//render")
+print("day:", os.path.exists(os.path.join(out, "interior_day.png")),
+      "| night:", os.path.exists(os.path.join(out, "interior_night.png")))
+seq = sorted(glob.glob(os.path.join(out, "interior_dn_*.png")))
+print("кадров перехода:", len(seq), "| ожидалось:", scene.frame_end)
+```
+
+`энергия` на `t=0.0` должна упасть практически до нуля (в примере выше — 0.02), а
+`красный` канал — до 0.45: если оба остались дневными, драйверы не считаются и ты
+рендеришь два одинаковых кадра. Ноль драйверов на фонаре означает, что имя объекта в
+цикле не совпало с тем, что лежит в сцене — проверка по `n in bpy.data.objects`
+именно для этого и сделана.
 
 ## ⚠️ ТИПОВЫЕ ОШИБКИ
 

@@ -214,6 +214,52 @@ for path in out[::20]:                      # каждый 20-й, а не все
         print("ПУСТОЙ/ЧЁРНЫЙ:", path)
 ```
 
+Второй контрольный скрипт — про сам риг, а не про файлы. Он ловит две поломки, которых
+не видно на превью: ключи поверх драйвера (тогда шаг не постоянен) и незамкнутый оборот
+(тогда стык всплывёт при сведении). Заодно печатает реальную стоимость геометрии — это и
+есть то, из чего складывается время рендера.
+
+```python
+import bpy, math, glob, os
+
+scene = bpy.context.scene
+pivot = bpy.data.objects["Turntable"]
+prod  = next(o for o in scene.objects if o.type == 'MESH' and o.name != "StudioFloor")
+
+# 1. Пять СОСЕДНИХ кадров должны дать пять одинаковых приращений
+seq = []
+for f in range(1, 6):
+    scene.frame_set(f)
+    bpy.context.view_layer.update()
+    seq.append(pivot.rotation_euler.z)
+steps = [round(b - a, 6) for a, b in zip(seq, seq[1:])]
+print("шаг/кадр, рад:", steps, "| шагов:", len(steps))
+
+# 2. Замкнутость: за frame_end кадров должно набежать ровно 2*pi
+scene.frame_set(scene.frame_end + 1)
+bpy.context.view_layer.update()
+sweep = pivot.rotation_euler.z - seq[0]
+print("оборот за", scene.frame_end, "кадров, рад:", round(sweep, 6),
+      "| 2*pi =", round(2 * math.pi, 6))
+
+# 3. Полигоны против треугольников: считает движок вторые, поэтому
+#    calc_loop_triangles() — честная мера тяжести сцены
+me = prod.data
+me.calc_loop_triangles()
+print(prod.name, "| вершин:", len(me.vertices),
+      "| полигонов:", len(me.polygons),
+      "| треугольников:", len(me.loop_triangles))
+
+# 4. Кадры на диске
+files = sorted(glob.glob(os.path.join(bpy.path.abspath("//render"), "turntable_*.png")))
+print("кадров на диске:", len(files), "| ожидалось:", scene.frame_end)
+```
+
+Если шаги не равны — в сцене остались keyframe поверх драйвера. Если `sweep` меньше `2*pi` —
+в выражении стоит не тот знаменатель: должно быть `2*pi*frame/120` при 120 кадрах, а не
+`2*pi*frame/24`. Расхождение треугольников и полигонов (968 против 500 на monkey Suzanne)
+нормально: n-угольник — это n−2 треугольника, и движок раскладывает так всю геометрию.
+
 Проверка на стыке цикла: открой кадры `turntable_0001.png` и `turntable_0120.png`
 рядом. Между ними должен быть ровно один шаг (3°) — такой же, как между 0001 и 0002.
 Если между ними заметный «перескок», в сцене остались keyframe поверх драйвера.

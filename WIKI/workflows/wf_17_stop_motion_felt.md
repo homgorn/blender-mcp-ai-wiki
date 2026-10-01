@@ -227,10 +227,80 @@ set_constant_interpolation([cam])
 
 | Параметр | Значение |
 |---|---|
-| Объём | 72 отрендеренных кадра через один = **6 с при 12 fps** |
-| Файлы | `felt_0001.png …`, `frame_step = 2`, 1920×1080, Cycles |
-| Рендер | 40–180 с/кадр с ворсом и SSS → **1–3.5 часа** на 72 кадра |
+| Объём | 36 отрендеренных кадров = **3 с при 12 fps** (72 кадра диапазона через один) |
+| Файлы | `felt_0001.png`, `felt_0003.png`, … — номера идут через один, 1920×1080, Cycles |
+| Рендер | 40–180 с/кадр с ворсом и SSS → **25–110 минут** на 36 кадров |
 | Проход | можно рендерить в 4 раза ниже и апскейлить — стоп-моушен это прощает |
+
+Про «4 раза ниже» стоит сказать точнее, потому что это экономия, а не потеря качества.
+Рендерить вчетверо ниже по каждой оси (960×540 вместо 1920×1080) безопасно: в
+пластилиновом кадре нет ни мелких надписей, ни тонких бликов, которые развалились бы
+апскейлом. А вот рендер втрое ниже по **числу сэмплов** бьёт по ворсу сильнее — там
+главный источник шума не амплитуда, а подповерхностное рассеяние на тонких пальцах, и
+после 64 сэмплов кайма по краям остаётся даже с денойзером. Практическая схема:
+рабочий проход на 128 сэмплов с `use_denoising` и `adaptive_threshold = 0.01`,
+финальный — на 512 с тем же порогом, разница между ними видна на щеке и на кончиках
+пальцев, а не в общем поле кадра.
+
+Проверяется одним скриптом. Он отвечает на три вопроса, которые ломают stop-motion
+незаметно: сколько кадров реально уйдёт в рендер, не осталось ли где-нибудь сглаженной
+интерполяции (плавная анимация вместо поз) и назначен ли ворсу материал.
+
+```python
+import bpy, os, glob
+
+scene = bpy.context.scene
+
+# 1. Сколько кадров реально уйдёт в рендер: frame_step режет диапазон
+shots = list(range(scene.frame_start, scene.frame_end + 1, scene.frame_step))
+fps_out = scene.render.fps / scene.frame_step
+print("кадров в диапазоне:", scene.frame_end - scene.frame_start + 1,
+      "| после frame_step:", len(shots))
+print("темп на выходе:", fps_out, "fps | длительность:",
+      round(len(shots) / fps_out, 2), "с")
+
+# 2. Главная проверка: между позами не должно быть НИЧЕГО, кроме CONSTANT.
+#    В 4.4+ кривые лежат в слотах, а не в action.fcurves — обходим дерево.
+def fcurves_of(ob):
+    ad = ob.animation_data
+    if ad is None or ad.action is None:
+        return []
+    act = ad.action
+    if getattr(act, "layers", None):
+        out = []
+        for layer in act.layers:
+            for strip in layer.strips:
+                cb = strip.channelbag(ad.action_slot)
+                if cb:
+                    out.extend(cb.fcurves)
+        return out
+    return list(act.fcurves)
+
+bad = []
+for ob in [o for o in scene.objects if o.animation_data]:
+    for fc in fcurves_of(ob):
+        kinds = sorted({kp.interpolation for kp in fc.keyframe_points})
+        if kinds != ['CONSTANT']:
+            bad.append((ob.name, fc.data_path, kinds))
+print("кривых с интерполяцией:", len(bad))
+for row in bad[:8]:
+    print("   ", row)
+
+# 3. Ворс: без материала strands рендерятся чёрным карандашом по краю силуэта
+hero = bpy.data.objects["Hero"]
+ps = hero.particle_systems[-1]
+print("частиц:", ps.settings.count, "| детей:", ps.settings.rendered_child_count,
+      "| длина:", round(ps.settings.hair_length, 3))
+print("материал ворса:", repr(ps.settings.material_slot), "| слот:", ps.settings.material)
+
+# 4. Кадры на диске
+files = sorted(glob.glob(os.path.join(bpy.path.abspath("//render"), "felt_*.png")))
+print("отрендерено:", len(files), "| ожидалось:", len(shots))
+```
+
+Ненулевой счётчик в п. 2 — это ровно тот случай, когда stop-motion тихо превратился в
+обычную анимацию. Пустой `material_slot` в п. 3 означает, что strands останутся без
+шейдера и дадут грязную кайму, а не мягкий ореол.
 
 ## ⚠️ ТИПОВЫЕ ОШИБКИ
 

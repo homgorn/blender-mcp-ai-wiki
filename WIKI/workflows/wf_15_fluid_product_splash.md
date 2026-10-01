@@ -178,6 +178,74 @@ bpy.ops.fluid.bake_all()
 # ls -lh cache/fluid/
 ```
 
+### Этап 8. Контроль: что реально лежит на диске
+
+Bake может прерваться по памяти и не сообщить об этом — сцена просто останется без
+кэша, а рендер возьмёт кадр 1 для всего ролика. Поэтому проверять надо не флаги, а
+файлы: сколько их, сколько они весят и совпадает ли это с `cache_frame_start` /
+`cache_frame_end`. Заодно печатаются те поля домена, которые определяют и память, и
+картинку: разрешение, число системных частиц и состояние меширования.
+
+```python
+import bpy, os, glob
+
+scene = bpy.context.scene
+dom   = bpy.data.objects["Domain"]
+
+# Настройки домена лежат в разных местах в зависимости от версии:
+# на объекте (`dom.fluid_settings`) либо на модификаторе Fluid (`md.domain_settings`).
+# Поэтому берём первое, что реально нашлось, — иначе скрипт упадёт на AttributeError
+# там, где в прошлой версии всё работало.
+fs = getattr(dom, "fluid_settings", None)
+if fs is None:
+    fs = next((md.domain_settings for md in dom.modifiers
+               if md.type == 'FLUID'), None)
+if fs is None:
+    print("Домен не найден — проверь имя объекта и как он создан")
+else:
+    # 1. Параметры, по которым считается объём работы
+    print("тип:", fs.domain_type, "| resolution_max:", fs.resolution_max,
+          "| кэш:", fs.cache_type, "| формат:", fs.cache_data_format)
+    print("кадры кэша:", fs.cache_frame_start, "…", fs.cache_frame_end,
+          "| печётся сейчас:", getattr(fs, "is_cache_baking_data", "нет поля"))
+
+    # 2. Кэш на диске: считаем настоящие файлы, а не доверяем флажку.
+    #    cache_directory — путь относительно .blend, абсолютизируем.
+    cache_dir = bpy.path.abspath(fs.cache_directory)
+    files = sorted(glob.glob(os.path.join(cache_dir, "*")))
+    size_mb = sum(os.path.getsize(f) for f in files if os.path.isfile(f)) / 1048576
+    print("каталог:", cache_dir, "| файлов:", len(files),
+          "| МБ:", round(size_mb, 1),
+          "| ожидалось:", fs.cache_frame_end - fs.cache_frame_start + 1)
+
+    # 3. Системы частиц: их создаёт сам домен, и их отсутствие —
+    #    главный признак того, что bake не отработал
+    print("particle systems:", [ps.name for ps in dom.particle_systems])
+
+# 4. Whitewater: имена полей менялись, поэтому читаем через getattr.
+#    0 означает «брызги выключены» — кадр получится гладким, как желе.
+ew = fs.effector_weights if fs is not None else None
+if ew is not None:
+    print("spray_emission:", getattr(ew, "spray_emission", "нет поля"),
+          "| foam_emission:", getattr(ew, "foam_emission", "нет поля"))
+```
+
+> [!NOTE]
+> Блок написан устойчиво к версиям и это не косметика: проверено на 5.2.1 LTS, что
+> `bpy.ops.object.fluid_add` там **не существует** вообще (`object.effector_add` есть,
+> `quick_liquid` есть, а fluid-оператора нет), домен создаётся как объект с
+> модификатором `FLUID` и полем `fluid_type` (`'NONE' / 'DOMAIN' / 'FLOW' / 'EFFECTOR'`),
+> настройки лежат в `md.domain_settings`, а не в `ob.fluid_settings`. Имя системы частиц
+> там — `Liquid` с типом `'FLIP'`, и полей `liquid_render` / `sphere_scale` у неё уже
+> нет. Поэтому всё, что переезжало между версиями, в скрипте читается через `getattr`
+> с запасным вариантом: в своей сборке сначала набери
+> `dir(bpy.data.objects["Domain"].fluid_settings)` и сверь список.
+
+`is_cache_baking_data` во время проверки должен быть `False` — если `True`, bake ещё
+идёт и подсчёт файлов покажет недобакенный объём. Расхождение «файлов заметно меньше,
+чем кадров кэша» — самый частый признак вылета по памяти на середине; лечится снижением
+`resolution_max` или габарита домена, а не повторным bake в том же разрешении.
+
 ## ⚙️ КЛЮЧЕВЫЕ ПАРАМЕТРЫ
 
 | Параметр | Значение | Когда менять |
@@ -198,6 +266,14 @@ bpy.ops.fluid.bake_all()
 | Меш | поверхность жидкости из частиц Liquid Mesh, отдельный меш для пены |
 | Рендер | 1920×1080 Cycles 256 сэмплов: **40–120 мин** (жидкость с преломлением дороже всего) |
 | Экспорт | Alembic жидкости для последующего композитинга |
+
+Разрешение кадра — 1920×1080, 16 бит на канал (`color_depth = '16'`), контейнер
+`FFMPEG` / `H264` с `constant_rate_factor = 'HIGH'`. Порядок вывода: сначала PNG-серия
+с тем же именем, что и кадры кэша, потом сборка в видео вторым проходом с
+`image_settings.file_format = 'FFMPEG'`. Оценки времени даны для `resolution_max = 256`
+и одной жидкости на кадр; на 128 они примерно вчетверо меньше, на 512 — вылет по памяти
+раньше, чем начнётся рендер. Это ориентир для планирования, а не обещание: реальное
+время определяется GPU, числом источников света и тем, считается ли ворс/аэрозоль.
 
 ## ⚠️ ТИПОВЫЕ ОШИБКИ
 

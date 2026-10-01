@@ -165,6 +165,22 @@ fcu = wind.animation_data.action.fcurves[0]
 mod = fcu.modifiers.new('CYCLES')     # 1-й и 241-й кадр совпадают → шва не видно
 ```
 
+> [!NOTE]
+> Строка `action.fcurves[0]` рассчитана на ветку до 4.4. В 4.4+ Actions стали
+> многослойными, и кривые лежат внутри слота, а `action.fcurves` в 5.2.1 LTS просто
+> отсутствует (проверено: `hasattr(act, "fcurves")` → `False`, `act.fcurves[0]` падает
+> с IndexError). Рабочий доступ в новой ветке — обойти дерево:
+>
+> ```python
+> ad   = wind.animation_data
+> bag  = ad.action.layers[0].strips[0].channelbag(ad.action_slot)
+> fcu  = bag.fcurves[0]
+> mod  = fcu.modifiers.new('CYCLES')
+> ```
+>
+> Это тот же приём, что и в WF 17 ([этап 1](wf_17_stop_motion_felt.md)), только для
+> другой сущности.
+
 ### Этап 7. Прогрев и запекание
 
 ```python
@@ -198,6 +214,70 @@ bpy.ops.ptcache.bake_all(bake=True)
 | Геометрия | 20–80 тыс. вершин до Subdivision, 200–600 тыс. после |
 | Bake | **3–20 мин** (зависит от `quality` и числа коллизий) |
 | Рендер | 1920×1080 Cycles 128 сэмплов: **40–120 мин** на 240 кадров |
+
+Проверяется одним скриптом. Важное отличие bake от «просто прокрутить кадры» видно по
+`point_cache.is_baked`: без запекания физика живёт только до конца кэша, и любое
+изменение сцены пересчитывает её заново — картинка «плывёт» между прогонами. Геометрию
+смотрят на **последнем** кадре кэша: на первом ткань ещё стоит по исходным координатам и
+не сказала ничего. Нулевое число полигонов — тоже результат: значит, на одежде не
+построено ни одной грани и симулировать нечего.
+
+```python
+import bpy
+
+scene   = bpy.context.scene
+garment = bpy.data.objects["Dress"]
+cloth   = garment.modifiers["Cloth"]
+pc      = cloth.point_cache
+
+# 1. Кэш: испечён или просто посчитан в памяти
+print("is_baked:", pc.is_baked, "| is_baking:", pc.is_baking,
+      "| is_outdated:", pc.is_outdated)
+print("диапазон:", pc.frame_start, "-", pc.frame_end,
+      "| на диске:", pc.use_disk_cache, "| info:", repr(pc.info))
+
+# 2. Что получилось на последнем кадре кэша
+scene.frame_set(pc.frame_end)
+dg = bpy.context.evaluated_depsgraph_get()
+ev = garment.evaluated_get(dg).data
+ev.calc_loop_triangles()
+print("после симуляции:", len(ev.vertices), "вершин,",
+      len(ev.polygons), "полигонов,", len(ev.loop_triangles), "треугольников")
+
+def z_span(verts):
+    zs = [v.co.z for v in verts]
+    return round(min(zs), 3), round(max(zs), 3)
+
+print("Z покой :", z_span(garment.data.vertices))
+print("Z симуляция:", z_span(ev.vertices))
+
+# 3. Коллизии на месте?
+for name in ("Body", "Podium"):
+    ob = bpy.data.objects.get(name)
+    print(name, "| Collision:",
+          (ob.modifiers.get("Collision") is not None) if ob else "нет объекта")
+
+# 4. Сколько вершин реально приколоты к скелету
+pin = garment.vertex_groups.get("Pin")
+if pin:
+    idx = pin.index
+    pinned = [v.index for v in garment.data.vertices
+              if any(g.group == idx and g.weight > 0.5 for g in v.groups)]
+    print("приколот вершин:", len(pinned), "из", len(garment.data.vertices))
+print("Pin Group в настройках:", repr(cloth.settings.vertex_group_mass))
+```
+
+Пустой `Pin Group` в настройках при непустой группе `Pin` на объекте — почти всегда
+Data Transfer в стеке ниже Cloth: ткань ещё не видела весов, когда считалась.
+
+> [!NOTE]
+> Путь к весам эффекторов менялся. На объекте (`garment.effector_weights.wind`) он был
+> в ветке 4.x; в 5.2.1 LTS `Object.effector_weights` убран, и веса лежат на настройках
+> самого модификатора — `cloth.settings.effector_weights.wind`. Проверено: у `Object`
+> в этой сборке нет такого поля вообще. Поэтому строка из таблицы ошибок про ветер
+> безопаснее в виде
+> `(getattr(garment, "effector_weights", None) or cloth.settings.effector_weights).wind`
+> — она работает в обеих ветвях.
 
 ## ⚠️ ТИПОВЫЕ ОШИБКИ
 
