@@ -1,0 +1,25 @@
+---
+import { LANG_META, LANGS, type Lang } from '../lib/site';
+
+interface Props {
+  lang: Lang;
+  /** Build the alternate list for a path pattern, e.g. (l) => `/${l}/prompts` */
+  hrefFor: (l: Lang) => string;
+}
+
+const { lang, hrefFor } = Astro.props;
+---
+
+<span class="lang-switch" role="group" aria-label="Язык / Language">
+  {LANGS.map((l) => (
+    <a
+      href={hrefFor(l)}
+      hreflang={LANG_META[l].locale}
+      lang={l}
+      title={LANG_META[l].native}
+      aria-current={l === lang ? 'true' : 'false'}
+    >
+      {l}
+    </a>
+  ))}
+</span>

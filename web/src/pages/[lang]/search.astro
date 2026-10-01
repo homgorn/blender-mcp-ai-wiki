@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LANG_META, LANGS, SITE_NAME, CATEGORY_META } from '../../lib/site';
+import { entries, isIndexable, searchEntries, originals } from '../../lib/content';
+import { abs } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+const { lang } = Astro.props as { lang: 'ru' | 'en' | 'es' | 'de' | 'zh' };
+const results = searchEntries(lang, '', 12);
+const cats = [...new Set(originals.map((e) => e.category))];
+const urlOf = (e: { category: string; origId: string }) =>
+  `/${lang}/${e.category}/${e.origId.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+---
+
+<BaseLayout
+  title={`Поиск · ${SITE_NAME}`}
+  description={`Поиск по ${entries.filter(isIndexable).length} статьям базы знаний Blender, MCP и AI-агентов.`}
+  path={`/${lang}/search`}
+  lang={lang}
+  noindex={true}
+  alternates={LANGS.map((l) => ({ hreflang: LANG_META[l].locale, href: abs(`/${l}/search`) }))}
+>
+  <Fragment slot="head">
+    <link rel="stylesheet" href="/pagefind/pagefind-component-ui.css" />
+    <script src="/pagefind/pagefind-component-ui.js" type="module"></script>
+  </Fragment>
+
+  <div class="wrap">
+    <div class="hero" style="border:0;padding-bottom:16px">
+      <h1>Поиск</h1>
+      <p>
+        Индекс строится на этапе сборки (Pagefind): поиск работает без сервера и без
+        загрузки всей базы в браузер.
+      </p>
+    </div>
+
+    <section class="section">
+      <pagefind-modal-trigger></pagefind-modal-trigger>
+      <pagefind-modal></pagefind-modal>
+
+      <button
+        style="padding:10px 18px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;font-size:15px"
+        onclick="document.querySelector('pagefind-modal').showModal()"
+      >
+        Открыть поиск по базе
+      </button>
+
+      <noscript>
+        <p class="notice">
+          Поиск требует JavaScript. Без него используйте <a href={abs('/llms.txt')}>llms.txt</a>,
+          <a href={abs('/llms-full.txt')}>llms-full.txt</a> или
+          <a href={abs('/rss.xml')}>RSS</a>.
+        </p>
+      </noscript>
+    </section>
+
+    <section class="section">
+      <h2>Категории</h2>
+      <div class="tags" style="gap:10px">
+        {cats.map((c) => (
+          <a class="tag" style="padding:4px 12px;font-size:13px" href={`/${lang}/${c}`}>
+            {CATEGORY_META[c]?.icon} {CATEGORY_META[c]?.ru ?? c}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Популярное</h2>
+      <ul>
+        {results.map((e) => (
+          <li style="margin:6px 0"><a href={urlOf(e)}>{e.title}</a></li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

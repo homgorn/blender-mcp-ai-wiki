@@ -1,0 +1,302 @@
+---
+id: 15_compositing
+lang: en
+category: prompts
+type: prompt
+difficulty: 2
+translation: legacy
+---
+
+# P15: COMPOSITING
+
+**ID:** P15 | **Cluster:** Rendering/Post | **Difficulty:** ⭐⭐⭐ | **Tags:** #compositing #nodes #post-processing #color-grading #passes #cryptomatte
+
+---
+
+## 🎯 GOAL
+Professional compositing workflow using Blender's Node Compositor with render passes, color grading, and effects
+
+---
+
+## 📝 PROMPT
+
+```
+Setup compositing for scene "[SCENE_NAME]":
+Passes: COMBINED, VIEW_LAYER, CRYPTOMATTE, MIST, AO, NORMAL, DEPTH, EMMISSION
+Operations: Color Balance, Hue/Sat, Gamma, Glare, Lens Distortion, Vignette, Film Grain
+Output: EXR MultiLayer / PNG Sequence / MP4
+```
+
+---
+
+## 🔧 MCP: `execute_blender_code`
+
+### ENABLE RENDER PASSES
+```python
+import bpy
+
+scene = bpy.context.scene
+view_layer = scene.view_layers[0]
+
+view_layer.use_pass_combined = True
+view_layer.use_pass_z = True
+view_layer.use_pass_normal = True
+view_layer.use_pass_mist = True
+view_layer.use_pass_ambient_occlusion = True
+view_layer.use_pass_emission = True
+view_layer.use_pass_shadow = True
+view_layer.use_pass_diffuse_color = True
+view_layer.use_pass_glossy_color = True
+
+view_layer.use_pass_cryptomatte = True
+view_layer.cryptomatte_use_object = True
+view_layer.cryptomatte_use_material = True
+view_layer.cryptomatte_use_asset = True
+
+scene.render.use_freestyle = True
+view_layer.use_freestyle = True
+
+scene.world.mist_settings.start = 1.0
+scene.world.mist_settings.depth = 50.0
+scene.world.mist_settings.falloff = 'QUADRATIC'
+
+scene.cycles.samples = 256
+scene.cycles.use_denoising = True
+scene.cycles.denoiser = 'OPTIX'
+scene.cycles.denoising_prefilter = 'ACCURATE'
+scene.cycles.use_adaptive_sampling = True
+scene.cycles.adaptive_threshold = 0.01
+scene.cycles.adaptive_min_samples = 32
+
+print("Render passes enabled!")
+```
+
+### BASIC COMPOSITOR SETUP
+```python
+def setup_compositor():
+    scene = bpy.context.scene
+    scene.use_nodes = True
+    tree = scene.node_tree
+    nodes = tree.nodes
+    links = tree.links
+    nodes.clear()
+    
+    rl = nodes.new('CompositorNodeRLayers')
+    rl.location = (-400, 0)
+    rl.layer = "ViewLayer"
+    
+    # Color Correction
+    color_bal = nodes.new('CompositorNodeColorBalance')
+    color_bal.location = (0, 200)
+    color_bal.correction_method = 'LIFT_GAMMA_GAIN'
+    color_bal.lift = (1.02, 1.0, 0.98)
+    color_bal.gamma = (1.0, 1.0, 1.0)
+    color_bal.gain = (0.98, 1.0, 1.02)
+    
+    hsv = nodes.new('CompositorNodeHueSat')
+    hsv.location = (200, 200)
+    hsv.color_saturation = 1.1
+    hsv.color_value = 1.0
+    hsv.color_hue = 0.0
+    
+    gamma = nodes.new('CompositorNodeGamma')
+    gamma.location = (400, 200)
+    gamma.inputs['Gamma'].default_value = 1.1
+    
+    exp = nodes.new('CompositorNodeExposure')
+    exp.location = (600, 200)
+    exp.inputs['Exposure'].default_value = 0.1
+    exp.inputs['Contrast'].default_value = 1.05
+    
+    # Effects
+    glare = nodes.new('CompositorNodeGlare')
+    glare.location = (0, -200)
+    glare.glare_type = 'FOG_GLOW'
+    glare.quality = 'HIGH'
+    glare.iterations = 5
+    glare.mix = 0.3
+    glare.threshold = 0.8
+    glare.size = 7
+    
+    lens = nodes.new('CompositorNodeLensdist')
+    lens.location = (200, -200)
+    lens.distort = 0.02
+    lens.dispersion = 0.01
+    
+    vignette = nodes.new('CompositorNodeVignette')
+    vignette.location = (400, -200)
+    vignette.intensity = 0.3
+    vignette.size = 0.8
+    
+    noise = nodes.new('CompositorNodeNoise')
+    noise.location = (600, -200)
+    noise.noise_type = 'GAUSSIAN'
+    noise.inputs['Scale'].default_value = 300
+    noise.inputs['Distortion'].default_value = 0.1
+    
+    mix_grain = nodes.new('CompositorNodeMixRGB')
+    mix_grain.location = (800, -200)
+    mix_grain.blend_type = 'OVERLAY'
+    mix_grain.inputs[0].default_value = 0.03
+    
+    # Color Grading
+    cm = nodes.new('CompositorNodeColorMatrix')
+    cm.location = (800, 200)
+    cm.matrix = [
+        1.1, -0.1, -0.1, 0,
+        -0.1, 1.0, -0.1, 0,
+        -0.1, -0.1, 1.1, 0,
+        0, 0, 0, 1
+    ]
+    
+    comp = nodes.new('CompositorNodeComposite')
+    comp.location = (1000, 0)
+    
+    viewer = nodes.new('CompositorNodeViewer')
+    viewer.location = (1000, -200)
+    viewer.use_alpha = False
+    
+    # Links
+    links.new(rl.outputs['Image'], color_bal.inputs['Image'])
+    links.new(color_bal.outputs['Image'], hsv.inputs['Image'])
+    links.new(hsv.outputs['Image'], gamma.inputs['Image'])
+    links.new(gamma.outputs['Image'], exp.inputs['Image'])
+    links.new(exp.outputs['Image'], glare.inputs['Image'])
+    links.new(glare.outputs['Image'], lens.inputs['Image'])
+    links.new(lens.outputs['Image'], vignette.inputs['Image'])
+    links.new(vignette.outputs['Image'], mix_grain.inputs[1])
+    links.new(noise.outputs['Image'], mix_grain.inputs[2])
+    links.new(mix_grain.outputs['Image'], cm.inputs['Image'])
+    links.new(cm.outputs['Image'], comp.inputs['Image'])
+    links.new(cm.outputs['Image'], viewer.inputs['Image'])
+    
+    # File Output for EXR MultiLayer
+    file_out = nodes.new('CompositorNodeOutputFile')
+    file_out.location = (1000, -400)
+    file_out.format.file_format = 'OPEN_EXR_MULTILAYER'
+    file_out.format.color_mode = 'RGBA'
+    file_out.format.color_depth = '32'
+    file_out.base_path = "//renders/exr/"
+    
+    passes = ['Image', 'Depth', 'Normal', 'Mist', 'AO', 'Emission', 'Shadow', 'Cryptomatte00', 'Cryptomatte10']
+    for i, pass_name in enumerate(passes):
+        if pass_name in rl.outputs:
+            file_out.layer_slots.new(pass_name)
+            file_out.layer_slots[i].path = pass_name
+            tree.links.new(rl.outputs[pass_name], file_out.inputs[i])
+    
+    print("Compositor setup complete!")
+
+setup_compositor()
+```
+
+### CRYPTOMATTE MASKING
+```python
+def setup_cryptomatte_mask(material_name, output_node):
+    tree = bpy.context.scene.node_tree
+    nodes = tree.nodes
+    links = tree.links
+    
+    rl = nodes.get('Render Layers')
+    if not rl:
+        return
+    
+    crypto = nodes.new('CompositorNodeCryptomatte')
+    crypto.location = (200, -400)
+    crypto.matte_id = material_name
+    crypto.use_matte_output = True
+    
+    links.new(rl.outputs['Cryptomatte00'], crypto.inputs['Image'])
+    links.new(crypto.outputs['Matte'], output_node.inputs['Fac'])
+```
+
+### DEPTH OF FIELD (POST)
+```python
+def setup_dof_post(focus_distance=5.0, fstop=2.8, max_blur=20):
+    tree = bpy.context.scene.node_tree
+    nodes = tree.nodes
+    links = tree.links
+    
+    defocus = nodes.new('CompositorNodeDefocus')
+    defocus.location = (400, 0)
+    defocus.use_zbuffer = True
+    defocus.fStop = fstop
+    defocus.maxblur = max_blur
+    defocus.bokeh_type = 'POLYGON'
+    defocus.blade_count = 8
+    defocus.rotation = 0
+    
+    links.new(nodes['Render Layers'].outputs['Image'], defocus.inputs['Image'])
+    links.new(nodes['Render Layers'].outputs['Depth'], defocus.inputs['Z'])
+    
+    return defocus
+```
+
+### EXPORT SETTINGS
+```python
+def setup_render_output(format='PNG', color_mode='RGBA', depth='16', filepath="//renders/"):
+    scene = bpy.context.scene
+    scene.render.filepath = filepath
+    scene.render.image_settings.file_format = format
+    scene.render.image_settings.color_mode = color_mode
+    scene.render.image_settings.color_depth = depth
+    scene.render.image_settings.compression = 90
+    
+    if format == 'OPEN_EXR':
+        scene.render.image_settings.exr_codec = 'ZIP'
+        scene.render.image_settings.use_preview = True
+    
+    scene.render.ffmpeg.format = 'MPEG4'
+    scene.render.ffmpeg.codec = 'H264'
+    scene.render.ffmpeg.constant_rate_factor = 'PERC_LOSSLESS'
+    scene.render.ffmpeg.ffmpeg_preset = 'GOOD'
+    scene.render.ffmpeg.audio_codec = 'AAC'
+    scene.render.ffmpeg.audio_bitrate = 192
+
+setup_render_output('OPEN_EXR', 'RGBA', '32', "//renders/exr/")
+setup_render_output('PNG', 'RGBA', '16', "//renders/png/")
+```
+
+---
+
+## 📊 COMPOSITOR NODES
+
+| Category | Nodes | Purpose |
+|----------|-------|---------|
+| Input | Render Layers, Image, Movie Clip, Texture | Sources |
+| Color | Color Balance, Hue/Sat, Gamma, Exposure, RGB Curves, Color Matrix | Color correction |
+| Filter | Blur, Defocus, Glare, Kuwahara, Bilateral, Despeckle | Blur/sharpness |
+| Distort | Lens Dist, Displace, Transform, Crop, Flip | Geometry |
+| Matte | Cryptomatte, ID Mask, Chroma Key, Difference | Masks |
+| Convert | Color Space, Premult, Alpha Over, Set Alpha | Alpha/premult |
+| Output | Composite, Viewer, File Output, Map Viewer | Result |
+
+---
+
+## 💡 PRO TIPS
+
+| Tip | Why |
+|-----|-----|
+| Work in EXR 32-bit | Maximum dynamic range, no banding |
+| Use Viewer Node | Instant preview |
+| Group nodes (Ctrl+G) | Readability |
+| Save node groups | Reusability |
+| Denoise in render + Glare in comp | Fewer artifacts |
+| Cryptomatte for selections | No manual masking |
+
+---
+
+## 🔗 LINKS
+
+- **Prompts:** [P13 Lighting](./13_lighting_hdri.md), [P14 Camera](./14_camera_composition.md)
+- **Workflows:** [WF 01: Text-to-Scene](../workflows/wf_01_text_to_scene.md)
+- **MCP Tools:** `execute_blender_code`, `get_viewport_screenshot`
+
+---
+
+## 🌍 MULTILANG
+
+| Language | File |
+|----------|------|
+| English | `multilang/en/prompts/15_compositing.md` |
+| Russian | `multilang/ru/prompts/15_compositing.md` |

@@ -1,0 +1,40 @@
+{
+  // Cloudflare Workers with static assets.
+  //
+  // Why Workers and not Pages: Cloudflare marks Pages as legacy-discouraged
+  // ("Workers supports most Pages use cases... Start new projects with Workers"),
+  // and @astrojs/cloudflare v13+ no longer supports Pages at all. Static output
+  // needs no adapter — dist/ is uploaded as static assets.
+  //
+  // Deploy:  npx wrangler deploy      (after npm run build:full)
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "blender-ai-wiki",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./dist",
+    // Workers does not auto-detect 404.html the way Pages did.
+    "not_found_handling": "404-page",
+    // Astro builds with build.format:'file', so every route is `foo.html` and
+    // the canonical URL has NO trailing slash. The default
+    // "auto-trailing-slash" serves `/foo` 200 but answers `/foo/` with a 307 —
+    // fine, but it also 307s `/404.html`, which broke direct 404 checks. Dropping
+    // trailing slashes makes `/foo`, `/foo.html` and `/foo/` all resolve to the
+    // same asset with no redirect, and removes the duplicate-URL risk the
+    // Cloudflare docs warn about for search engines.
+    "html_handling": "drop-trailing-slash"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "env": {
+    "preview": {
+      "name": "blender-ai-wiki-preview",
+      "assets": {
+        "directory": "./dist",
+        "not_found_handling": "404-page",
+        "html_handling": "drop-trailing-slash"
+      }
+    }
+  }
+}

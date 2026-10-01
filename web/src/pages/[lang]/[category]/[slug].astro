@@ -1,0 +1,171 @@
+---
+/**
+ * Article page — the SEO workhorse. One prerendered HTML file per entry, per language.
+ */
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Prose from '../../../components/Prose.astro';
+import EntryCard from '../../../components/EntryCard.astro';
+import LangSwitch from '../../../components/LangSwitch.astro';
+import { CATEGORY_META, LANG_META, SITE_NAME, type Lang } from '../../../lib/site';
+import {
+  entries, entryUrl, entryMdUrl, hreflangCluster, isIndexable, related, seoDescription,
+  translationsOf, type Entry,
+} from '../../../lib/content';
+import { abs, articleJsonLd, faqFrom, faqJsonLd } from '../../../lib/seo';
+
+export function getStaticPaths() {
+  return entries.map((e) => ({
+    params: { lang: e.lang, category: e.category, slug: e.origId.replace(/[^a-zA-Z0-9]+/g, '-') },
+    props: { entry: e },
+  }));
+}
+
+interface Props { entry: Entry }
+const { entry } = Astro.props as Props;
+
+const lang = entry.lang as Lang;
+const url = entryUrl(entry);
+const cat = CATEGORY_META[entry.category];
+const indexable = isIndexable(entry);
+
+// hreflang cluster: the per-language URLs of THIS article (not of the page shell).
+const versions = translationsOf(entry);
+const alts = hreflangCluster(entry).map((c) => ({
+  hreflang: LANG_META[c.lang].locale,
+  href: abs(entryUrl(versions.find((t) => t.lang === c.lang) ?? entry)),
+}));
+
+const rel = related(entry, 6);
+const faq = indexable ? faqFrom(entry) : [];
+const ld = [articleJsonLd(entry), faqJsonLd(faq)];
+
+const anchor = (text: string) =>
+  text
+    .toLowerCase()
+    .replace(/[`*_[\]()#]/g, '')
+    .replace(/[^\p{L}\p{N}]+/gu, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60);
+
+const toc = [...entry.body.matchAll(/^(#{2,3})\s+(.+)$/gm)].map((m) => ({
+  level: m[1].length,
+  text: m[2].replace(/[`*]/g, '').trim(),
+}));
+
+const updated = entry.updated ? entry.updated.slice(0, 10) : '';
+const desc = seoDescription(entry);
+---
+
+<BaseLayout
+  title={entry.title}
+  description={desc}
+  path={url}
+  lang={lang}
+  noindex={!indexable}
+  type="article"
+  jsonLd={ld}
+  alternates={alts}
+  mdTwin={entryMdUrl(entry)}
+  entry={entry}
+>
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href={`/${lang}`}>{SITE_NAME}</a> ›
+      <a href={`/${lang}/${entry.category}`}>{cat?.ru ?? entry.category}</a> ›
+      <span>{entry.title}</span>
+    </nav>
+
+    {!indexable && (
+      <p class="notice">
+        Это шаблонный перевод: текст оригинала без полного перевода. Поисковые системы
+        не индексируют эту страницу, канонический адрес — <a href={abs(url)}>оригинал</a>.
+        <a href={abs(entryMdUrl(entry))}>Markdown-версия</a>
+      </p>
+    )}
+  </div>
+
+  <div class="wrap layout">
+    <article>
+      <header class="article-head">
+        <h1>{entry.title}</h1>
+        {desc && <p class="lead">{desc}</p>}
+        <div class="badges">
+          <span class="badge">{cat?.icon} {cat?.ru ?? entry.category}</span>
+          {entry.difficulty > 0 && <span class="badge">{'⭐'.repeat(entry.difficulty)}</span>}
+          {entry.status && (
+            <span class={entry.status === 'full' ? 'badge ok' : 'badge warn'}>
+              {entry.status === 'full' ? 'полная' : 'черновик'}
+            </span>
+          )}
+          {entry.codeBlocks > 0 && <span class="badge">{entry.codeBlocks} блоков кода</span>}
+          {updated && <span class="badge">обновлено {updated}</span>}
+        </div>
+        <div class="badges" style="margin-top:12px">
+          <LangSwitch
+            lang={lang}
+            hrefFor={(l) => {
+              const t = versions.find((x) => x.lang === l);
+              return t ? entryUrl(t) : `/${l}`;
+            }}
+          />
+          <a class="badge" href={abs(entryMdUrl(entry))} title="Чистая markdown-версия для ИИ-агентов">
+            .md
+          </a>
+        </div>
+      </header>
+
+      <div data-pagefind-body>
+        <Prose entry={entry} />
+      </div>
+
+      {rel.length > 0 && (
+        <section class="section">
+          <h2>Связанные материалы</h2>
+          <p class="sub">Подобраны по тегам и категории.</p>
+          <div class="grid">
+            {rel.map((r) => <EntryCard entry={r} showDesc={false} />)}
+          </div>
+        </section>
+      )}
+    </article>
+
+    <aside class="side">
+      {toc.filter((t) => t.level === 2).length > 1 && (
+        <>
+          <h4>Содержание</h4>
+          <ul>
+            {toc.filter((t) => t.level === 2).map((t) => (
+              <li><a href={`#${anchor(t.text)}`}>{t.text}</a></li>
+            ))}
+          </ul>
+        </>
+      )}
+      <h4>Языки</h4>
+      <ul>
+        {versions.map((t) => (
+          <li>
+            <a href={entryUrl(t)} lang={t.lang}>
+              {LANG_META[t.lang].native}
+              {t.translation === 'human' ? '' : ' · шаблон'}
+            </a>
+          </li>
+        ))}
+      </ul>
+      {entry.tags.length > 0 && (
+        <>
+          <h4>Теги</h4>
+          <ul>{entry.tags.slice(0, 12).map((t) => <li>#{t}</li>)}</ul>
+        </>
+      )}
+      {entry.mcpTools.length > 0 && (
+        <>
+          <h4>MCP-инструменты</h4>
+          <ul>{entry.mcpTools.map((t) => <li><code>{t}</code></li>)}</ul>
+        </>
+      )}
+      <p class="note">
+        ИИ-агенты: <a href={abs(entryMdUrl(entry))}>markdown</a> · <a href={abs('/llms.txt')}>llms.txt</a>
+      </p>
+    </aside>
+  </div>
+</BaseLayout>

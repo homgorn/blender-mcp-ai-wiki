@@ -1,0 +1,90 @@
+---
+/**
+ * Root: a real, crawlable language picker.
+ *
+ * Deliberately NOT a redirect to /ru. A redirect hides the other language
+ * versions from crawlers and adds a hop; a page with reciprocal hreflang lets a
+ * crawler discover all five roots in one request.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { LANGS, LANG_META, SITE_NAME, SITE_NAME_RU } from '../lib/site';
+import { byLang, isIndexable, stats } from '../lib/content';
+import { abs, websiteJsonLd } from '../lib/seo';
+
+const alts = LANGS.map((l) => ({ hreflang: LANG_META[l].locale, href: abs(`/${l}`) }));
+const counts = Object.fromEntries(LANGS.map((l) => [l, byLang(l).filter(isIndexable).length]));
+---
+
+<BaseLayout
+  title="Blender AI Wiki"
+  description="Открытая база знаний по Blender, MCP и AI-агентам: промпты и bpy-скрипты, сетапы, воркфлоу и кейсы. 5 языков, поиск, markdown-версии для ИИ-агентов."
+  path="/"
+  lang="ru"
+  alternates={alts}
+  jsonLd={[websiteJsonLd('ru')]}
+>
+  <div class="wrap">
+    <div class="hero">
+      <h1>{SITE_NAME}</h1>
+      <p>
+        {SITE_NAME_RU}. {stats.originals} статей, {stats.codeBlocks} блоков кода,
+        5 языков. Каждая статья доступна в HTML и в чистом markdown по тому же URL.
+      </p>
+      <div class="stats">
+        <div class="stat"><b>{stats.originals}</b><span>статей</span></div>
+        <div class="stat"><b>{stats.humanTranslations}</b><span>полных переводов</span></div>
+        <div class="stat"><b>{stats.languages}</b><span>языков</span></div>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2>Выберите язык</h2>
+      <p class="sub">Каждая версия — полная копия каталога на своём языке.</p>
+      <div class="grid">
+        {LANGS.map((l) => (
+          <a class="card" href={`/${l}`} hreflang={LANG_META[l].locale} lang={l}>
+            <h3>{LANG_META[l].native}</h3>
+            <div class="meta">
+              <span>{LANG_META[l].label}</span>
+              <span>{counts[l]} страниц</span>
+            </div>
+            <p class="desc">
+              {l === 'ru'
+                ? 'Основной язык базы. Все статьи публикуются здесь первыми.'
+                : l === 'en'
+                  ? 'English mirror — the lingua franca for code and tooling.'
+                  : l === 'es'
+                    ? 'Traducción parcial; los artículos marked «template» conservan el original.'
+                    : l === 'de'
+                      ? 'Teilweise Übersetzung; als «template» markierte Artikel behalten das Original.'
+                      : '部分翻译；标记为「template」的文章保留原文。'}
+            </p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Для ИИ-агентов</h2>
+      <p class="sub">Машиночитаемые входы, которые не требуют парсинга HTML.</p>
+      <div class="grid">
+        <a class="card" href="/llms.txt">
+          <h3>llms.txt</h3>
+          <p class="desc">Карта сайта для языковых моделей: категории, избранные статьи, ссылки на детали.</p>
+        </a>
+        <a class="card" href="/llms-full.txt">
+          <h3>llms-full.txt</h3>
+          <p class="desc">Весь корпус одним файлом — для офлайн-индексации и RAG.</p>
+        </a>
+        <a class="card" href="/sitemap-index.xml">
+          <h3>sitemap.xml</h3>
+          <p class="desc">Полный список индексируемых страниц с hreflang-группами.</p>
+        </a>
+        <a class="card" href="/rss.xml">
+          <h3>RSS</h3>
+          <p class="desc">Лента последних обновлений базы.</p>
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

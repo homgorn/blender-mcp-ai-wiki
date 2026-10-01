@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wiki Graph — Blender AI Wiki</title>
+<link rel="stylesheet" href="style.css">
+<style>#g{width:100%;height:80vh;background:#0c0f14;border:1px solid var(--line);border-radius:12px;cursor:grab}.tip{position:fixed;background:var(--card);border:1px solid var(--acc);border-radius:8px;padding:6px 10px;font-size:12px;display:none;pointer-events:none;z-index:9}</style>
+</head>
+<body>
+<header><h1>Wiki Graph</h1>
+<div class="controls">
+<a href="index.html" style="color:var(--acc)">← Index</a>
+<select id="g-cat"><option value="">All</option></select>
+<input id="g-q" placeholder="filter…" style="width:200px">
+<button id="g-go">Filter</button>
+<span id="g-info" style="color:var(--mut)"></span>
+</div></header>
+<main><canvas id="g"></canvas><div class="tip" id="tip"></div>
+<p style="color:var(--mut)">Drag to pan · wheel to zoom · click node to open entry (hash link back to index). Colors by category.</p></main>
+<script>
+const COL={prompts:'#5aa9ff',setups:'#7ee787',workflows:'#f778ba',cases:'#ffa657',misc:'#9aa3b2'};
+let G={nodes:[],links:[]},VX=new Map(),cam={x:0,y:0,z:1},drag=null;
+const cv=document.getElementById('g'),ctx=cv.getContext('2d'),tip=document.getElementById('tip');
+function resize(){cv.width=cv.clientWidth*devicePixelRatio;cv.height=cv.clientHeight*devicePixelRatio;}
+window.onresize=resize;
+async function load(){
+  G=await (await fetch('data/graph.json')).json();
+  const cats=[...new Set(G.nodes.map(n=>n.category||'misc'))].sort();
+  document.getElementById('g-cat').innerHTML='<option value="">All</option>'+cats.map(c=>`<option>${c}</option>`).join('');
+  layout();resize();requestAnimationFrame(tick);
+}
+function filtered(){
+  const c=document.getElementById('g-cat').value,q=document.getElementById('g-q').value.toLowerCase();
+  let nodes=G.nodes.filter(n=>(!c||(n.category||'misc')===c)&&(!q||(n.title+' '+n.id).toLowerCase().includes(q)));
+  if(nodes.length>600)nodes=nodes.slice(0,600);
+  const ids=new Set(nodes.map(n=>n.id));
+  const links=G.links.filter(l=>ids.has(l.source)&&ids.has(l.target)).slice(0,1500);
+  return{nodes,links};
+}
+function layout(){
+  const{nodes}=filtered();VX.clear();
+  nodes.forEach((n)=>{VX.set(n.id,{x:n.x??0,y:n.y??0,vx:0,vy:0,n});});
+  document.getElementById('g-info').textContent=`${nodes.length} nodes · precomputed layout`;
+}
+function step(){
+  const{nodes,links}=filtered();const pts=[...VX.values()];
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+    const a=pts[i],b=pts[j];let dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy)||1;
+    const f=Math.min(2000/(d*d),2);a.vx+=dx/d*f;b.vx-=dx/d*f;a.vy+=dy/d*f;b.vy-=dy/d*f;}
+  const idm=new Map(nodes.map(n=>[n.id,n]));
+  links.forEach(l=>{const a=VX.get(l.source),b=VX.get(l.target);if(!a||!b)return;
+    let dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1;const f=(d-80)*0.02;
+    a.vx+=dx/d*f;a.vy+=dy/d*f;b.vx-=dx/d*f;b.vy-=dy/d*f;});
+  pts.forEach(p=>{p.vx*=0.85;p.vy*=0.85;const cx=-p.x*0.01,cy=-p.y*0.01;p.vx+=cx;p.vy+=cy;p.x+=p.vx;p.y+=p.vy;});
+}
+function tick(){
+  const{nodes,links}=filtered();
+  ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+  ctx.clearRect(0,0,cv.clientWidth,cv.clientHeight);
+  const ox=cv.clientWidth/2+cam.x,oy=cv.clientHeight/2+cam.y;
+  ctx.strokeStyle='rgba(120,140,170,.25)';ctx.lineWidth=1;
+  links.forEach(l=>{const a=VX.get(l.source),b=VX.get(l.target);if(!a||!b)return;
+    ctx.beginPath();ctx.moveTo(ox+a.x*cam.z,oy+a.y*cam.z);ctx.lineTo(ox+b.x*cam.z,oy+b.y*cam.z);ctx.stroke();});
+  nodes.forEach(n=>{const p=VX.get(n.id);if(!p)return;
+    ctx.fillStyle=COL[n.category]||'#9aa3b2';
+    ctx.beginPath();ctx.arc(ox+p.x*cam.z,oy+p.y*cam.z,4,0,7);ctx.fill();});
+  requestAnimationFrame(tick);
+}
+cv.onmousedown=e=>{drag={x:e.clientX-cam.x,y:e.clientY-cam.y};cv.style.cursor='grabbing';};
+window.onmouseup=()=>{drag=null;cv.style.cursor='grab';};
+window.onmousemove=e=>{
+  if(drag){cam.x=e.clientX-drag.x;cam.y=e.clientY-drag.y;return;}
+  const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
+  const ox=cv.clientWidth/2+cam.x,oy=cv.clientHeight/2+cam.y;
+  let best=null,bd=12;
+  VX.forEach((p,id)=>{const d=Math.hypot(ox+p.x*cam.z-mx,oy+p.y*cam.z-my);if(d<bd){bd=d;best={id,p};}});
+  if(best){const n=filtered().nodes.find(x=>x.id===best.id);
+    tip.style.display='block';tip.style.left=e.clientX+12+'px';tip.style.top=e.clientY+12+'px';
+    tip.textContent=(n?n.title:best.id)+' — click to open';cv.onclick=()=>{location.href='index.html#entry='+encodeURIComponent(best.id);};
+  }else{tip.style.display='none';cv.onclick=null;}
+};
+cv.onwheel=e=>{e.preventDefault();cam.z=Math.min(3,Math.max(.3,cam.z*(e.deltaY<0?1.1:0.9)));},{passive:false};
+document.getElementById('g-go').onclick=()=>{layout();};
+load();
+</script>
+</body>
+</html>

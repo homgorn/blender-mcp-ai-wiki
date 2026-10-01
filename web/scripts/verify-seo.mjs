@@ -1,0 +1,314 @@
+#!/usr/bin/env node
+/**
+ * SEO / AI-readiness gate for the built site.
+ *
+ * Parses dist/ and fails loudly. "SEO optimized" is a claim; this is the proof.
+ * Everything here maps to a documented requirement:
+ *   - title / description / canonical / robots           -> crawlability
+ *   - hreflang cluster, reciprocal + x-default           -> Google multi-language
+ *   - JSON-LD Article + BreadcrumbList                   -> rich results
+ *   - .md twin + rel=alternate                           -> llms.txt v2
+ *   - llms.txt / llms-full.txt / robots.txt / rss.xml    -> agent entry points
+ *   - no broken internal links                           -> crawl budget
+ *
+ * Run:  node scripts/verify-seo.mjs        (exit 1 on any FAIL)
+ */
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { join, dirname, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const DIST = join(HERE, '..', 'dist');
+const DB = join(HERE, '..', '..', 'WIKI', 'db', 'wiki_database.json');
+
+const fails = [];
+const warns = [];
+const fail = (m) => fails.push(m);
+const warn = (m) => warns.push(m);
+const ok = (m) => console.log(`  [OK] ${m}`);
+
+const slugify = (s) => s.toLowerCase().replace(/\.md$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+const read = (p) => readFileSync(join(DIST, p), 'utf8');
+
+/* --------------------------------------------------------- ground truth */
+const db = JSON.parse(readFileSync(DB, 'utf8'));
+const entries = db.entries.map((e) => {
+  const m = e.meta;
+  const origId = m.orig_id ?? String(m.id).replace(/__[a-z]{2}$/, '');
+  return {
+    id: m.id,
+    origId,
+    lang: m.language,
+    category: m.category || 'references',
+    title: m.title,
+    translation: m.translation,
+    isTranslation: Boolean(m.is_translation),
+    url: `/${m.language}/${m.category || 'references'}/${slugify(origId)}`,
+  };
+});
+const indexable = entries.filter((e) => !e.isTranslation || e.translation === 'human');
+/**
+ * Mirrors published but marked noindex (excluded from the sitemap).
+ * Mirrors whose language equals the original's language are NOT published at
+ * all (they would collide on the same URL) — see dropShadowMirrors in
+ * src/lib/content.ts. Checking those for noindex would demand the impossible.
+ */
+const originalLang = new Map();
+for (const e of entries) {
+  if (!e.isTranslation) originalLang.set(e.origId, e.lang);
+}
+const isShadow = (e) => e.isTranslation && originalLang.get(e.origId) === e.lang;
+const duplicates = entries.filter(
+  (e) => e.isTranslation && e.translation && e.translation !== 'human' && !isShadow(e),
+);
+const shadows = entries.filter(isShadow);
+const shadowUrls = new Set(shadows.map((e) => e.url));
+
+/* ----------------------------------------------------- file existence */
+console.log('== 1. Build output present ==');
+for (const f of ['index.html', 'llms.txt', 'llms-full.txt', 'robots.txt', 'rss.xml', 'sitemap-index.xml', '404.html', '_headers', 'og-default.png']) {
+  if (existsSync(join(DIST, f))) ok(`dist/${f}`);
+  else fail(`dist/${f} missing`);
+}
+
+// A localhost origin means canonical, hreflang, OG and the sitemap all point at
+// a machine that does not exist. Never ship that.
+{
+  const home = read('index.html');
+  const m = /<link rel="canonical" href="([^"]+)"/.exec(home)?.[1] ?? '';
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)/.test(m)) {
+    fail(`built with a local origin (${m}) — set PUBLIC_SITE_URL before deploying`);
+  } else {
+    ok(`canonical origin: ${m}`);
+  }
+}
+
+/* --------------------------------------------------------- article pages */
+console.log('== 2. Article pages: head tags, JSON-LD, hreflang, md twin ==');
+let checked = 0;
+for (const e of indexable) {
+  const file = join(DIST, `${e.url}.html`);
+  if (!existsSync(file)) { fail(`article html missing: ${e.url}`); continue; }
+  const html = readFileSync(file, 'utf8');
+  const problems = [];
+
+  const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? '';
+  if (!title) problems.push('no <title>');
+  else if (title.length > 70) problems.push(`title ${title.length} chars (>70)`);
+
+  const desc = /<meta name="description" content="([^"]*)"/.exec(html)?.[1] ?? '';
+  // Script-aware floor: 50 Latin characters is a sentence, 50 CJK characters is
+  // a paragraph. Judging both by 50 falsely fails every Chinese page.
+  const descMin = /[぀-ヿ㐀-䶿一-鿿]/.test(e.title) ? 30 : 50;
+  if (!desc) problems.push('no meta description');
+  else if (desc.length < descMin) problems.push(`description only ${desc.length} chars (<${descMin})`);
+  else if (desc.length > 320) problems.push(`description ${desc.length} chars (>320)`);
+
+  if (!/<link rel="canonical" href="[^"]+"/.test(html)) problems.push('no canonical');
+  if (!/<meta property="og:title"/.test(html)) problems.push('no og:title');
+  if (!/<meta property="og:description"/.test(html)) problems.push('no og:description');
+  if (!/<meta property="og:image"/.test(html)) problems.push('no og:image');
+  if (!/<meta name="twitter:card"/.test(html)) problems.push('no twitter:card');
+  if (!/<html lang="/.test(html)) problems.push('no lang on <html>');
+  if (!/<meta name="robots" content="index/.test(html)) problems.push('indexable page is not "index"');
+
+  // JSON-LD: collect the union of types across every ld+json block on the page.
+  // A page emits Article+BreadcrumbList in one block and FAQPage in another, so
+  // checking each block separately produces false failures.
+  const ldTypes = new Set();
+  let ldCount = 0;
+  for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+    ldCount++;
+    try {
+      const node = JSON.parse(m[1]);
+      for (const n of node['@graph'] ?? [node]) {
+        const t = n['@type'];
+        if (Array.isArray(t)) t.forEach((x) => ldTypes.add(x));
+        else if (t) ldTypes.add(t);
+      }
+    } catch {
+      problems.push('JSON-LD is not valid JSON');
+    }
+  }
+  if (ldCount === 0) problems.push('no JSON-LD at all');
+  if (!ldTypes.has('Article')) problems.push('JSON-LD without Article');
+  if (!ldTypes.has('BreadcrumbList')) problems.push('JSON-LD without BreadcrumbList');
+
+  // hreflang: own lang + x-default
+  if (!/hreflang="x-default"/.test(html)) problems.push('no hreflang x-default');
+  const own = { ru: 'ru-RU', en: 'en-US', es: 'es-ES', de: 'de-DE', zh: 'zh-CN' }[e.lang];
+  if (!html.includes(`hreflang="${own}"`)) problems.push(`no self hreflang ${own}`);
+
+  // llms.txt v2 markdown twin
+  if (!/<link rel="alternate" type="text\/markdown"/.test(html)) problems.push('no markdown twin link');
+  if (!existsSync(join(DIST, `${e.url}.md`))) problems.push('markdown twin file missing');
+
+  if ((html.match(/<h1[\s>]/g) || []).length !== 1) problems.push('not exactly one <h1>');
+
+  if (problems.length) fail(`${e.url}: ${problems.join('; ')}`);
+  checked++;
+}
+if (!fails.length) ok(`${checked} indexable articles pass all head/JSON-LD/hreflang checks`);
+
+/* --------------------------------------- duplicates must be de-duplicated */
+console.log('== 3. Template mirrors: noindex + canonical to original ==');
+let dupOk = 0;
+for (const e of duplicates) {
+  if (shadowUrls.has(e.url)) continue;   // owned by the original, not by the mirror
+  const file = join(DIST, `${e.url}.html`);
+  if (!existsSync(file)) { fail(`mirror page missing: ${e.url}`); continue; }
+  const html = readFileSync(file, 'utf8');
+  const problems = [];
+  if (!/<meta name="robots" content="noindex/.test(html)) problems.push('missing noindex');
+  const canon = /<link rel="canonical" href="([^"]+)"/.exec(html)?.[1] ?? '';
+  if (!canon || canon.endsWith(e.url)) problems.push(`canonical not pointing at original (${canon})`);
+  if (problems.length) fail(`${e.url}: ${problems.join('; ')}`);
+  else dupOk++;
+}
+ok(`${dupOk} template mirrors carry noindex + canonical-to-origin`);
+ok(`${shadows.length} shadow mirrors correctly not published (URL owned by the original)`);
+
+/* ------------------------------------------------------------- sitemap */
+console.log('== 4. sitemap ==');
+{
+  const idx = read('sitemap-index.xml');
+  const child = /<loc>([^<]+sitemap[^<]*)<\/loc>/.exec(idx)?.[1];
+  if (!child) fail('sitemap-index.xml has no child sitemap');
+  else {
+    const rel = child.replace(/^https?:\/\/[^/]+/, '');
+    const smPath = join(DIST, rel);
+    if (!existsSync(smPath)) fail(`sitemap ${rel} missing`);
+    else {
+      const sm = readFileSync(smPath, 'utf8');
+      const locs = [...sm.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+      ok(`sitemap: ${locs.length} urls`);
+      const md = locs.filter((l) => l.endsWith('.md'));
+      if (md.length) fail(`sitemap contains ${md.length} .md urls`);
+      else ok('sitemap excludes .md twins');
+      const search = locs.filter((l) => /\/search(\?|$)/.test(l));
+      if (search.length) fail(`sitemap contains ${search.length} /search urls`);
+      else ok('sitemap excludes search pages');
+      const dupLocs = locs.filter((l) => duplicates.some((d) => new URL(l).pathname === d.url));
+      if (dupLocs.length) fail(`sitemap contains ${dupLocs.length} noindex mirror urls`);
+      else ok('sitemap excludes noindex mirrors');
+
+      // Coverage: the sitemap must equal the set of indexable pages that exist on
+      // disk. This is the check that catches rule drift between the page builder
+      // and the sitemap filter.
+      const onDisk = indexable.filter((e) => existsSync(join(DIST, `${e.url}.html`)));
+      const inSitemap = new Set(locs.map((l) => new URL(l).pathname));
+      const missing = onDisk.filter((e) => !inSitemap.has(e.url));
+      if (missing.length) {
+        fail(`sitemap omits ${missing.length} indexable pages: ${missing.slice(0, 3).map((e) => e.url)}`);
+      } else {
+        ok(`sitemap covers all ${onDisk.length} indexable articles`);
+      }
+      if (!/xhtml:link/.test(sm)) warn('sitemap has no xhtml:link hreflang group');
+      else ok('sitemap has xhtml:link hreflang groups');
+    }
+  }
+}
+
+/* ------------------------------------------------------------- llms.txt */
+console.log('== 4b. Open Graph image ==');
+{
+  const og = join(DIST, 'og-default.png');
+  if (!existsSync(og)) {
+    fail('dist/og-default.png missing — every og:image and twitter:image points at it');
+  } else {
+    const buf = readFileSync(og);
+    const isPng = buf.slice(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    if (!isPng) fail('og-default.png is not a PNG');
+    // IHDR width/height are big-endian at bytes 16..24
+    const w = buf.readUInt32BE(16);
+    const h = buf.readUInt32BE(20);
+    if (w < 1200 || h < 630) fail(`OG image is ${w}x${h}; recommended 1200x630`);
+    else ok(`og-default.png ${w}x${h}, ${Math.round(buf.length / 1024)} KB`);
+  }
+}
+
+console.log('== 5. llms.txt / robots.txt / rss.xml ==');
+{
+  const llms = read('llms.txt');
+  const lines = llms.split('\n');
+  if (!/^#\s+\S/.test(lines[0])) fail('llms.txt: first line must be an H1');
+  else ok('llms.txt: H1 present');
+  if (!lines.some((l) => l.startsWith('> '))) fail('llms.txt: missing blockquote summary');
+  else ok('llms.txt: blockquote summary present');
+  const links = [...llms.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)].map((m) => m[2]);
+  if (links.length < 5) fail(`llms.txt: only ${links.length} links`);
+  else ok(`llms.txt: ${links.length} links`);
+  const bad = links.filter((h) => {
+    const p = h.replace(/^https?:\/\/[^/]+/, '');
+    if (p === '/') return !existsSync(join(DIST, 'index.html'));
+    return !existsSync(join(DIST, p.replace(/\/$/, '') + '.html')) && !existsSync(join(DIST, p));
+  });
+  if (bad.length) fail(`llms.txt: ${bad.length} dead links: ${bad.slice(0, 3)}`);
+  else ok('llms.txt: all internal links resolve');
+
+  const full = read('llms-full.txt');
+  const docs = (full.match(/<!-- source:/g) || []).length;
+  if (docs < indexable.length) fail(`llms-full.txt: ${docs} docs < ${indexable.length} indexable`);
+  else ok(`llms-full.txt: ${docs} documents`);
+
+  const robots = read('robots.txt');
+  for (const [name, re] of [
+    ['User-agent: *', /User-agent:\s*\*/],
+    ['Sitemap', /^Sitemap:\s*https?:\/\//m],
+    ['OAI-SearchBot', /User-agent:\s*OAI-SearchBot/],
+    ['ClaudeBot', /User-agent:\s*ClaudeBot/],
+    ['GPTBot', /User-agent:\s*GPTBot/],
+    ['PerplexityBot', /User-agent:\s*PerplexityBot/],
+  ]) {
+    if (!re.test(robots)) fail(`robots.txt: missing ${name}`);
+  }
+  ok('robots.txt: general + AI crawler rules + sitemap');
+
+  const rss = read('rss.xml');
+  const items = (rss.match(/<item>/g) || []).length;
+  if (items < 10) fail(`rss.xml: only ${items} items`);
+  else ok(`rss.xml: ${items} items`);
+}
+
+/* --------------------------------------------------- broken internal links */
+console.log('== 6. Internal links across all HTML ==');
+{
+  const htmls = [];
+  const walk = (dir) => {
+    for (const n of readdirSync(dir)) {
+      const p = join(dir, n);
+      if (statSync(p).isDirectory()) walk(p);
+      else if (n.endsWith('.html')) htmls.push(p);
+    }
+  };
+  walk(DIST);
+  const broken = new Map();
+  for (const f of htmls) {
+    const html = readFileSync(f, 'utf8');
+    for (const m of html.matchAll(/href="(\/[^"#]*)(#[^"]*)?"/g)) {
+      const href = m[1];
+      if (href.startsWith('//')) continue;
+      const cand = href.endsWith('/') ? href + 'index.html' : href + '.html';
+      const alt = href.replace(/\/$/, '') + '/index.html';
+      if (!existsSync(join(DIST, cand)) && !existsSync(join(DIST, href)) && !existsSync(join(DIST, alt))) {
+        if (!broken.has(href)) broken.set(href, relative(DIST, f));
+      }
+    }
+  }
+  if (broken.size) {
+    for (const [href, from] of [...broken].slice(0, 10)) fail(`broken link ${href} (in ${from})`);
+    fail(`total broken internal links: ${broken.size}`);
+  } else {
+    ok(`no broken internal links across ${htmls.length} HTML files`);
+  }
+}
+
+/* --------------------------------------------------------------- report */
+console.log();
+if (warns.length) { console.log('WARN:'); for (const w of warns) console.log('  - ' + w); console.log(); }
+if (fails.length) {
+  console.log(`RESULT: FAIL (${fails.length} issues)`);
+  for (const f of fails.slice(0, 30)) console.log('  - ' + f);
+  process.exit(1);
+}
+console.log(`RESULT: OK  (${indexable.length} indexable pages, ${duplicates.length} de-duplicated mirrors)`);

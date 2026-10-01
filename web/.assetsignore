@@ -1,0 +1,17 @@
+# Cloudflare Workers static assets ignore list.
+# Pages ignored these automatically; on Workers you must declare them yourself,
+# or they get uploaded as part of the asset set.
+
+node_modules
+.git
+.gitignore
+.astro
+src
+astro.config.mjs
+tsconfig.json
+wrangler.jsonc
+package.json
+package-lock.json
+pagefind.config.json
+README.md
+*.log

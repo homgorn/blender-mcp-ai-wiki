@@ -1,0 +1,71 @@
+---
+id: wf_23_virtual_production_led
+lang: es
+orig_lang: ru
+category: workflows
+type: workflow
+difficulty: 3
+translation: template
+---
+# WF 23: VIRTUAL PRODUCTION LED
+
+> Objetivo: 
+
+**ID:** wf_23_virtual_production_led | **Lang:** es | **Orig:** ru | **Category:** workflows | **Tags:** **
+
+## Cómo usar
+Esta es la versión en español de 'wf_23_virtual_production_led'. Los bloques de código son independientes del idioma. Sigue los pasos en orden y verifica.
+
+## Prompt MCP (copiar-pegar)
+```
+wf_23_virtual_production_led / workflows / **
+```
+
+> Nota: el código/rutas quedan en inglés por compatibilidad con Blender/Python.
+
+---
+
+---
+id: wf_23_virtual_production_led
+lang: ru
+orig_lang: en
+category: workflows
+type: workflow
+difficulty: 3
+---
+
+# WF 23: VIRTUAL PRODUCTION LED
+
+> Цель: ## MCP команды / Commands
+```
+RU: "Выполни VIRTUAL PRODUCTION LED по шагам 1-5 с проверками"
+EN: "Run VIRTUAL PRODUCTION LED steps 1-5 with checks"
+```
+
+**ID:** wf_23_virtual_production_led | **Lang:** ru | **Orig:** en | **Category:** workflows | **Tags:** 
+
+---
+
+# WF 23: VIRTUAL PRODUCTION LED
+
+**ID:** WF-23 | **Type:** VP | **Difficulty:** ⭐⭐⭐
+**RU/EN Bilingual**
+
+## 🎯 Цель / Goal
+RU: nDisplay config, genlock, camera track, LED wall comp
+EN: nDisplay config, genlock, camera track, LED wall comp
+
+## Этапы / Stages
+1. Подготовка / Prep: референсы, масштаб, нейминг
+2. Генерация / Generate: MCP tools + Python
+3. Материалы/Свет/Камера / Look
+4. Рендер/Экспорт / Deliver
+5. Проверка / QA
+
+## MCP команды / Commands
+```
+RU: "Выполни VIRTUAL PRODUCTION LED по шагам 1-5 с проверками"
+EN: "Run VIRTUAL PRODUCTION LED steps 1-5 with checks"
+```
+
+## 🔗 Setup 01, Setup 08, INDEX

@@ -1,0 +1,37 @@
+{
+  "name": "blender-ai-wiki-web",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Blender AI Wiki — static Astro site for Cloudflare Workers. SEO + AI/LLM optimized.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "agents": "node scripts/generate-agent-files.mjs",
+    "index": "pagefind --site dist",
+    "build:full": "astro build && npm run agents && npm run index",
+    "verify": "npm run verify:seo && npm run verify:consistency",
+    "verify:seo": "node scripts/verify-seo.mjs",
+    "verify:consistency": "node scripts/verify-consistency.mjs",
+    "preflight": "node preflight.mjs",
+    "all": "npm run build:full && npm run verify",
+    "deploy": "npm run all && npm run preflight && wrangler deploy",
+    "deploy:preview": "npm run all && npm run preflight && wrangler deploy --env preview",
+    "whoami": "wrangler whoami"
+  },
+  "dependencies": {
+    "@astrojs/rss": "4.0.19",
+    "@astrojs/sitemap": "3.7.4",
+    "astro": "7.3.5",
+    "marked": "18.0.14"
+  },
+  "devDependencies": {
+    "pagefind": "1.5.2",
+    "wrangler": "4.145.0"
+  }
+}

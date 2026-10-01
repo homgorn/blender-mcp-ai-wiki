@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { LANGS, LANG_META, CATEGORY_META } from '../lib/site';
+import { originals } from '../lib/content';
+
+const cats = [...new Set(originals.map((e) => e.category))];
+---
+
+<BaseLayout
+  title="404 — страница не найдена"
+  description="Запрошенная страница не найдена. Каталог базы знаний по Blender, MCP и AI-агентам."
+  path="/404"
+  lang="ru"
+  noindex={true}
+>
+  <div class="wrap">
+    <div class="hero">
+      <h1>404</h1>
+      <p>Такой страницы нет. Возможно, статья была переименована или удалена.</p>
+    </div>
+
+    <section class="section">
+      <h2>Категории</h2>
+      <div class="tags" style="gap:10px">
+        {cats.map((c) => (
+          <a class="tag" style="padding:4px 12px;font-size:13px" href={`/ru/${c}`}>
+            {CATEGORY_META[c]?.icon} {CATEGORY_META[c]?.ru ?? c}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Языки</h2>
+      <div class="tags" style="gap:10px">
+        {LANGS.map((l) => (
+          <a class="tag" style="padding:4px 12px;font-size:13px" href={`/${l}`}>
+            {LANG_META[l].native}
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

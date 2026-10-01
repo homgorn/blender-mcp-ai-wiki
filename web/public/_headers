@@ -1,0 +1,38 @@
+# Response headers for Cloudflare static assets.
+# Docs: https://developers.cloudflare.com/workers/static-assets/headers/
+# Limit: 100 rules, 2000 chars per line.
+
+/*
+  # llms.txt v2 recommends advertising the markdown twin and the covering
+  # llms.txt through the Link header. The per-page <link> tags already do this
+  # for HTML; this rule covers .md and other non-HTML assets.
+  Link: </llms.txt>; rel="describedby"
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  # Pagefind runs a WebAssembly search index in a worker.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+# Markdown twins: long-lived, content-addressed by build. Immutable because a
+# rebuild changes the content and Cloudflare re-uploads with a new ETag.
+/llms.txt
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/llms-full.txt
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/*.md
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# Hashed build output — safe to cache forever.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Pagefind index is regenerated on every build.
+/pagefind/*
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# Never cache HTML: it carries canonical/hreflang that must stay fresh.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate

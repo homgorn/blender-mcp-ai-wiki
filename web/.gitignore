@@ -1,0 +1,17 @@
+# Build output
+dist/
+.astro/
+node_modules/
+
+# Wrangler
+.wrangler/
+.dev.vars
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

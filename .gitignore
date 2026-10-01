@@ -1,0 +1,32 @@
+# Generated artifacts — rebuild with:
+#   $env:PUBLIC_SITE_URL="https://<domain>"; python WIKI/scripts/run_all.py
+WIKI/db/
+WIKI/site/data/
+WIKI/export_notion/
+WIKI/export_obsidian/
+archive/
+
+# Astro site
+web/dist/
+web/.astro/
+web/node_modules/
+web/.wrangler/
+web/dev.vars
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Local env
+.env
+.env.local

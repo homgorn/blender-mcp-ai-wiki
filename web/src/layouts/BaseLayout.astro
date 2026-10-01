@@ -1,0 +1,158 @@
+---
+/**
+ * Base layout: everything a crawler or an LLM agent needs in <head>.
+ *
+ * Emits, for every page:
+ *  - charset/viewport, title, description
+ *  - canonical (points at the original for duplicate mirrors)
+ *  - robots meta (noindex on template mirrors — they are near-duplicates)
+ *  - hreflang cluster + x-default (both layers, as Google requires)
+ *  - Open Graph + Twitter card
+ *  - JSON-LD passed in via the `jsonLd` slot
+ *  - rel="alternate" type="text/markdown" -> the .md twin (llms.txt v2)
+ *  - rel="describedby" -> the llms.txt that covers this page
+ */
+/*
+ * Stylesheet stays external and content-hashed by Vite (`/_astro/*.css`), so it
+ * is downloaded once and served from cache for the rest of the session. Inlining
+ * it was tried and reverted: it pushed the gzipped total from 3.8 MB to 6.1 MB
+ * across 916 pages, because every page then carried a copy of the same rules.
+ */
+import '../styles/global.css';
+import { LANG_META, LANGS, SITE_NAME, type Lang } from '../lib/site';
+import { abs, buildSeo } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Root-relative, extensionless. */
+  path: string;
+  lang: Lang;
+  noindex?: boolean;
+  image?: string;
+  type?: 'website' | 'article';
+  jsonLd?: unknown[] | null;
+  /** Extra hreflang entries beyond the automatic language list. */
+  alternates?: { hreflang: string; href: string }[];
+  /** Article entry, when this page is an article (drives canonical + cluster). */
+  entry?: unknown;
+  mdTwin?: string;
+}
+
+const {
+  title, description, path, lang, noindex = false, image, type = 'website',
+  jsonLd, alternates = [], mdTwin, entry,
+} = Astro.props;
+
+const BRAND = 'Blender AI Wiki';
+// buildSeo owns canonical + robots + hreflang derivation. The layout used to
+// compute `url` itself and emit a self-referencing canonical on every page,
+// including the template mirrors that must consolidate onto the original.
+const seo = buildSeo({ title, description, path, lang, noindex, image, type, entry: entry as never });
+const url = seo.url;
+// Google truncates around 60-70 chars. Cap the whole thing and let the article
+// name absorb the cut, so the brand stays visible.
+const MAX_TITLE = 62;
+const fullTitle = (() => {
+  if (path === '/') return `${title} — ${BRAND}`;
+  const suffix = ` · ${BRAND}`;
+  const room = MAX_TITLE - suffix.length;
+  if (title.length <= room) return `${title}${suffix}`;
+  const cut = title.slice(0, room - 1).replace(/\s+\S*$/, '');
+  return `${cut}…${suffix}`;
+})();
+const ogImage = seo.image;
+const robots = seo.robots;
+const ld = (jsonLd ?? []).filter(Boolean);
+---
+
+<!doctype html>
+<html lang={lang} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={seo.canonical} />
+    <meta name="robots" content={robots} />
+
+    {/* hreflang: the page must list every language version of ITSELF, including
+        its own, plus x-default. Entry pages pass the per-article cluster; home
+        and category pages pass their own per-language list. Google needs these
+        in-page tags AND the xhtml:link group in the sitemap — separate mechanisms. */}
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={url} />
+
+    {/* llms.txt v2: markdown twin + the llms.txt covering this page */}
+    {mdTwin && <link rel="alternate" type="text/markdown" href={abs(mdTwin)} />}
+    <link rel="describedby" href={abs('/llms.txt')} />
+
+    <link rel="sitemap" type="application/xml" href={abs('/sitemap-index.xml')} />
+    <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href={abs('/rss.xml')} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={ogImage} />
+    {/* Open Graph uses underscore locales (ru_RU); hreflang uses BCP-47 hyphens (ru-RU). */}
+    <meta property="og:locale" content={LANG_META[lang].ogLocale} />
+    {LANGS.filter((l) => l !== lang).map((l) => (
+      <meta property="og:locale:alternate" content={LANG_META[l].ogLocale} />
+    ))}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {ld.map((node) => (
+      <script type="application/ld+json" set:html={JSON.stringify(node)} />
+    ))}
+
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-head">
+      <div class="wrap head-in">
+        <a class="brand" href={`/${lang}`}>
+          {SITE_NAME} <span class="dim">/ {LANG_META[lang].native}</span>
+        </a>
+        <nav class="nav" aria-label="Main">
+          {Object.entries({
+            prompts: 'Промпты', setups: 'Сетапы', workflows: 'Воркфлоу', cases: 'Кейсы',
+          }).map(([c, ru]) => <a href={`/${lang}/${c}`}>{ru}</a>)}
+          <a href={`/${lang}/search`}>Поиск</a>
+          <span class="lang-switch">
+            {LANGS.map((l) => (
+              <a href={url} lang={l} hreflang={LANG_META[l].locale} aria-current={l === lang ? 'true' : 'false'}>
+                {l}
+              </a>
+            ))}
+          </span>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="site-foot">
+      <div class="wrap cols">
+        <div>
+          <p><strong>{SITE_NAME}</strong> — база знаний по Blender, MCP и AI-агентам.</p>
+          <p class="muted">Открытые данные: <a href="/llms.txt">llms.txt</a> · <a href="/llms-full.txt">llms-full.txt</a> · <a href="/rss.xml">RSS</a></p>
+        </div>
+        <div>
+          <p class="muted">
+            © {new Date().getFullYear()} · <a href="/">Языки</a> ·
+            <a href="/sitemap-index.xml">Sitemap</a> · <a href="/rss.xml">RSS</a>
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,89 @@
+---
+id: 28_custom_mcp_tools
+lang: zh
+orig_lang: ru
+category: prompts
+type: prompt
+difficulty: 3
+translation: template
+---
+# P28: CUSTOM MCP TOOLS DEVELOPMENT
+
+> 目标: ---
+
+**ID:** 28_custom_mcp_tools | **Lang:** zh | **Orig:** ru | **Category:** prompts | **Tags:** addon, custom, custom-tools, fastmcp, mcp, python
+
+## 使用方法
+这是 '28_custom_mcp_tools' 的中文版。代码块与语言无关。请按顺序执行步骤并检查。
+
+## MCP 提示词（复制粘贴）
+```
+28_custom_mcp_tools / prompts / addon, custom, custom-tools, fastmcp, mcp, python
+```
+
+> 注意：代码/路径保留英文以兼容 Blender/Python。
+
+---
+
+# P28: CUSTOM MCP TOOLS DEVELOPMENT
+
+**ID:** P28 | **Кластер:** MCP Integration | **Сложность:** ⭐⭐⭐ | **Теги:** #mcp #custom-tools #python #fastmcp #addon
+
+---
+
+## 🎯 ЦЕЛЬ
+Свои MCP-инструменты: серверная сторона (FastMCP) + Blender addon handler
+
+---
+
+## 📝 ПРОМПТ (РУС)
+
+```
+Создай MCP tool "[NAME]": параметры {...}, выполняет [действие bpy],
+возвращает {...}. Зарегистрируй в сервере и аддоне.
+```
+
+---
+
+## 📝 ПРОМПТ (ENG)
+
+```
+Create MCP tool "[NAME]": params {...}, runs [bpy action], returns {...}. Register in server and addon.
+```
+
+---
+
+## 🔧 ШАБЛОН
+
+```python
+# Server (src/blender_mcp/tools/custom.py)
+from mcp.server.fastmcp import FastMCP
+mcp = FastMCP("Custom")
+
+@mcp.tool()
+async def my_tool(param: str) -> str:
+    '''Description for LLM'''
+    blender = get_blender_connection()
+    return blender.send_command("my_command", {"param": param})
+
+# Addon (addon.py) — в execute_command handlers:
+# def my_command_handler(self, param): ...
+```
+
+```python
+# GenesisCore style (встроенный):
+# src/tools/my_tools.py
+from .common import ToolsPackageBase
+class MyTools(ToolsPackageBase):
+    def my_tool(param: str) -> dict:
+        '''Description for LLM'''
+        import bpy
+        return {"result": "success"}
+# + import в src/tools/__init__.py
+```
+
+---
+
+## 🔗 СВЯЗИ
+- **Сетяпы:** [Setup 06](../setups/setup_06_custom_mcp_tools.md)
+- **Следующий:** [P29: Batch & CLI](./29_batch_cli.md)

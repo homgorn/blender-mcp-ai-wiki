@@ -1,0 +1,29 @@
+---
+id: wf_26_lookdev_turntable_lab
+lang: ru
+category: workflows
+status: stub
+---
+# WF 26: LOOKDEV TURNTABLE LAB
+
+**ID:** WF-26 | **Type:** Lookdev | **Difficulty:** ⭐⭐
+**RU/EN Bilingual**
+
+## 🎯 Цель / Goal
+RU: HDRI ladder + light ladder + material variants grid
+EN: HDRI ladder + light ladder + material variants grid
+
+## Этапы / Stages
+1. Подготовка / Prep: референсы, масштаб, нейминг
+2. Генерация / Generate: MCP tools + Python
+3. Материалы/Свет/Камера / Look
+4. Рендер/Экспорт / Deliver
+5. Проверка / QA
+
+## MCP команды / Commands
+```
+RU: "Выполни LOOKDEV TURNTABLE LAB по шагам 1-5 с проверками"
+EN: "Run LOOKDEV TURNTABLE LAB steps 1-5 with checks"
+```
+
+## 🔗 Setup 01, Setup 08, INDEX

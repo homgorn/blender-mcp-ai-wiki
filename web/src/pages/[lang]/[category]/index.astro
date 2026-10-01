@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import EntryCard from '../../../components/EntryCard.astro';
+import LangSwitch from '../../../components/LangSwitch.astro';
+import { CATEGORY_META, LANG_META, LANGS, SITE_NAME, type Lang } from '../../../lib/site';
+import { byCategory, entries, isIndexable } from '../../../lib/content';
+import { abs, collectionJsonLd, websiteJsonLd } from '../../../lib/seo';
+
+export function getStaticPaths() {
+  // Every category in every language, not just the ones that language happens to
+  // have: `references/` is English-only, so a ru-driven union would have omitted
+  // /ru/references and left a dead link in the footer and the 404 page.
+  const cats = new Set(entries.map((e) => e.category));
+  return [...cats].flatMap((category) =>
+    LANGS.map((lang) => ({ params: { lang, category }, props: { lang, category } })),
+  );
+}
+
+interface Props { lang: Lang; category: string }
+const { lang, category } = Astro.props as Props;
+
+const items = byCategory(lang, category).filter(isIndexable);
+const meta = CATEGORY_META[category] ?? {
+  ru: category, en: category, icon: '📄', blurbRu: '', blurbEn: '',
+};
+// A language may legitimately have no content in a category (references are
+// English). Point the reader at the languages that do instead of a dead end.
+const otherLangs = LANGS.filter((l) => byCategory(l, category).filter(isIndexable).length > 0);
+const title = `${meta.ru} — ${SITE_NAME}`;
+const desc = meta.blurbRu || meta.blurbEn || `Статьи категории ${category}`;
+const path = `/${lang}/${category}`;
+const alts = LANGS.map((l) => ({ hreflang: LANG_META[l].locale, href: abs(`/${l}/${category}`) }));
+const ld = [collectionJsonLd(meta.ru, desc, path, lang, items), websiteJsonLd(lang)];
+---
+
+<BaseLayout
+  title={title}
+  description={desc}
+  path={path}
+  lang={lang}
+  alternates={alts}
+  jsonLd={ld}
+>
+  <div class="wrap">
+    <div class="hero" style="border:0;padding-bottom:18px">
+      <h1>{meta.icon} {meta.ru}</h1>
+      <p>{desc}</p>
+      <div class="badges">
+        <span class="badge">{items.length} статей</span>
+        <LangSwitch lang={lang} hrefFor={(l) => `/${l}/${category}`} />
+      </div>
+    </div>
+
+    {items.length === 0 ? (
+      <p class="notice">
+        В этой категории пока нет статей на языке {LANG_META[lang].native}.
+        {otherLangs.length > 0 && <span>Доступно на: {otherLangs.join(', ')} — см. переключатель языка выше.</span>}
+      </p>
+    ) : (
+      <section class="section">
+        <div class="grid">
+          {items.map((e) => <EntryCard entry={e} />)}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

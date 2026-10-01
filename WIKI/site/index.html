@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blender AI Wiki — EN/RU/ES/DE/ZH</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1 id="app-title">Blender AI Wiki</h1>
+  <div class="controls">
+    <div id="lang-switch">
+      <button data-lang="en" class="active">EN</button>
+      <button data-lang="ru">RU</button>
+      <button data-lang="es">ES</button>
+      <button data-lang="de">DE</button>
+      <button data-lang="zh">中文</button>
+    </div>
+    <select id="api-mode">
+      <option value="static">Static JSON</option>
+      <option value="api">API :8099</option>
+    </select>
+  </div>
+  <div class="search-row">
+    <input id="q" type="search" placeholder="Search / Поиск / Buscar / Suchen / 搜索…">
+    <select id="f-cat"><option value="">All categories</option></select>
+    <button id="btn-search">Go</button>
+  </div>
+  <nav id="cats"></nav>
+  <div style="margin-top:8px"><a href="graph.html" style="color:var(--acc)">Graph view →</a></div>
+</header>
+<main>
+  <section id="stats"></section>
+  <section id="results"></section>
+  <article id="entry" hidden></article>
+</main>
+<footer><span id="foot">DB: wiki_database.json · API: wiki_api.py :8099</span></footer>
+<script src="app.js"></script>
+</body>
+</html>

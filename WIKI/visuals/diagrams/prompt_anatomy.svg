@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" font-family="system-ui,Segoe UI,Arial">
+<rect width="900" height="300" fill="#0f1115"/>
+<text x="20" y="30" fill="#e8eaf0" font-size="18" font-weight="bold">Prompt Anatomy (P01–P40 template)</text>
+<rect x="20" y="50" width="160" height="200" rx="10" fill="#171b22" stroke="#5aa9ff"/>
+<text x="32" y="76" fill="#5aa9ff" font-size="13" font-weight="bold">1. GOAL</text>
+<text x="32" y="96" fill="#9aa3b2" font-size="11">RU + EN prompt</text>
+<text x="32" y="112" fill="#9aa3b2" font-size="11">exact params</text>
+<rect x="195" y="50" width="170" height="200" rx="10" fill="#171b22" stroke="#7ee787"/>
+<text x="207" y="76" fill="#7ee787" font-size="13" font-weight="bold">2. MCP TOOL</text>
+<text x="207" y="96" fill="#9aa3b2" font-size="11">JSON / bpy code</text>
+<text x="207" y="112" fill="#9aa3b2" font-size="11">copy-paste ready</text>
+<rect x="380" y="50" width="160" height="200" rx="10" fill="#171b22" stroke="#ffa657"/>
+<text x="392" y="76" fill="#ffa657" font-size="13" font-weight="bold">3. TABLES</text>
+<text x="392" y="96" fill="#9aa3b2" font-size="11">params, presets</text>
+<text x="392" y="112" fill="#9aa3b2" font-size="11">pitfalls</text>
+<rect x="555" y="50" width="160" height="200" rx="10" fill="#171b22" stroke="#f778ba"/>
+<text x="567" y="76" fill="#f778ba" font-size="13" font-weight="bold">4. LINKS</text>
+<text x="567" y="96" fill="#9aa3b2" font-size="11">cases, workflows</text>
+<text x="567" y="112" fill="#9aa3b2" font-size="11">next prompt</text>
+<rect x="730" y="50" width="150" height="200" rx="10" fill="#171b22" stroke="#9aa3b2"/>
+<text x="742" y="76" fill="#e8eaf0" font-size="13" font-weight="bold">5. CHECK</text>
+<text x="742" y="96" fill="#9aa3b2" font-size="11">verify scene</text>
+<text x="742" y="112" fill="#9aa3b2" font-size="11">screenshot</text>
+</svg>

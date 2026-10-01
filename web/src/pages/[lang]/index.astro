@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { CATEGORY_META, LANG_META, LANGS, SITE_NAME, type Lang } from '../../lib/site';
+import { byLang, isIndexable, stats } from '../../lib/content';
+import { abs, websiteJsonLd } from '../../lib/seo';
+
+export function getStaticPaths() {
+  return LANGS.map((lang) => ({ params: { lang }, props: { lang } }));
+}
+
+interface Props { lang: Lang }
+const { lang } = Astro.props as Props;
+
+const counts: Record<string, number> = {};
+for (const e of byLang(lang)) if (isIndexable(e)) counts[e.category] = (counts[e.category] ?? 0) + 1;
+const cats = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+const featured = byLang(lang)
+  .filter(isIndexable)
+  .sort((a, b) => b.codeBlocks - a.codeBlocks)
+  .slice(0, 8);
+
+const path = `/${lang}`;
+const alts = LANGS.map((l) => ({ hreflang: LANG_META[l].locale, href: abs(`/${l}`) }));
+const title =
+  lang === 'ru'
+    ? 'Промпты, сетапы и воркфлоу для Blender + MCP'
+    : 'Prompts, setups and workflows for Blender + MCP';
+const desc =
+  lang === 'ru'
+    ? `${stats.originals} статей о Blender, MCP и AI-агентах: готовые промпты и bpy-скрипты, сетапы инструментов, воркфлоу и разобранные кейсы.`
+    : `${stats.originals} articles on Blender, MCP and AI agents: ready-made prompts and bpy scripts, tool setups, workflows and worked cases.`;
+---
+
+<BaseLayout
+  title={title}
+  description={desc}
+  path={path}
+  lang={lang}
+  alternates={alts}
+  jsonLd={[websiteJsonLd(lang)]}
+>
+  <div class="wrap">
+    <div class="hero">
+      <h1>{title}</h1>
+      <p>{desc}</p>
+      <div class="stats">
+        <div class="stat"><b>{stats.originals}</b><span>статей</span></div>
+        <div class="stat"><b>{stats.categories}</b><span>категорий</span></div>
+        <div class="stat"><b>{stats.codeBlocks}</b><span>блоков кода</span></div>
+        <div class="stat"><b>{stats.languages}</b><span>языков</span></div>
+      </div>
+    </div>
+
+    <section class="section">
+      <h2>Категории</h2>
+      <p class="sub">Начните с категории — внутри полная навигация и поиск.</p>
+      <div class="grid">
+        {cats.map(([c, n]) => {
+          const m = CATEGORY_META[c] ?? { ru: c, en: c, icon: '📄', blurbRu: '', blurbEn: '' };
+          return (
+            <a class="card" href={`/${lang}/${c}`}>
+              <h3>{m.icon} {m.ru}</h3>
+              <div class="meta"><span>{n} статей</span></div>
+              <p class="desc">{m.blurbRu || m.blurbEn}</p>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Больше всего кода</h2>
+      <p class="sub">Статьи, которые можно сразу запустить в Blender.</p>
+      <div class="grid">
+        {featured.map((e) => <EntryCard entry={e} />)}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

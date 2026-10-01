@@ -1,0 +1,21 @@
+{
+  "site": "https://blender-ai-wiki.example.workers.dev",
+  "output_path": "dist/pagefind",
+  "root_selector": "[data-pagefind-body]",
+  "exclude_selectors": [
+    ".site-head",
+    ".site-foot",
+    ".side",
+    ".crumbs",
+    ".notice",
+    "[data-pagefind-ignore]"
+  ],
+  "include_characters": "<>$",
+  "index_weight": {
+    "h1": 10,
+    "h2": 6,
+    "h3": 4,
+    "h4": 3,
+    "p": 2
+  }
+}
