@@ -12,7 +12,8 @@
  */
 import { marked } from 'marked';
 import { codeToHtml } from 'shiki';
-import type { Entry } from '../lib/content';
+import { bodyLinks, type Entry } from '../lib/content';
+
 
 interface Props {
   entry: Entry;
@@ -20,6 +21,9 @@ interface Props {
 }
 
 const { entry, class: className = 'prose' } = Astro.props;
+
+/** Raw body href (lowercased) -> site URL, computed once per entry in content.ts. */
+const RESOLVED = bodyLinks(entry);
 
 marked.setOptions({ gfm: true, breaks: false });
 
@@ -45,12 +49,20 @@ renderer.heading = function ({ tokens, depth }) {
   const id = depth >= 2 && depth <= 3 ? headingId(plain) : '';
   return `<h${depth}${id ? ` id="${id}"` : ''}>${text}</h${depth}>\n`;
 };
-// External links: noopener + noreferrer, and marked as external for styling.
+// Internal links: rewritten to the real site URL, localised to the reader's
+// language. Without this the body ships raw relative `.md` paths
+// (`../setups/setup_01_...md`) that resolve to URLs which do not exist, and the
+// site published `setup-01-...` rather than `setup_01_...`. 2 227 such links on
+// 446 of 916 pages. A target that is not in the published set is left alone so
+// the dead-link gate can see it and report it rather than have it silently
+// mangled.
 renderer.link = function ({ href, title, tokens }) {
   const text = this.parser.parseInline(tokens);
-  const ext = /^https?:\/\//i.test(href ?? '');
+  const raw = href ?? '';
+  const ext = /^https?:\/\//i.test(raw);
+  const resolved = ext ? undefined : RESOLVED.get(raw.toLowerCase());
   const attrs = [
-    `href="${href}"`,
+    `href="${resolved ?? raw}"`,
     title ? ` title="${title}"` : '',
     ext ? ' rel="noopener noreferrer nofollow"' : '',
   ].join('');

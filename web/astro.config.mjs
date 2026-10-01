@@ -16,7 +16,7 @@ const DB_PATH = resolve(HERE, '../WIKI/db/wiki_database.json');
  * REQUIRED in production: a wrong canonical actively hurts SEO, and a localhost
  * origin would ship a sitemap full of localhost URLs.
  */
-const SITE = process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://blendee-skills.refertur.net';
+const SITE = process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://blender-skills.refertur.net';
 if (/^https?:\/\/(localhost|127\.0\.0\.1)/.test(SITE)) {
   console.warn(`[site] building with a local origin (${SITE}). Set PUBLIC_SITE_URL before deploying.`);
 }

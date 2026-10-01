@@ -145,9 +145,13 @@ def main():
                 print("         ship a localhost origin. Set PUBLIC_SITE_URL=https://... first.")
                 return 1
             env = dict(os.environ)
+            # `all` is build + unit tests + both SEO gates. The tests are inside
+            # it on purpose: they cover the link and publication rules that
+            # decide which URLs exist, and those shipped 2 227 broken links and
+            # 167 wrong .md twins while every gate still reported OK.
             for label, cmd in [
-                ("site build+verify", [npm, "run", "all"]),
-                ("site preflight",    [npm, "run", "preflight"]),
+                ("site build+test+verify", [npm, "run", "all"]),
+                ("site preflight",         [npm, "run", "preflight"]),
             ]:
                 ts = time.time()
                 r = subprocess.run(cmd, cwd=str(site), capture_output=True, text=True,

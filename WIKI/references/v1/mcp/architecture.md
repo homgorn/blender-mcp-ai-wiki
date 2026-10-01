@@ -302,3 +302,18 @@ class MCPClientCustom(MCPClientBase):
 - [blender-mcp Repo](https://github.com/ahujasid/blender-mcp)
 - [GenesisCore Repo](https://github.com/AIGODLIKE/GenesisCore)
 - [FastMCP Python SDK](https://github.com/jlowin/fastmcp)
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md), [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [TEXT-TO-3D WORKFLOWS](../workflows/text-to-3d.md), [TROUBLESHOOTING GUIDE](../guides/troubleshooting.md)
+- **По темам:** [BLENDER MATERIALS API REFERENCE](../api/materials.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md), [BLENDER PYTHON API REFERENCE (4.x)](../api/blender-api.md)
+- **Теги:** #blender, #mcp, #reference
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+

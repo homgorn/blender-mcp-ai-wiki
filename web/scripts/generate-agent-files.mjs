@@ -27,7 +27,7 @@ const WEB = join(HERE, '..');
 const DIST = join(WEB, 'dist');
 const DB = join(WEB, '..', 'WIKI', 'db', 'wiki_database.json');
 
-const SITE = (process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://blendee-skills.refertur.net').replace(/\/+$/, '');
+const SITE = (process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://blender-skills.refertur.net').replace(/\/+$/, '');
 const LANGS = ['ru', 'en', 'es', 'de', 'zh'];
 const LOCALE = { ru: 'ru-RU', en: 'en-US', es: 'es-ES', de: 'de-DE', zh: 'zh-CN' };
 const NATIVE = { ru: 'Русский', en: 'English', es: 'Español', de: 'Deutsch', zh: '中文' };
@@ -68,7 +68,24 @@ const entries = db.entries.map((e) => {
   };
 });
 
-const originals = entries.filter((e) => !e.isTranslation);
+// The published set, derived exactly as content.ts derives it.
+//
+// A shadow mirror is a translation whose language equals its original's, so it
+// resolves to the same URL as the original and is not published. Writing twins
+// for it meant the mirror (written later, so it won) replaced the original's
+// twin: 167 of 834 pages advertised a .md file whose own frontmatter said
+// `id: <mirror>` and `translation: template` while the HTML page they were
+// advertised on was `index, follow` and self-canonical. The HTML page, the twin
+// and llms-full.txt disagreed about the same URL. Keep this rule identical to
+// dropShadowMirrors() in src/lib/content.ts.
+const originalLangByOrig = new Map();
+for (const e of entries) {
+  if (!e.isTranslation) originalLangByOrig.set(e.origId, e.lang);
+}
+const isShadow = (e) => e.isTranslation && originalLangByOrig.get(e.origId) === e.lang;
+const published = entries.filter((e) => !isShadow(e));
+
+const originals = published.filter((e) => !e.isTranslation);
 const indexable = (e) => !e.isTranslation || e.translation === 'human';
 const write = (rel, body) => {
   const p = join(DIST, rel);
@@ -78,8 +95,14 @@ const write = (rel, body) => {
 };
 
 /* ------------------------------------------------- markdown twins (.md) */
+// Published set only, and never twice at the same URL.
 let twins = 0;
-for (const e of entries) {
+const twinUrls = new Set();
+for (const e of published) {
+  if (twinUrls.has(e.url)) {
+    throw new Error(`two published entries claim ${e.url}: ${e.id} and an earlier one`);
+  }
+  twinUrls.add(e.url);
   const fm = [
     '---',
     `title: ${JSON.stringify(e.title)}`,

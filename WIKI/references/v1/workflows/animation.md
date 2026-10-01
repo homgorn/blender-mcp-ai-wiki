@@ -348,3 +348,18 @@ bpy.ops.export_scene.gltf(
 "Create particle explosion at frame 50, 200 particles, 2 second life"
 "Bake rigid body simulation for 100 falling boxes to keyframes"
 ```
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [BLENDER MATERIALS API REFERENCE](../api/materials.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md), [BLENDER PYTHON API REFERENCE (4.x)](../api/blender-api.md), [BLENDER SCRIPTING PATTERNS - SAFE & EFFECTIVE](../api/scripting-patterns.md), [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md)
+- **По темам:** [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md), [CASE 04: CHARACTER RIG & ANIMATION](../../../cases/case_04_character_rig.md), [CASE 06: ANIMATION LOOP](../../../cases/case_06_animation_loop.md)
+- **Теги:** #animation, #frame, #reference
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+

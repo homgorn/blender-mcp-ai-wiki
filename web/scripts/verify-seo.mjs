@@ -168,6 +168,61 @@ for (const e of duplicates) {
 ok(`${dupOk} template mirrors carry noindex + canonical-to-origin`);
 ok(`${shadows.length} shadow mirrors correctly not published (URL owned by the original)`);
 
+/* --------------------------------------------------- markdown twin fidelity */
+console.log('== 3b. Markdown twins match their page ==');
+{
+  // llms.txt v2 promises: "the .md at the same URL is this article in
+  // markdown". Nothing checked that. 167 of 834 pages advertised a twin whose
+  // frontmatter named a different entry than the page it was advertised on —
+  // a shadow mirror had overwritten the original's twin at the shared URL, so
+  // the HTML said `index, follow` while the .md said `translation: template`
+  // and carried an injected banner. The twin is the whole point for agents, so
+  // a twin that is a different document is a correctness failure, not a
+  // cosmetic one.
+  const idByUrl = new Map();
+  const origLang = new Map();
+  for (const e of db.entries) {
+    const m = e.meta ?? {};
+    const oid = m.orig_id ?? String(m.id).replace(/__[a-z]{2}$/, '');
+    if (!m.is_translation) origLang.set(oid, m.language);
+  }
+  for (const e of db.entries) {
+    const m = e.meta ?? {};
+    const oid = m.orig_id ?? String(m.id).replace(/__[a-z]{2}$/, '');
+    // Mirror the published rule: a translation in the original's own language
+    // is not published.
+    if (m.is_translation && origLang.get(oid) === m.language) continue;
+    const url = `/${m.language}/${m.category || 'references'}/${slugify(oid)}`;
+    idByUrl.set(url, m.id);
+  }
+
+  let checked = 0;
+  const mismatched = [];
+  const missing = [];
+  for (const [url, wantId] of idByUrl) {
+    const twin = join(DIST, `${url}.md`);
+    const page = join(DIST, `${url}.html`);
+    if (!existsSync(page)) continue;          // shadow: neither should exist
+    if (!existsSync(twin)) { missing.push(url); continue; }
+    const t = readFileSync(twin, 'utf8');
+    // `(.+)` not `(\S+)`: five ids legitimately contain a space
+    // (`case_14_food_r visualisation`), and \S+ truncated them, so the gate
+    // reported five false mismatches the first time it ran.
+    const gotId = /^id:\s*(.+)$/m.exec(t)?.[1]?.trim();
+    checked++;
+    if (gotId !== wantId) mismatched.push(`${url}: twin id=${gotId} page id=${wantId}`);
+  }
+  if (missing.length) fail(`${missing.length} published page(s) have no .md twin: ${missing.slice(0, 3)}`);
+  else ok(`every one of ${checked} published pages has a .md twin`);
+
+  if (mismatched.length) {
+    for (const m of mismatched.slice(0, 5)) fail(`twin is a different document — ${m}`);
+    fail(`${mismatched.length} .md twin(s) do not match the page they are served with`);
+  } else {
+    ok(`all ${checked} .md twins carry the same id as their page`);
+  }
+}
+
 /* ------------------------------------------------------------- sitemap */
 console.log('== 4. sitemap ==');
 {
@@ -369,15 +424,50 @@ console.log('== 6. Internal links across all HTML ==');
     }
   };
   walk(DIST);
+
+  /**
+   * Resolve a path the way a browser does, collapsing `.` and `..`.
+   *
+   * The previous regex was /href="(\/[^"#]*)(#[^"]*)?"/ — it required a leading
+   * slash, so it only ever inspected absolute hrefs: 22 668 of 51 164 on this
+   * site. Every relative href was invisible to it, which is why the gate
+   * printed "no broken internal links" while 2 227 of them, on 446 pages, went
+   * to URLs that do not exist. A check that cannot fail is worse than no check,
+   * because it is read as a passing result.
+   */
+  const resolve = (base, rel) => {
+    const out = base.startsWith('/') ? base.split('/') : [];
+    for (const seg of rel.split('/')) {
+      if (!seg || seg === '.') continue;
+      if (seg === '..') out.pop();
+      else out.push(seg);
+    }
+    return out.join('/');
+  };
+
   const broken = new Map();
+  let inspected = 0;
   for (const f of htmls) {
     const html = readFileSync(f, 'utf8');
-    for (const m of html.matchAll(/href="(\/[^"#]*)(#[^"]*)?"/g)) {
+    // This page's own URL, e.g. /ru/cases/case-01-x
+    let pageUrl = '/' + relative(DIST, f).replace(/\\/g, '/');
+    pageUrl = pageUrl.replace(/index\.html$/, '').replace(/\.html$/, '');
+    for (const m of html.matchAll(/href="([^"]+)"/g)) {
       const href = m[1];
-      if (href.startsWith('//')) continue;
-      const cand = href.endsWith('/') ? href + 'index.html' : href + '.html';
-      const alt = href.replace(/\/$/, '') + '/index.html';
-      if (!existsSync(join(DIST, cand)) && !existsSync(join(DIST, href)) && !existsSync(join(DIST, alt))) {
+      if (/^(https?:|mailto:|tel:|data:|\/\/|#)/i.test(href)) continue;
+      inspected++;
+      const path = href.split('#')[0].split('?')[0];
+      if (!path) continue;
+      const abs = path.startsWith('/') ? path : resolve(pageUrl, path);
+      const trimmed = abs.replace(/\/$/, '');
+      const cand = [
+        join(DIST, abs.endsWith('/') ? abs + 'index.html' : abs + '.html'),
+        join(DIST, abs),
+        join(DIST, trimmed + '.html'),
+        join(DIST, trimmed, 'index.html'),
+        join(DIST, abs),                       // assets and .md twins live as-is
+      ];
+      if (!cand.some((p) => existsSync(p))) {
         if (!broken.has(href)) broken.set(href, relative(DIST, f));
       }
     }
@@ -386,7 +476,7 @@ console.log('== 6. Internal links across all HTML ==');
     for (const [href, from] of [...broken].slice(0, 10)) fail(`broken link ${href} (in ${from})`);
     fail(`total broken internal links: ${broken.size}`);
   } else {
-    ok(`no broken internal links across ${htmls.length} HTML files`);
+    ok(`no broken internal links (${inspected} hrefs checked across ${htmls.length} HTML files)`);
   }
 }
 

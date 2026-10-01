@@ -5,7 +5,7 @@
 
 ## Контекст
 Требования: сайт на Astro, размещаемый на Cloudflare, доступный по поддомену
-`blendee-skills.refertur.net`, с полной SEO-оптимизацией и оптимизацией под
+`blender-skills.refertur.net`, с полной SEO-оптимизацией и оптимизацией под
 языковые модели. Обязательное условие — чтобы поисковики и агенты читали
 контент без выполнения JavaScript.
 
@@ -14,7 +14,7 @@
 ```
 refertur.net   NS: ns1/ns2.timeweb.ru, ns3/ns4.timeweb.org
                → зону обслуживает Timeweb, регистратор — другой (Spaceship)
-blendee-skills.refertur.net → не резолвится, записи нет
+blender-skills.refertur.net → не резолвится, записи нет
 ```
 
 Зона apex обслуживается **Timeweb**, а не Cloudflare. Значит поддомен
@@ -23,8 +23,8 @@ blendee-skills.refertur.net → не резолвится, записи нет
 
 ## Решение
 Astro 7 в режиме `output: 'static'`, публикация в **Cloudflare Pages**
-(`wrangler pages deploy dist --project-name=blendee-skills`), кастомный домен
-`blendee-skills.refertur.net` через CNAME, поиск — Pagefind (индекс на сборке).
+(`wrangler pages deploy dist --project-name=blender-skills`), кастомный домен
+`blender-skills.refertur.net` через CNAME, поиск — Pagefind (индекс на сборке).
 
 ## Последствия
 

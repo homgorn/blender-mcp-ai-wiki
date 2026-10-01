@@ -241,3 +241,28 @@ bpy.ops.import_scene.gltf(filepath="/tmp/model.glb")
 - [ ] **UVs:** Unwrap (Smart UV Project), check for overlaps
 - [ ] **LODs:** Create LOD versions (50%, 25%, 10%)
 - [ ] **Export:** GLTF for web/game, USD for pipeline
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md), [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md), [TROUBLESHOOTING GUIDE](../guides/troubleshooting.md)
+- **По темам:** [SETUP 45: HUNYUAN3D 2.1 LOCAL](../../../setups/setup_45_hunyuan3d_21.md), [WORKFLOWS - PRODUCTION PIPELINES](scene-building.md), [BLENDER MATERIALS API REFERENCE](../api/materials.md)
+- **Теги:** #ai-3d, #blender, #mcp, #reference
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность ⭐⭐⭐⭐.
+
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ]
+

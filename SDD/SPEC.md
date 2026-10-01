@@ -22,7 +22,7 @@
 - **Сайт (Astro 7, статика):** 916 пререндеренных страниц, из них 203 индексируемые,
   631 `noindex`-зеркало с каноническим адресом на оригинал, 163 shadow-зеркала не
   публикуются. Публикуется на Cloudflare Pages (`wrangler pages deploy`) и доступен
-  по поддомену `blendee-skills.refertur.net`; apex-зону обслуживает Timeweb,
+  по поддомену `blender-skills.refertur.net`; apex-зону обслуживает Timeweb,
   поэтому подключение домена — это CNAME во внешней DNS-зоне.
 - **Машиночитаемый слой:** `llms.txt` v2, `llms-full.txt` (978 КБ), 834 markdown-близнеца,
   RSS, sitemap с hreflang-группами.
@@ -59,10 +59,10 @@
 - Промпты, референсы и переводы `status` не имеют by design.
 
 ## 6. Открытые вопросы (ждут решения владельца)
-1. **DNS.** Домен зафиксирован: `blendee-skills.refertur.net`, origin задан в
+1. **DNS.** Домен зафиксирован: `blender-skills.refertur.net`, origin задан в
    `web/astro.config.mjs` и `PUBLIC_SITE_URL`. Остался ровно один шаг, который
    автоматика выполнить не может — CNAME в зоне Timeweb:
-   `blendee-skills → blendee-skills.pages.dev`. Cloudflare примет домен раньше, чем
+   `blender-skills → blender-skills.pages.dev`. Cloudflare примет домен раньше, чем
    запись появится, и покажет `pending`; называть это «задеплоено» до проверки `dig`
    было бы прямой ложью. Меняется в одном месте, пересборка обязательна.
 2. **Ставка на переводы.** 7 из 182 статей переведены человеком; остальные помечены

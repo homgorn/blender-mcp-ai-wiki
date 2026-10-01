@@ -248,3 +248,18 @@ C:\BLENDER ai\
 2. Read [Workflows](../workflows/scene-building.md)
 3. Explore [Blender API Patterns](../api/scripting-patterns.md)
 4. Check [MCP Architecture](../mcp/architecture.md)
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+
+Create/Open: `C:\Users\<USERNAME>\.config\opencode\opencode.json`
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md), [TROUBLESHOOTING GUIDE](troubleshooting.md), [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [DREAM TEXTURES ADDON - DEEP DIVE](../addons/dream-textures.md), [GENESISCORE ADDON - DEEP DIVE](../addons/genesiscore.md)
+- **По темам:** [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md), [SETUP 35: READY PLAYER ME AVATARS](../../../setups/setup_35_readyplayerme.md), [TEXT-TO-3D WORKFLOWS](../workflows/text-to-3d.md)
+- **Теги:** #addon, #blender, #mcp, #reference, #stable-diffusion
+

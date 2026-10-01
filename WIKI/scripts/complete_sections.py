@@ -106,6 +106,34 @@ def has_section(text: str, marker: str) -> bool:
     return re.search(rf"^##\s+.*\b{marker}\b", text, re.MULTILINE | re.IGNORECASE) is not None
 
 
+def looks_like_prose(para: str) -> bool:
+    """
+    Is this a sentence a reader would want as the article's opening line?
+
+    Rejecting code matters more than accepting prose. `references/v1/api/
+    scripting-patterns.md` has a few Python lines sitting outside any fence, and
+    an earlier version of this function pasted them into the ЦЕЛЬ section: the
+    page then rendered a second <h1> reading "...". So: no line may start like a
+    comment or a shell prompt, a call must not be followed by an assignment, and
+    a sentence needs real words in it.
+    """
+    for line in para.splitlines():
+        s = line.strip()
+        if not s:
+            continue
+        if s.startswith(("#", "//", "$", ">>>", "---", "===", "*")):
+            return False
+        if re.search(r"\w+\([^)]*\)\s*=", s):        # foo() = bar
+            return False
+        if re.search(r"[{};]\s*$", s):               # trailing code punctuation
+            return False
+    words = re.findall(r"[A-Za-zА-Яа-яЁё]{3,}", para)
+    if len(words) < 5:
+        return False
+    letters = sum(1 for c in para if c.isalpha() or c.isspace())
+    return letters / max(len(para), 1) > 0.75
+
+
 def rewrite_prose_links(text: str, f: str) -> tuple[str, bool]:
     """
     Replace a links section that is plain prose with real markdown links.
@@ -119,9 +147,58 @@ def rewrite_prose_links(text: str, f: str) -> tuple[str, bool]:
     Some files carry TWO link-ish headings (e.g. `## 🔗 WF-07, Setup 01/08,
     INDEX` alongside a later `## 🔗 СВЯЗИ`). Rendering both is a visible
     duplication, so any other prose link heading is dropped.
+
+    Fence-aware. Without it, a `## 🔗 СВЯЗИ` heading inside a fenced example was
+    matched, its body replaced, and the closing ``` consumed — which unbalances
+    the fence and makes `marked` swallow the rest of the document into a <pre>.
+    The content survived; the rendering did not. Confirmed by running this
+    function, though no corpus file triggers it yet.
     """
-    m = re.search(r"^(##\s+[^\n]*(?:СВЯЗИ|Связи|LINKS)[^\n]*)\n(.*?)(?=\n## |\Z)",
-                  text, re.MULTILINE | re.DOTALL)
+    fences = fenced_regions(text)
+    for m in re.finditer(r"^##\s+[^\n]*(?:СВЯЗИ|Связи|LINKS)[^\n]*\n(.*?)(?=\n## |\Z)",
+                         text, re.MULTILINE | re.DOTALL):
+        if any(s <= m.start() < e for s, e in fences):
+            continue          # the heading is an example, not a section
+        body = m.group(1)
+        already_links = bool(re.search(r"\]\(", body))
+        looks_like_prose = bool(
+            re.search(r"Setup\s*\d|Workflow|WF-\d|INDEX", body, re.IGNORECASE))
+        if already_links and not REFRESH:
+            return text, False
+        if not already_links and not looks_like_prose and not REFRESH:
+            return text, False
+
+        head = text[:m.start()]
+        rest = text[m.end():]
+        # Drop any *other* heading that is only a prose link list, but never one
+        # that is inside a fence.
+        for extra in re.finditer(r"^##\s+[^\n]*🔗[^\n]*\n(?:(?!\n## )[^\n]*\n)*?(?=\n## |\Z)",
+                                rest, re.MULTILINE | re.DOTALL):
+            off = m.end()
+            if any(s <= off + extra.start() < e for s, e in fences):
+                continue
+            rest = rest[:extra.start()] + rest[extra.end():]
+            break
+        return head + links_section(f) + "\n" + rest.lstrip("\n"), True
+    return text, False
+
+
+def fenced_regions(text: str) -> list[tuple[int, int]]:
+    """Spans covered by ``` or ~~~ fences, as (start, end) offsets."""
+    out: list[tuple[int, int]] = []
+    pos = 0
+    while True:
+        m = re.search(r"^([ \t]*)(```|~~~)", text[pos:], re.MULTILINE)
+        if not m:
+            break
+        start = pos + m.start()
+        marker = m.group(2)
+        close = re.compile(r"^[ \t]*" + re.escape(marker) + r"[ \t]*$", re.MULTILINE)
+        cm = close.search(text, pos + m.end())
+        end = cm.end() if cm else len(text)
+        out.append((start, end))
+        pos = end
+    return out
     if not m:
         return text, False
     body = m.group(2)
@@ -147,16 +224,27 @@ def goal_section(f: str, text: str) -> str:
     diff = ("⭐" * e["difficulty"]) if e["difficulty"] else "—"
     time_m = re.search(r"\*\*Time:\*\*\s*([^\n]+)", text)
     time_s = time_m.group(1).strip() if time_m else ""
+
     # First real prose sentence, if the file already has one.
+    #
+    # Fenced code is removed before the search, and any candidate that still
+    # contains a fence marker is discarded. The first version did neither: on the
+    # 19 articles under references/v1/ it lifted a Python snippet — comments
+    # included — out of a code block and pasted it into the article, duplicating
+    # the block and leaving an unbalanced fence. The text survived, the markdown
+    # structure did not, and the SEO gate caught it as "not exactly one <h1>".
     first = ""
-    for para in re.split(r"\n\s*\n", text):
+    prose_only = re.sub(r"```[\s\S]*?```", "\n\n", text)
+    prose_only = re.sub(r"~~~[\s\S]*?~~~", "\n\n", prose_only)
+    for para in re.split(r"\n\s*\n", prose_only):
         p = para.strip()
-        if not p or p.startswith(("#", "---", "|", "```", "<!--")):
+        if not p or p.startswith(("#", "---", "|", "<!--", ">")):
             continue
         p = re.sub(r"\*\*[^*]+:\*\*[^\n]*", "", p).strip()
-        if len(p) > 40:
-            first = re.split(r"(?<=[.!?])\s", p)[0]
+        if len(p) > 40 and "```" not in p and "`" not in p and looks_like_prose(p):
+            first = re.split(r"(?<=[.!?])\s", p)[0][:300]
             break
+
     head = f"## 🎯 ЦЕЛЬ\n\n{kind} категории «{CATEGORY_RU.get(e['category'], e['category'])}»"
     if time_s:
         head += f", {time_s}"
@@ -197,10 +285,12 @@ def main() -> int:
         d = WIKI / cat
         if not d.exists():
             continue
-        # Recursive: 19 articles live in references/v1/** and a flat glob
-    # skipped them entirely.
+        # Recursive, and the key keeps the subdirectory. Recursing alone was not
+    # enough: `rel` was rebuilt from `path.name`, so all 19 articles under
+    # references/v1/** still missed BY_FILE and were skipped, while the comment
+    # claimed the flat glob had been the whole problem.
     for path in sorted(d.rglob("*.md")):
-            rel = f"{cat}/{path.name}"
+            rel = path.relative_to(WIKI).as_posix()
             if rel not in BY_FILE:
                 continue
             text = path.read_text(encoding="utf-8")

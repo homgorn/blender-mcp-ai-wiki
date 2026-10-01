@@ -281,6 +281,7 @@ Vertex Group "Stiffness": Per-vertex stiffness multiplier
 """
 
 ### Soft Body
+```
 ```python
 # Soft Body (Tetrahedral)
 """
@@ -371,6 +372,7 @@ Adaptive Substepping:
 """
 
 ### Collision Optimization
+```
 ```python
 # Broad Phase
 """
@@ -385,6 +387,7 @@ Contact Generation: Manifold (up to 4 contacts)
 """
 
 ### GPU Acceleration (Future/Experimental)
+```
 ```python
 # Compute Shaders for Physics
 """

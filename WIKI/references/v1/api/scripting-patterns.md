@@ -608,3 +608,18 @@ def verify_floor_exists():
 
 result = verify_step("Create floor", verify_floor_exists)
 ```
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [BLENDER MATERIALS API REFERENCE](materials.md), [BLENDER MESH OPERATIONS API REFERENCE](mesh-operations.md), [BLENDER PYTHON API REFERENCE (4.x)](blender-api.md), [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md)
+- **По темам:** [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md), [PROMPTING GUIDE - EFFECTIVE AI COMMANDS FOR BLENDER](../guides/prompting.md)
+- **Теги:** #blender, #reference
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+

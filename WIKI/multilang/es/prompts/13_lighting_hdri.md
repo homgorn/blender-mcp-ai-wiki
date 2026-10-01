@@ -319,7 +319,7 @@ def setup_mixed_lighting(hdri_path, target_obj, hdri_strength=0.5, studio_streng
 
 ## 🔗 LINKS
 
-- **Prompts:** [P16-P21 Lighting](../lighting/), [P09 Principled BSDF](./09_principled_bsdf.md)
+- **Prompts:** [P16-P21 Lighting](../prompts/), [P09 Principled BSDF](./09_principled_bsdf.md)
 - **Workflows:** [WF 01: Text-to-Scene](../workflows/wf_01_text_to_scene.md), [WF 06: ArchViz](../workflows/wf_06_archviz_workflow.md)
 - **MCP Tools:** `download_polyhaven_asset`, `set_material`
 - **Next:** [P14: Camera & Composition](./14_camera_composition.md)

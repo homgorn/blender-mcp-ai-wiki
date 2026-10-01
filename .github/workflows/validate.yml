@@ -37,7 +37,7 @@ jobs:
           # The site build bakes the origin into canonical/hreflang/sitemap.
           # Using the real host here means CI catches a config that would ship
           # a wrong canonical; localhost would defeat the check.
-          PUBLIC_SITE_URL: https://blendee-skills.refertur.net
+          PUBLIC_SITE_URL: https://blender-skills.refertur.net
         run: python WIKI/scripts/run_all.py
 
       - name: upload quality report
@@ -68,16 +68,19 @@ jobs:
         working-directory: web
         run: npm ci
 
-      - name: build, index and verify
+      - name: build, test and verify
         working-directory: web
         env:
-          PUBLIC_SITE_URL: https://blendee-skills.refertur.net
+          PUBLIC_SITE_URL: https://blender-skills.refertur.net
+        # `all` = build + unit tests + both SEO gates. The tests are not
+        # optional: they cover the link and publication rules, which shipped
+        # broken links and mismatched .md twins while the gates reported OK.
         run: npm run all
 
       - name: preflight
         working-directory: web
         env:
-          PUBLIC_SITE_URL: https://blendee-skills.refertur.net
+          PUBLIC_SITE_URL: https://blender-skills.refertur.net
         run: npm run preflight
 
       - name: upload site
@@ -104,4 +107,4 @@ jobs:
         with:
           apiToken: ''
           accountId: ''
-          command: pages deploy dist --project-name=blendee-skills-preview --branch=preview --commit-dirty=true
+          command: pages deploy dist --project-name=blender-skills-preview --branch=preview --commit-dirty=true

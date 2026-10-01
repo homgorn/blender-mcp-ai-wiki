@@ -51,6 +51,44 @@ class TestParsing(unittest.TestCase):
         self.assertNotIn("8b7355", meta["tags"])   # hex color, not a tag
         self.assertNotIn("12", meta["tags"])
 
+    def test_tag_keeps_hyphen_and_drops_its_fragment(self):
+        """`#true-displacement` is one tag, not that plus the fragment "true".
+
+        The pattern was `#(\\w+)` and \\w excludes the hyphen, so every
+        multi-word tag also produced its first word as a separate tag: 44 junk
+        tags over 456 (entry, tag) pairs. Tag overlap drives related-article
+        ranking, the tag facet and the search index, so this is not cosmetic.
+        """
+        md = "**Теги:** #true-displacement #shape-keys #cc-by #uv-tiles\n"
+        probe = WIKI / "prompts" / "01_geometry_basics.md"
+        tags = bd.extract_metadata(md, probe)["tags"]
+        for whole in ("true-displacement", "shape-keys", "cc-by", "uv-tiles"):
+            self.assertIn(whole, tags)
+        for fragment in ("true", "shape", "cc", "uv", "low", "multi"):
+            self.assertNotIn(fragment, tags, f'"{fragment}" is a fragment, not a tag')
+
+    def test_no_tag_contains_bracket_or_comes_from_a_type_hint(self):
+        """Flow-style frontmatter and Python hints must not become tags.
+
+        `tags: [a, b]` used to yield "setup]" because the cleaner stripped
+        *_`# but not brackets, and `tags: List[str] = None` in a code block
+        yielded "list" and "none".
+        """
+        probe = WIKI / "prompts" / "01_geometry_basics.md"
+        cases = [
+            "---\nlang: en\ntags: [modeling, prompt]\n---\n# T\n",
+            "```python\ndef search(self, query: str = None, tags: List[str] = None):\n```\n",
+            "Base Color: [R, G, B] или hex #RRGGBB\n",
+        ]
+        for md in cases:
+            tags = bd.extract_metadata(md, probe)["tags"]
+            for t in tags:
+                self.assertNotIn("[", t, f"bracket survived in {t!r} from {md!r}")
+                self.assertNotIn("]", t, f"bracket survived in {t!r} from {md!r}")
+            self.assertNotIn("list", tags, md)
+            self.assertNotIn("none", tags, md)
+            self.assertNotIn("rrggbb", tags, md)
+
     def test_id_scheme(self):
         """multilang id must be {stem}__{lang} + orig_id == stem"""
         f = WIKI / "multilang" / "es" / "prompts" / "01_geometry_basics.md"

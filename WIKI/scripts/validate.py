@@ -220,7 +220,7 @@ for cat, groups in REQUIRED.items():
         miss = [name for name, marks in groups.items()
                 if not any(mk.upper() in upper for mk in marks)]
         if miss:
-            nonconform[f"{cat}/{f.name}"] = miss
+            nonconform[f"{cat}/{f.relative_to(WIKI/cat).as_posix()}"] = miss
 if nonconform:
     msg = f"{len(nonconform)} files miss template sections"
     if "--strict" in sys.argv:
@@ -229,6 +229,22 @@ if nonconform:
         print(f"  [INFO] {msg} (not a gate; validate.py --strict to enforce). e.g. {list(nonconform.items())[:3]}")
 else:
     ok("all files match the required template sections")
+
+print("== 14. Fenced code blocks are balanced ==")
+# An unclosed ``` swallows every following heading into a <pre>: the article text
+# survives but its rendering does not. Two articles did exactly this, in the
+# corpus and in all five of their mirrors, and nothing caught it — an unclosed
+# fence does not change the number of <h1> elements, so the SEO gate saw a clean
+# page. Checked as a hard gate because the failure is invisible downstream.
+FENCE_RX = re.compile(r"^\s*(?:```|~~~)", re.M)
+unbalanced = []
+for f in sorted(WIKI.rglob("*.md")):
+    if len(FENCE_RX.findall(f.read_text(encoding="utf-8"))) % 2:
+        unbalanced.append(f.relative_to(WIKI).as_posix())
+if unbalanced:
+    fail(f"{len(unbalanced)} file(s) have an unclosed code fence: {unbalanced[:5]}")
+else:
+    ok("every fenced code block is closed")
 
 print()
 if fails:

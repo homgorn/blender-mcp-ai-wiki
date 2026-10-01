@@ -9,6 +9,7 @@
  */
 import db from '../../../WIKI/db/wiki_database.json';
 import { LANGS, LANG_META, DEFAULT_LANG, type Lang } from './site';
+import { buildBodyLinkMap, isShadowMirror, publishedEntries, slugify } from './links';
 
 export type TranslationQuality = 'human' | 'template' | 'legacy';
 
@@ -68,14 +69,13 @@ interface RawEntry {
 
 const RAW = (db as { entries: RawEntry[] }).entries;
 
-/** `01_geometry_basics` -> `01-geometry-basics`. Stable, derived, no drift. */
-export function slugify(origId: string): string {
-  return origId
-    .toLowerCase()
-    .replace(/\.md$/, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+/**
+ * `01_geometry_basics` -> `01-geometry-basics`. Stable, derived, no drift.
+ *
+ * Re-exported from links.ts so the URL rule has exactly one implementation; the
+ * agent-file generator and the SEO gate used to carry their own copies.
+ */
+export { slugify } from './links';
 
 const FM = /^---\n[\s\S]*?\n---\n?/;
 function stripFrontmatter(md: string): string {
@@ -171,14 +171,7 @@ const all: Entry[] = RAW.map((raw) => {
  * is redundant and is not published.
  */
 function dropShadowMirrors(list: Entry[]): Entry[] {
-  const originalLangByOrig = new Map<string, Lang>();
-  for (const e of list) {
-    if (!e.isTranslation) originalLangByOrig.set(e.origId, e.lang);
-  }
-  const dropped = list.filter((e) => {
-    if (!e.isTranslation) return true;
-    return originalLangByOrig.get(e.origId) !== e.lang;
-  });
+  const dropped = publishedEntries(list);
   if (dropped.length !== list.length) {
     console.log(`[content] dropped ${list.length - dropped.length} shadow mirrors (mirror language == original language)`);
   }
@@ -216,6 +209,52 @@ for (const e of all) {
 }
 
 /* ------------------------------------------------------------------ URLs */
+
+/** file_path (posix) -> published entry. Shadows are deliberately absent. */
+const byFilePublished = new Map<string, Entry>();
+for (const e of entries) {
+  byFilePublished.set(e.filePath.replace(/\\/g, '/').toLowerCase(), e);
+}
+
+/** Every category that has at least one published page, for section links. */
+const categories = new Set(entries.map((e) => e.category));
+
+/**
+ * For one entry: the hrefs as written in its body, mapped to site URLs.
+ *
+ * The rules live in links.ts so they can be tested directly; this is only the
+ * wiring to the real data. Previously `entry.links` was computed here and never
+ * rendered, so 2 227 in-body links shipped as raw relative paths on 446 of 916
+ * pages — the site publishes `setup-01-...` while the body says `setup_01_...`.
+ */
+const bodyLinkMaps = new Map<string, Map<string, string>>();
+for (const e of entries) {
+  const group = byOrigId.get(e.origId);
+  const origin = group ? [...group.values()].find((o) => !o.isTranslation) : undefined;
+  bodyLinkMaps.set(
+    e.id,
+    buildBodyLinkMap(e, {
+      byFile: byFilePublished,
+      byOrig: byOrigId,
+      categories,
+      entryUrl,
+      categoryUrl,
+      originalDir: (x) =>
+        byOrigId.get(x.origId)
+          ? [...byOrigId.get(x.origId)!.values()].find((o) => !o.isTranslation)?.filePath
+              .replace(/\\/g, '/')
+              .split('/')
+              .slice(0, -1)
+              .join('/')
+          : undefined,
+    }),
+  );
+}
+
+/** Raw body href -> site URL, for one entry. Empty when nothing resolved. */
+export function bodyLinks(e: Entry): Map<string, string> {
+  return bodyLinkMaps.get(e.id) ?? new Map();
+}
 
 export function entryUrl(e: Entry): string {
   return `/${e.lang}/${e.category}/${slugify(e.origId)}`;
@@ -287,25 +326,44 @@ export function categoryHasContent(lang: Lang, category: string): boolean {
   return entries.some((e) => e.lang === lang && e.category === category && isIndexable(e));
 }
 
-/** Related articles: shared tags, same language preferred, originals only. */
+/**
+ * Related articles: shared tags, same language, originals only.
+ *
+ * `originals` is site-wide, and the old scoring only added +1 for a
+ * same-language candidate, so a tag match in another language could outrank a
+ * weaker same-language match. Result: 19 of 41 English pages had an entire
+ * "Связанные материалы" block in Russian, with nothing on the cards to say so —
+ * a German or English reader is not served by a Russian list.
+ *
+ * So: same-language candidates first, in their own ranked list. Only if a
+ * language has nothing to show do we fall back to other languages, because an
+ * empty block is worse than a foreign one.
+ */
 export function related(e: Entry, limit = 6): Entry[] {
   const group = byOrigId.get(e.origId);
   const tagSet = new Set(e.tags);
   const score = (o: Entry) => {
-    if (group?.has(o.lang)) return -1000; // same article, other language
+    if (o.origId === e.origId) return -1000; // the same article
     let s = 0;
     for (const t of o.tags) if (tagSet.has(t)) s += 2;
     if (o.category === e.category) s += 3;
-    if (o.lang === e.lang) s += 1;
     return s;
   };
-  return originals
-    .filter((o) => o.origId !== e.origId)
-    .map((o) => ({ o, s: score(o) }))
-    .filter((x) => x.s > 0)
-    .sort((a, b) => b.s - a.s || a.o.title.localeCompare(b.o.title))
-    .slice(0, limit)
-    .map((x) => x.o);
+  const rank = (list: Entry[]) =>
+    list
+      .map((o) => ({ o, s: score(o) }))
+      .filter((x) => x.s > 0)
+      .sort((a, b) => b.s - a.s || a.o.title.localeCompare(b.o.title))
+      .slice(0, limit)
+      .map((x) => x.o);
+
+  const candidates = originals.filter((o) => o.origId !== e.origId);
+  const sameLang = rank(candidates.filter((o) => o.lang === e.lang));
+  if (sameLang.length) return sameLang;
+  // `group` is consulted only to keep the intent readable: the origId check
+  // above already excludes the same article in every language.
+  void group;
+  return rank(candidates);
 }
 
 export function popular(lang: Lang, limit = 12): Entry[] {

@@ -294,3 +294,18 @@ logging.basicConfig(level=logging.DEBUG)
    - blender-mcp: https://discord.gg/SNqPn4TcKQ
    - Dream Textures: https://discord.gg/EmDJ8CaWZ7
 4. **Documentation:** This wiki + official docs
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+
+2.
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md), [INSTALLATION GUIDE - COMPLETE SETUP](installation.md), [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [GENESISCORE ADDON - DEEP DIVE](../addons/genesiscore.md), [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md)
+- **По темам:** [TEXT-TO-3D WORKFLOWS](../workflows/text-to-3d.md), [BLENDER MATERIALS API REFERENCE](../api/materials.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md)
+- **Теги:** #addon, #blender, #mcp, #reference
+

@@ -319,3 +319,18 @@ blender -b scene.blend -P export_gltf.py
 5. **Unique data:** `.copy()` meshes when duplicating
 6. **Save incrementally:** `bpy.ops.wm.save_as_mainfile(filepath="scene_v001.blend")`
 7. **Use collections:** Organize by type (Geometry, Lights, Cameras, FX)
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [TEXT-TO-3D WORKFLOWS](text-to-3d.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md), [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md), [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md)
+- **По темам:** [P18: DRIVERS & CONSTRAINTS](../../../prompts/18_drivers_constraints.md), [P45: GEOMETRY NODES SIMULATION ZONES](../../../prompts/45_gn_simulation.md), [SETUP 35: READY PLAYER ME AVATARS](../../../setups/setup_35_readyplayerme.md), [SETUP 45: HUNYUAN3D 2.1 LOCAL](../../../setups/setup_45_hunyuan3d_21.md)
+- **Теги:** #ai-3d, #animation, #assets, #automation, #blender, #geometry-nodes, #mcp, #modeling
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+

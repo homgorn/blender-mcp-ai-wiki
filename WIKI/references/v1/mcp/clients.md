@@ -166,3 +166,18 @@ No external MCP client needed. Configure in Blender N-panel:
   }
 }
 ```
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md), [GENESISCORE ADDON - DEEP DIVE](../addons/genesiscore.md), [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](architecture.md)
+- **По темам:** [MCP SERVER API REFERENCE](server-api.md), [TEXT-TO-3D WORKFLOWS](../workflows/text-to-3d.md), [TROUBLESHOOTING GUIDE](../guides/troubleshooting.md)
+- **Теги:** #mcp, #reference
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+

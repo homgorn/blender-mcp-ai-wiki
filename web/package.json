@@ -1,9 +1,9 @@
 {
   "name": "blender-ai-wiki-web",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "private": true,
   "type": "module",
-  "description": "Blender AI Wiki — static Astro site for Cloudflare Workers. SEO + AI/LLM optimized.",
+  "description": "Blender AI Wiki — static Astro site on Cloudflare Pages. SEO + AI/LLM optimized.",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -18,10 +18,12 @@
     "verify": "npm run verify:seo && npm run verify:consistency",
     "verify:seo": "node scripts/verify-seo.mjs",
     "verify:consistency": "node scripts/verify-consistency.mjs",
+    "test": "node --experimental-strip-types --test \"test/*.test.ts\" \"test/*.test.mjs\"",
+    "test:logic": "node --experimental-strip-types --test test/site-logic.test.ts",
     "preflight": "node preflight.mjs",
-    "all": "npm run build:full && npm run verify",
-    "deploy": "npm run all && npm run preflight && wrangler pages deploy dist --project-name=blendee-skills",
-    "deploy:preview": "npm run build:full && wrangler pages deploy dist --project-name=blendee-skills-preview --branch=preview",
+    "all": "npm run build:full && npm run test && npm run verify",
+    "deploy": "npm run all && npm run preflight && wrangler pages deploy dist --project-name=blender-skills",
+    "deploy:preview": "npm run build:full && wrangler pages deploy dist --project-name=blender-skills-preview --branch=preview",
     "whoami": "wrangler whoami"
   },
   "dependencies": {

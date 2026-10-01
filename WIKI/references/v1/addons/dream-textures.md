@@ -226,3 +226,18 @@ Dream Textures runs **independently** - no MCP integration. Use via:
 - [Texture Generation Workflow](../workflows/texture-generation.md)
 - [GenesisCore + Dream Textures Combo](../workflows/scene-building.md)
 - [Blender Material API](../api/materials.md)
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+
+Dream Textures brings **Stable Diffusion natively into Blender** - runs locally via diffusers/PyTorch, no external services needed.
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [BLENDER-MCP ADDON - DEEP DIVE](blender-mcp.md), [DREAM TEXTURES - FULL WIKI DOCUMENTATION](dream-textures-full.md), [GENESISCORE ADDON - DEEP DIVE](genesiscore.md), [TROUBLESHOOTING GUIDE](../guides/troubleshooting.md)
+- **По темам:** [ANIMATION WORKFLOWS](../workflows/animation.md), [BLENDER MATERIALS API REFERENCE](../api/materials.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md)
+- **Теги:** #addon, #reference, #stable-diffusion
+

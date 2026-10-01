@@ -278,3 +278,18 @@ MCP config:
 - [GenesisCore Comparison](genesiscore.md)
 - [MCP Client Setup](../mcp/clients.md)
 - [Prompting Guide](../guides/prompting.md)
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+
+blender-mcp is the **reference MCP server implementation** for Blender.
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [TROUBLESHOOTING GUIDE](../guides/troubleshooting.md), [BLENDER-MCP - FULL DOCUMENTATION](blender-mcp-full.md), [GENESISCORE ADDON - DEEP DIVE](genesiscore.md), [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md)
+- **По темам:** [TEXT-TO-3D WORKFLOWS](../workflows/text-to-3d.md), [BLENDER MATERIALS API REFERENCE](../api/materials.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md)
+- **Теги:** #addon, #blender, #mcp, #reference
+

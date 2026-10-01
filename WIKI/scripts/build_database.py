@@ -51,8 +51,12 @@ CATEGORIES = {
 }
 
 # Теги для автоматического извлечения
+# `#([\w-]+)`, not `#(\w+)`: \w excludes the hyphen, so `#true-displacement`
+# yielded both "true-displacement" and the fragment "true". That shipped 44
+# junk tags across 456 (entry, tag) pairs — and tag overlap drives related()
+# scoring, the tag facet and the search index, so junk is not cosmetic.
 TAG_PATTERNS = [
-    r'#(\w+)',  # #tag
+    r'#([\w-]+)',  # #tag or #multi-word-tag
     r'Теги:\s*([^\n]+)',  # Теги: tag1, tag2
     r'Tags:\s*([^\n]+)',  # Tags: tag1, tag2
     r'теги:\s*([^\n]+)',
@@ -232,12 +236,19 @@ def extract_metadata(content: str, filepath: Path) -> Dict:
         meta["difficulty"] = len(diff_match.group(0))
     
     # Теги (с фильтрацией мусора: hex-цвета, bold-маркеры, цифры)
+    #
+    # Fenced code is removed first. Tags live in prose and in frontmatter, never
+    # in a snippet, and scanning code produced tags straight out of Python:
+    # `tags: List[str] = None` yielded "list" and "none". Those tags then reached
+    # the search index, the tag facet and related-article scoring.
+    scannable = re.sub(r"```[\s\S]*?```", "\n", content)
+    scannable = re.sub(r"~~~[\s\S]*?~~~", "\n", scannable)
     tags = set()
     for pattern in TAG_PATTERNS:
-        matches = re.findall(pattern, content, re.IGNORECASE)
+        matches = re.findall(pattern, scannable, re.IGNORECASE)
         for match in matches:
             if isinstance(match, str):
-                for raw in re.split(r'[,\s]+', match):
+                for raw in re.split(r'[,\s]+', match.rstrip('.,;:)')):
                     # Strip list punctuation as well as emphasis: frontmatter
                     # written as `tags: [a, b]` was yielding tags like
                     # "setup]" and "prompt]" because only *_`# were removed.
@@ -248,6 +259,14 @@ def extract_metadata(content: str, filepath: Path) -> Dict:
                     # `list[str]` leaves "list[str" after the end-strip and
                     # becomes a search tag nobody would ever query.
                     if '[' in tag or ']' in tag:
+                        continue
+                    # Colour-space placeholders. `Base Color: [R, G, B] или hex
+                    # #RRGGBB` is how shader inputs are documented throughout
+                    # this corpus, and the 3/6/8-digit hex filter does not catch
+                    # it because R, G and B are not hex digits. Named explicitly
+                    # rather than filtered by shape, because a generic rule would
+                    # also drop real tags.
+                    if tag in ('rgb', 'rgba', 'rrggbb', 'rrggbbaa'):
                         continue
                     if not re.match(r'[^\W\d_]', tag, re.UNICODE):
                         continue  # должен начинаться с буквы

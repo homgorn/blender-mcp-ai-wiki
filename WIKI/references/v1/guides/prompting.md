@@ -278,3 +278,25 @@ Explain each step before executing."
 "Create [SCENE] following best practices for [STYLE/TECHNIQUE].
 Optimize for render time / poly count / editability."
 ```
+
+---
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Референсы»:** [BLENDER MATERIALS API REFERENCE](../api/materials.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md), [BLENDER PYTHON API REFERENCE (4.x)](../api/blender-api.md), [BLENDER SCRIPTING PATTERNS - SAFE & EFFECTIVE](../api/scripting-patterns.md), [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md)
+- **По темам:** [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md), [INSTALLATION GUIDE - COMPLETE SETUP](installation.md), [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md)
+- **Теги:** #blender, #reference, #rrggbb
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
+
+import bpy
+for obj in bpy.context.selected_objects:
+    obj.modifiers.new('Bevel', 'BEVEL')
+    obj.modifiers['Bevel'].width = 0.02
+    obj.modifiers['Bevel'].segments = 3
+    bpy.ops.object.shade_smooth()
+

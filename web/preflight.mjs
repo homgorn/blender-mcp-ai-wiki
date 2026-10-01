@@ -14,7 +14,7 @@ const fails = [];
 const fail = (m) => { fails.push(m); console.log(`  [FAIL] ${m}`); };
 const ok = (m) => console.log(`  [OK] ${m}`);
 
-const EXPECTED_HOST = 'blendee-skills.refertur.net';
+const EXPECTED_HOST = 'blender-skills.refertur.net';
 
 console.log('== 1. Environment ==');
 const site = (process.env.PUBLIC_SITE_URL || '').trim();
@@ -41,8 +41,8 @@ try {
     const m = /"pages_build_output_dir"\s*:\s*"([^"]+)"/.exec(raw);
     ok(`pages_build_output_dir = ${m ? m[1] : '(found, unparsed)'}`);
   }
-  if (!/"name"\s*:\s*"blendee-skills"/.test(raw)) fail('worker/project name is not blendee-skills');
-  else ok('project name = blendee-skills');
+  if (!/"name"\s*:\s*"blender-skills"/.test(raw)) fail('worker/project name is not blender-skills');
+  else ok('project name = blender-skills');
   if (!/compatibility_date/.test(raw)) fail('no compatibility_date');
 } catch (e) {
   fail(`wrangler.jsonc unreadable: ${e.message}`);
@@ -92,7 +92,7 @@ else fail('dist/pagefind missing — search will 404. Run `npm run index`.');
 console.log('== 5. DNS reminder ==');
 console.log(`  The deploy alone will not make the hostname resolve. Add at the DNS host`);
 console.log(`  serving refertur.net (Timeweb, not the registrar):`);
-console.log(`      CNAME  blendee-skills  blendee-skills.pages.dev`);
+console.log(`      CNAME  blender-skills  blender-skills.pages.dev`);
 
 console.log();
 if (fails.length) {

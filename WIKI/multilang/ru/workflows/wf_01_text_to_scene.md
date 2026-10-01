@@ -226,7 +226,7 @@ for variant in variants:
 
 ## 🔗 СВЯЗИ
 
-- **Промпты:** [P01-P05](../prompts/), [P09-P15](../materials/), [P16-P21](../lighting/)
+- **Промпты:** [P01-P05](../prompts/), [P09-P15](../prompts/), [P16-P21](../prompts/)
 - **Кейсы:** [Case 01: ArchViz](../cases/case_01_archviz_interior.md), [Case 02: Game Props](../cases/case_02_game_props.md)
 - **Сетяп:** [Setup 01: blender-mcp](../setups/setup_01_blender_mcp_basic.md)
 - **MCP:** [MCP Tools Reference](../references/v1/mcp/server-api.md)

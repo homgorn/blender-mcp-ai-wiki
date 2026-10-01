@@ -126,6 +126,7 @@ Frame 25: = Frame 1 (Loop)
 # Attack/Action (30-60 frames)"
 
 ### NLA Workflow
+```
 ```bash
 # NLA Editor Setup
 "Action Editor → Create Actions: Walk, Run, Idle, Jump, Attack
