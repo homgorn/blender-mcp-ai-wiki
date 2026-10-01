@@ -1,18 +1,18 @@
 // Cloudflare Pages — static site with a custom subdomain.
 //
 // Why Pages and not Workers static assets: the target is a *custom hostname*
-// (bender-skills.refertur.net) whose apex zone is served by Timeweb, not by
+// (blendee-skills.refertur.net) whose apex zone is served by Timeweb, not by
 // Cloudflare. Pages has first-class custom-domain attachment and verification
 // for exactly this case. Astro still builds `output: 'static'`, so no adapter
 // is involved and the "Pages support removed from @astrojs/cloudflare" note
 // (which applies to on-demand rendering only) does not apply here.
-// See SDD/adr/0005-astro-cloudflare-workers-static-assets.md.
+// See SDD/adr/0005-astro-static-cloudflare-pages-subdomain.md.
 //
-// Deploy:  npx wrangler pages deploy dist --project-name=bender-skills
-// DNS:     CNAME bender-skills -> bender-skills.pages.dev   (in the Timeweb zone)
+// Deploy:  npx wrangler pages deploy dist --project-name=blendee-skills
+// DNS:     CNAME blendee-skills -> blendee-skills.pages.dev   (in the Timeweb zone)
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "bender-skills",
+  "name": "blendee-skills",
   "compatibility_date": "2026-10-01",
   "pages_build_output_dir": "./dist"
 }

@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## [2026-10-01] - 3.1.0 Поддомен bender-skills, Pages вместо Workers, Shiki, теги, CI
+## [2026-10-01] - 3.1.0 Поддомен blendee-skills, Pages вместо Workers, Shiki, теги, CI
 
 ### Changed
 - **Хостинг пересмотрен: Cloudflare Pages, не Workers.** Первая версия выбрала
@@ -12,8 +12,8 @@
   Pages касается **только on-demand рендеринга**; статический вывод адаптера не
   требует вообще, так что ограничение на нас не распространяется. Первое прочтение
   этой заметки как «Pages больше не вариант» было слишком широким (ADR 0005).
-- **Домен зафиксирован:** `bender-skills.refertur.net`, проект Pages
-  `bender-skills` → `bender-skills.pages.dev`. `PUBLIC_SITE_URL` больше не
+- **Домен зафиксирован:** `blendee-skills.refertur.net`, проект Pages
+  `blendee-skills` → `blendee-skills.pages.dev`. `PUBLIC_SITE_URL` больше не
   плейсхолдер, значение по умолчанию в конфиге — рабочий адрес.
 - `wrangler.jsonc` переведён на `pages_build_output_dir`, убраны `html_handling`
   и `not_found_handling` (у Pages другой набор семантик), `preflight.mjs` проверяет
@@ -67,7 +67,7 @@
 
 ### Known
 - **DNS остаётся на владельце.** Деплой не делает так, чтобы имя резолвилось:
-  нужен CNAME `bender-skills → bender-skills.pages.dev` в зоне Timeweb. Cloudflare
+  нужен CNAME `blendee-skills → blendee-skills.pages.dev` в зоне Timeweb. Cloudflare
   покажет `pending` раньше, чем запись появится; статус до проверки `dig` —
   «pending DNS», а не «готово».
 - 63 файла остаются `status: stub` — это глубина текста, а не структуры; её

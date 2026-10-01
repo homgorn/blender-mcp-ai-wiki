@@ -20,8 +20,8 @@
     "verify:consistency": "node scripts/verify-consistency.mjs",
     "preflight": "node preflight.mjs",
     "all": "npm run build:full && npm run verify",
-    "deploy": "npm run all && npm run preflight && wrangler pages deploy dist --project-name=bender-skills",
-    "deploy:preview": "npm run build:full && wrangler pages deploy dist --project-name=bender-skills-preview --branch=preview",
+    "deploy": "npm run all && npm run preflight && wrangler pages deploy dist --project-name=blendee-skills",
+    "deploy:preview": "npm run build:full && wrangler pages deploy dist --project-name=blendee-skills-preview --branch=preview",
     "whoami": "wrangler whoami"
   },
   "dependencies": {
