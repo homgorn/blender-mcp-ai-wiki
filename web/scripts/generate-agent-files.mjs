@@ -68,25 +68,23 @@ const entries = db.entries.map((e) => {
   };
 });
 
-// The published set, derived exactly as content.ts derives it.
-//
-// A shadow mirror is a translation whose language equals its original's, so it
-// resolves to the same URL as the original and is not published. Writing twins
-// for it meant the mirror (written later, so it won) replaced the original's
-// twin: 167 of 834 pages advertised a .md file whose own frontmatter said
-// `id: <mirror>` and `translation: template` while the HTML page they were
-// advertised on was `index, follow` and self-canonical. The HTML page, the twin
-// and llms-full.txt disagreed about the same URL. Keep this rule identical to
-// dropShadowMirrors() in src/lib/content.ts.
+// The publication rule is imported, not restated. It used to be copied here, and
+// this copy was the one that wrote .md twins for template mirrors — 167 of 834
+// pages advertised a twin holding a different document than the page, because
+// the mirror was written later and won the shared URL.
+import { publishedEntries, REAL_TRANSLATIONS } from '../src/lib/publish.mjs';
+
 const originalLangByOrig = new Map();
 for (const e of entries) {
   if (!e.isTranslation) originalLangByOrig.set(e.origId, e.lang);
 }
 const isShadow = (e) => e.isTranslation && originalLangByOrig.get(e.origId) === e.lang;
-const published = entries.filter((e) => !isShadow(e));
+const isTemplate = (e) => e.isTranslation && !REAL_TRANSLATIONS.has(e.translation || 'template');
+const published = publishedEntries(entries);
+void [isShadow, isTemplate];
 
 const originals = published.filter((e) => !e.isTranslation);
-const indexable = (e) => !e.isTranslation || e.translation === 'human';
+const indexable = (e) => !e.isTranslation || REAL_TRANSLATIONS.has(e.translation || 'template');
 const write = (rel, body) => {
   const p = join(DIST, rel);
   mkdirSync(dirname(p), { recursive: true });

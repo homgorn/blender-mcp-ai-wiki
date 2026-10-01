@@ -349,16 +349,6 @@ class BlenderMCPServer:
 - **Response:** `{"status": "success|error", "result": {...}}` or `{"status": "error", "message": "..."}`
 - **Locking:** Single-threaded command queue on Blender main thread
 
-## 🎯 ЦЕЛЬ
-
-Референс категории «Референсы», сложность —.
-
-Blocks risky operations in `execute_blender_code`:
-- File I/O, network, subprocess
-- Handlers/timers/drivers
-- Class/property registration
-- External .blend loading
-
 ---
 
 ## 🔗 СВЯЗИ
@@ -366,4 +356,10 @@ Blocks risky operations in `execute_blender_code`:
 - **Прочие в категории «Референсы»:** [BLENDER-MCP ADDON - DEEP DIVE](blender-mcp.md), [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md), [TEXT-TO-3D WORKFLOWS](../workflows/text-to-3d.md), [TROUBLESHOOTING GUIDE](../guides/troubleshooting.md)
 - **По темам:** [BLENDER MATERIALS API REFERENCE](../api/materials.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md), [BLENDER PYTHON API REFERENCE (4.x)](../api/blender-api.md)
 - **Теги:** #blender, #mcp, #reference
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
 

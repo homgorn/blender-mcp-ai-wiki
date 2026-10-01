@@ -9,9 +9,12 @@
  */
 import db from '../../../WIKI/db/wiki_database.json';
 import { LANGS, LANG_META, DEFAULT_LANG, type Lang } from './site';
-import { buildBodyLinkMap, isShadowMirror, publishedEntries, slugify } from './links';
+import {
+  buildBodyLinkMap, publishedEntries, slugify,
+  REAL_TRANSLATIONS, type TranslationQuality,
+} from './links';
 
-export type TranslationQuality = 'human' | 'template' | 'legacy';
+export type { TranslationQuality } from './links';
 
 export interface Entry {
   /** DB id: `01_geometry_basics` or `01_geometry_basics__es` */
@@ -149,9 +152,15 @@ function build(raw: RawEntry): Entry {
     filePath: raw.file_path,
     body: stripLeadingH1(stripFrontmatter(raw.full_content || '')),
     links: [],
-    // A template/legacy mirror is a near-duplicate of the original: it must not
-    // compete with it in search results, so it is noindex + canonical-to-origin.
-    isDuplicate: Boolean(m.is_translation) && translation !== 'human',
+    // A duplicate is a published page that must not compete with its original.
+    // Since template mirrors stopped being published, the only ones that can
+    // reach this are ones that slipped through a stale rule — so the test is the
+    // real-translation set, not a hardcoded 'human'. The previous version said
+    // `!== 'human'` and quietly noindexed all 19 new `ai` references while the
+    // sitemap still listed them.
+    isDuplicate: Boolean(m.is_translation) && !REAL_TRANSLATIONS.has(
+      (translation ?? 'template') as TranslationQuality,
+    ),
   };
 }
 
@@ -162,23 +171,38 @@ const all: Entry[] = RAW.map((raw) => {
 });
 
 /**
- * Drop mirrors that collide with their own original.
+ * The published set.
  *
- * Russian originals are already Russian, so `multilang/ru/<cat>/x.md` produces
- * the exact same URL as `<cat>/x.md` — 163 collisions, i.e. 163 pages that would
- * be published twice with the second one winning and, being a template copy,
- * marked noindex. The original is the canonical Russian version, so the ru mirror
- * is redundant and is not published.
+ * Two kinds of translation get no page of their own:
+ *
+ *   shadow  — its language equals the original's, so it resolves to the same URL
+ *             (163 of them: `multilang/ru/...` against a Russian original)
+ *   template — it is not a translation at all, just the original with a language
+ *             header (790 of them)
+ *
+ * Template mirrors used to be published as noindex + canonical-to-origin. That
+ * is the honest signal for a crawler and a dishonest one for a reader: someone
+ * who picked Spanish got Russian or English with a banner, and the language
+ * indexes counted articles they did not have. The files stay in the repository
+ * as the translation backlog.
+ *
+ * This must stay identical to the same rule in astro.config.mjs,
+ * generate-agent-files.mjs and verify-seo.mjs. A gate cannot check what it
+ * cannot see, and drift here is what produced 631 pages that agreed with
+ * nothing.
  */
-function dropShadowMirrors(list: Entry[]): Entry[] {
-  const dropped = publishedEntries(list);
-  if (dropped.length !== list.length) {
-    console.log(`[content] dropped ${list.length - dropped.length} shadow mirrors (mirror language == original language)`);
+function publishedSet(list: Entry[]): Entry[] {
+  const kept = publishedEntries(list);
+  if (kept.length !== list.length) {
+    console.log(
+      `[content] ${list.length} -> ${kept.length} published ` +
+      `(${list.length - kept.length} mirrors unpublished: shadow or template)`,
+    );
   }
-  return dropped;
+  return kept;
 }
 
-export const entries: Entry[] = dropShadowMirrors(all);
+export const entries: Entry[] = publishedSet(all);
 export const originals: Entry[] = entries.filter((e) => !e.isTranslation);
 
 // Built from the *published* set. Building it before shadow filtering let a
@@ -302,7 +326,15 @@ export function categoryCounts(lang: Lang): Record<string, number> {
   return out;
 }
 
-/** Indexable = original + human translations. Duplicates are noindex. */
+/**
+ * Indexable = anything published, because nothing published is a duplicate.
+ *
+ * The old rule was `!isDuplicate`, where a duplicate was any non-human mirror.
+ * Those are no longer published at all, so every published page is a real
+ * article in its own right and the distinction has nothing left to decide.
+ * It stayed as a function because the pages and the gates both ask the question,
+ * and a named predicate is easier to keep honest than a bare negation.
+ */
 export function isIndexable(e: Entry): boolean {
   return !e.isDuplicate;
 }

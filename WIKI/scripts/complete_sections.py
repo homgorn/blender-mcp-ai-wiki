@@ -106,34 +106,6 @@ def has_section(text: str, marker: str) -> bool:
     return re.search(rf"^##\s+.*\b{marker}\b", text, re.MULTILINE | re.IGNORECASE) is not None
 
 
-def looks_like_prose(para: str) -> bool:
-    """
-    Is this a sentence a reader would want as the article's opening line?
-
-    Rejecting code matters more than accepting prose. `references/v1/api/
-    scripting-patterns.md` has a few Python lines sitting outside any fence, and
-    an earlier version of this function pasted them into the ЦЕЛЬ section: the
-    page then rendered a second <h1> reading "...". So: no line may start like a
-    comment or a shell prompt, a call must not be followed by an assignment, and
-    a sentence needs real words in it.
-    """
-    for line in para.splitlines():
-        s = line.strip()
-        if not s:
-            continue
-        if s.startswith(("#", "//", "$", ">>>", "---", "===", "*")):
-            return False
-        if re.search(r"\w+\([^)]*\)\s*=", s):        # foo() = bar
-            return False
-        if re.search(r"[{};]\s*$", s):               # trailing code punctuation
-            return False
-    words = re.findall(r"[A-Za-zА-Яа-яЁё]{3,}", para)
-    if len(words) < 5:
-        return False
-    letters = sum(1 for c in para if c.isalpha() or c.isspace())
-    return letters / max(len(para), 1) > 0.75
-
-
 def rewrite_prose_links(text: str, f: str) -> tuple[str, bool]:
     """
     Replace a links section that is plain prose with real markdown links.
@@ -219,38 +191,36 @@ def fenced_regions(text: str) -> list[tuple[int, int]]:
 
 
 def goal_section(f: str, text: str) -> str:
+    """
+    Build the ЦЕЛЬ section from facts about the file. Nothing else.
+
+    This used to append "the first prose sentence in the article", picked by a
+    heuristic. That was a bad trade and it cost three rounds of repair:
+
+      - the first version ignored fenced code and pasted a Python snippet out of
+        a block, duplicating it and unbalancing the fence
+      - the second excluded fenced code but not loose code lines, so
+        scripting-patterns.md rendered a second <h1> reading "..."
+      - the third used `looks_like_prose`, which a six-line Python snippet
+        satisfies: 26 words and 82% letters
+
+    Any regex that asks "is this prose?" is defeatable by code that looks like
+    prose, and this corpus is full of code. So the section states only what is
+    known to be true — kind, category, declared time, declared difficulty — and
+    the articles that deserve a written goal (the hand-authored setups, workflows
+    and cases) keep theirs, because this function never touches those.
+    """
     e = BY_FILE[f]
     kind = TYPE_RU.get(e["type"], "Материал")
     diff = ("⭐" * e["difficulty"]) if e["difficulty"] else "—"
     time_m = re.search(r"\*\*Time:\*\*\s*([^\n]+)", text)
     time_s = time_m.group(1).strip() if time_m else ""
 
-    # First real prose sentence, if the file already has one.
-    #
-    # Fenced code is removed before the search, and any candidate that still
-    # contains a fence marker is discarded. The first version did neither: on the
-    # 19 articles under references/v1/ it lifted a Python snippet — comments
-    # included — out of a code block and pasted it into the article, duplicating
-    # the block and leaving an unbalanced fence. The text survived, the markdown
-    # structure did not, and the SEO gate caught it as "not exactly one <h1>".
-    first = ""
-    prose_only = re.sub(r"```[\s\S]*?```", "\n\n", text)
-    prose_only = re.sub(r"~~~[\s\S]*?~~~", "\n\n", prose_only)
-    for para in re.split(r"\n\s*\n", prose_only):
-        p = para.strip()
-        if not p or p.startswith(("#", "---", "|", "<!--", ">")):
-            continue
-        p = re.sub(r"\*\*[^*]+:\*\*[^\n]*", "", p).strip()
-        if len(p) > 40 and "```" not in p and "`" not in p and looks_like_prose(p):
-            first = re.split(r"(?<=[.!?])\s", p)[0][:300]
-            break
-
     head = f"## 🎯 ЦЕЛЬ\n\n{kind} категории «{CATEGORY_RU.get(e['category'], e['category'])}»"
     if time_s:
         head += f", {time_s}"
-    head += f", сложность {diff}."
-    body = f"\n\n{first}\n" if first else "\n"
-    return head + body
+    head += f", сложность {diff}.\n"
+    return head
 
 
 def links_section(f: str) -> str:

@@ -4,6 +4,11 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+// The publication rule is imported, not restated. It used to be written out by
+// hand here, in generate-agent-files.mjs and in both gates, and the copies
+// drifted — the config learned about the `ai` tier and one gate did not, which
+// noindexed 19 pages that the sitemap still listed.
+import { publishedEntries, emptyCategoryPairs, REAL_TRANSLATIONS } from './src/lib/publish.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DB_PATH = resolve(HERE, '../WIKI/db/wiki_database.json');
@@ -22,18 +27,26 @@ if (/^https?:\/\/(localhost|127\.0\.0\.1)/.test(SITE)) {
 }
 
 /**
- * Mirrors that collide with their own original, and near-duplicate mirrors.
+ * Translations that get no page of their own.
  *
- * MUST stay in lockstep with the same rule in src/lib/content.ts, otherwise the
- * sitemap and the published page set disagree — the sitemap then drops pages
- * that are indexable, or lists pages that are noindex. verify-seo.mjs asserts
- * that sitemap coverage equals the published set, so drift fails the build.
+ * MUST stay in lockstep with publishedEntries() in src/lib/links.ts and with the
+ * rule in generate-agent-files.mjs, otherwise the sitemap and the published page
+ * set disagree — the sitemap then drops pages that are indexable, or lists pages
+ * that do not exist. verify-seo.mjs asserts that sitemap coverage equals the
+ * published set, so drift fails the build.
  *
- *   shadow    : translation whose language == the original's language
- *               (Russian originals are already Russian, so multilang/ru/* is a
- *                duplicate of the original at the identical URL)
- *   duplicate : published, but a template/legacy copy -> noindex, not in sitemap
+ *   shadow   : translation whose language == the original's, so it resolves to
+ *              the same URL (Russian originals are already Russian, and
+ *              multilang/ru/* is a duplicate at the identical URL)
+ *   template : not a translation at all, just the original with a language header
+ *              (790 of them; previously published as noindex, which was honest to
+ *               a crawler and dishonest to a reader who had chosen a language)
+ *
+ * Both stay in the repository as the translation backlog.
  */
+const REAL_TRANSLATIONS_LOCAL = REAL_TRANSLATIONS;
+void REAL_TRANSLATIONS_LOCAL;
+
 function classify() {
   const slugify = (s) =>
     s.toLowerCase().replace(/\.md$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
@@ -42,7 +55,7 @@ function classify() {
     db = JSON.parse(readFileSync(DB_PATH, 'utf8'));
   } catch {
     console.warn('[seo] wiki_database.json not found — sitemap filter falls back to "index everything"');
-    return { noindex: new Set(), shadow: new Set(), emptyCategories: new Set() };
+    return { noindex: new Set(), shadow: new Set(), template: new Set(), emptyCategories: new Set() };
   }
   const all = db.entries ?? [];
   const originalLang = new Map();
@@ -54,6 +67,7 @@ function classify() {
   }
   const noindex = new Set();
   const shadow = new Set();
+  const template = new Set();
   for (const e of all) {
     const m = e.meta ?? {};
     if (!m.is_translation) continue;
@@ -64,44 +78,20 @@ function classify() {
     // on paths, not on the entity that owns them.
     if (originalLang.get(origId) === m.language) {
       shadow.add(path);
-    } else if (m.translation && m.translation !== 'human') {
-      noindex.add(path);
+    } else if (!REAL_TRANSLATIONS.has(m.translation ?? 'template')) {
+      // A template mirror is not a translation. It gets no page at all now, so
+      // the sitemap never sees it; the set exists so the filter and the gate can
+      // state the intent rather than relying on their absence.
+      template.add(path);
     }
   }
-  return { noindex, shadow, emptyCategories: emptyCategoryPaths(all) };
-}
-
-/**
- * /{lang}/{category} paths whose language has no indexable article in them.
- *
- * Category pages are generated for every category × language, so most pairs in
- * this corpus are empty (48 of them were). An empty page is useful to a reader
- * but is thin content and must not be in the sitemap.
- *
- * This duplicates `categoryHasContent` in src/lib/content.ts on purpose: the
- * config runs before any TS module is loaded, so it cannot import it. The
- * duplication is only safe because verify-consistency.mjs asserts the two agree
- * against the built output — if they ever drift, the build fails.
- *
- * "Indexable" must match content.ts exactly: original, or a human translation.
- */
-function emptyCategoryPaths(all) {
-  const filled = new Set();
-  for (const e of all) {
-    const m = e.meta ?? {};
-    const indexable = !m.is_translation || m.translation === 'human';
-    if (indexable && m.language && m.category) {
-      filled.add(`${m.language}/${m.category}`);
-    }
+  // From the shared rule, not a second copy of it.
+  const empty = new Set();
+  for (const pair of emptyCategoryPairs(all)) {
+    const [l, c] = pair.split('/');
+    empty.add(`/${l}/${c}`);
   }
-  const cats = new Set(all.map((e) => e.meta?.category).filter(Boolean));
-  const out = new Set();
-  for (const cat of cats) {
-    for (const lang of ['ru', 'en', 'es', 'de', 'zh']) {
-      if (!filled.has(`${lang}/${cat}`)) out.add(`/${lang}/${cat}`);
-    }
-  }
-  return out;
+  return { noindex, shadow, template, emptyCategories: empty };
 }
 
 const { noindex: NOINDEX, shadow: SHADOW, emptyCategories: EMPTY_CATS } = classify();

@@ -417,12 +417,9 @@ has_asset_browser = hasattr(bpy.ops, 'asset')
 - [bmesh Documentation](https://docs.blender.org/api/current/bmesh.html)
 - [mathutils Documentation](https://docs.blender.org/api/current/mathutils.html)
 
+---
+
 ## 🎯 ЦЕЛЬ
 
 Референс категории «Референсы», сложность —.
-
-mod = obj.modifiers.new("Bevel", 'BEVEL')
-mod.width = 0.02
-mod.segments = 3
-mod.profile = 0.5
 

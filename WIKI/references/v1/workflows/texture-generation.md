@@ -349,16 +349,6 @@ Examples:
 | Displacement not working | Material Settings → Displacement: "BOTH" or "Displacement Only" |
 | OOM | Reduce resolution; enable Attention Slicing; close other apps |
 
-## 🎯 ЦЕЛЬ
-
-Референс категории «Референсы», сложность —.
-
-mat = bpy.data.materials.new("ProceduralMetal")
-mat.use_nodes = True
-nodes = mat.node_tree.nodes
-links = mat.node_tree.links
-nodes.clear()
-
 ---
 
 ## 🔗 СВЯЗИ
@@ -366,4 +356,10 @@ nodes.clear()
 - **Прочие в категории «Референсы»:** [ANIMATION WORKFLOWS](animation.md), [BLENDER MATERIALS API REFERENCE](../api/materials.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md), [BLENDER PYTHON API REFERENCE (4.x)](../api/blender-api.md), [BLENDER SCRIPTING PATTERNS - SAFE & EFFECTIVE](../api/scripting-patterns.md)
 - **По темам:** [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md), [CASE 03: PRODUCT VISUALIZATION](../../../cases/case_03_product_viz.md)
 - **Теги:** #reference, #texturing
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
 

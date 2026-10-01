@@ -198,10 +198,6 @@ bpy.ops.dream_texture.generate(
 ```
 3. Combined workflow: GenesisCore for geometry → Dream Textures for materials
 
-## 🎯 ЦЕЛЬ
-
-Референс категории «Референсы», сложность —.
-
 ---
 
 ## 🔗 СВЯЗИ
@@ -209,4 +205,10 @@ bpy.ops.dream_texture.generate(
 - **Прочие в категории «Референсы»:** [DREAM TEXTURES ADDON - DEEP DIVE](dream-textures.md), [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [ANIMATION WORKFLOWS](../workflows/animation.md), [BLENDER MATERIALS API REFERENCE](../api/materials.md), [BLENDER MESH OPERATIONS API REFERENCE](../api/mesh-operations.md)
 - **По темам:** [BLENDER PYTHON API REFERENCE (4.x)](../api/blender-api.md), [BLENDER SCRIPTING PATTERNS - SAFE & EFFECTIVE](../api/scripting-patterns.md), [BLENDER-MCP - FULL DOCUMENTATION](blender-mcp-full.md)
 - **Теги:** #reference, #stable-diffusion
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
 

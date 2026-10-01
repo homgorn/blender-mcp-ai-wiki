@@ -169,7 +169,11 @@ for lang in ["en","ru","es","de","zh"]:
         rel = f.relative_to(base)
         if len(rel.parts) < 2:
             continue
-        if not (WIKI/rel.parts[0]/rel.name).exists():
+        if not (WIKI/rel).exists():
+            # The mirror path is the original path with `multilang/<lang>/` in
+            # front, so resolve it as-is. The previous `WIKI/<cat>/<name>` form
+            # only ever matched flat category dirs, and it reported every
+            # nested mirror (references/v1/api/...) as an orphan of nothing.
             orphans.append(f"{rel.as_posix()}")
 if orphans:
     fail(f"orphan translations without original ({len(orphans)}): {sorted(set(orphans))[:10]}")

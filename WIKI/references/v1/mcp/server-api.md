@@ -354,9 +354,9 @@ from .my_tools import MyTools  # Order = UI display order
 
 ---
 
+---
+
 ## 🎯 ЦЕЛЬ
 
 Референс категории «Референсы», сложность —.
-
-GenesisCore uses same tool definitions but executes directly in Blender process (no TCP).
 

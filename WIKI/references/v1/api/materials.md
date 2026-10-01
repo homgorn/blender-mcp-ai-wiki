@@ -440,20 +440,6 @@ for mat in list(bpy.data.materials):
 # Or: File → Clean Up → Unused Data Blocks
 ```
 
-## 🎯 ЦЕЛЬ
-
-Референс категории «Референсы», сложность —.
-
-def add_texture(map_key, input_name, colorspace='sRGB', use_normal_map=False, use_disp=False):
-        if map_key not in maps:
-            return
-        img = maps[map_key]
-        tex = nodes.new('ShaderNodeTexImage')
-        tex.image = img
-        tex.image.colorspace_settings.name = colorspace
-        tex.location = (-200, 0)
-        links.new(mapping.outputs['Vector'], tex.inputs['Vector'])
-
 ---
 
 ## 🔗 СВЯЗИ
@@ -461,4 +447,10 @@ def add_texture(map_key, input_name, colorspace='sRGB', use_normal_map=False, us
 - **Прочие в категории «Референсы»:** [BLENDER MESH OPERATIONS API REFERENCE](mesh-operations.md), [BLENDER PYTHON API REFERENCE (4.x)](blender-api.md), [BLENDER SCRIPTING PATTERNS - SAFE & EFFECTIVE](scripting-patterns.md), [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md)
 - **По темам:** [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md), [MCP SERVER API REFERENCE](../mcp/server-api.md)
 - **Теги:** #api, #blender, #reference, #shading
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
 

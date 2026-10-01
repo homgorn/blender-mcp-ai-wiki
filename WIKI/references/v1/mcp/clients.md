@@ -177,6 +177,8 @@ No external MCP client needed. Configure in Blender N-panel:
 
 ---
 
+---
+
 ## 🎯 ЦЕЛЬ
 
 Референс категории «Референсы», сложность —.

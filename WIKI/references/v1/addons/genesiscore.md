@@ -256,12 +256,6 @@ class MCPClientCustom(MCPClientBase):
 - [Prompting Guide](../guides/prompting.md)
 - [blender-mcp Comparison](blender-mcp.md)
 
-## 🎯 ЦЕЛЬ
-
-Референс категории «Референсы», сложность —.
-
-GenesisCore is a **full MCP Client + Server** built directly into Blender.
-
 ---
 
 ## 🔗 СВЯЗИ
@@ -269,4 +263,10 @@ GenesisCore is a **full MCP Client + Server** built directly into Blender.
 - **Прочие в категории «Референсы»:** [BLENDER-MCP ADDON - DEEP DIVE](blender-mcp.md), [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [TROUBLESHOOTING GUIDE](../guides/troubleshooting.md), [BLENDER-MCP - FULL DOCUMENTATION](blender-mcp-full.md), [DREAM TEXTURES ADDON - DEEP DIVE](dream-textures.md)
 - **По темам:** [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md), [MCP CLIENT CONFIGURATIONS](../mcp/clients.md), [MCP SERVER API REFERENCE](../mcp/server-api.md)
 - **Теги:** #addon, #mcp, #reference
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
 

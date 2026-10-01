@@ -580,16 +580,6 @@ bpy.context.view_layer.objects.active = obj
 bpy.ops.object.convert(target='MESH')
 ```
 
-## 🎯 ЦЕЛЬ
-
-Референс категории «Референсы», сложность —.
-
-def create_cube(name="Cube", size=2, location=(0,0,0)):
-    mesh = bpy.data.meshes.new(name)
-    obj = bpy.data.objects.new(name, mesh)
-    bpy.context.collection.objects.link(obj)
-    obj.location = location
-
 ---
 
 ## 🔗 СВЯЗИ
@@ -597,4 +587,10 @@ def create_cube(name="Cube", size=2, location=(0,0,0)):
 - **Прочие в категории «Референсы»:** [BLENDER MATERIALS API REFERENCE](materials.md), [BLENDER PYTHON API REFERENCE (4.x)](blender-api.md), [BLENDER SCRIPTING PATTERNS - SAFE & EFFECTIVE](scripting-patterns.md), [BLENDER-MCP - FULL DOCUMENTATION](../addons/blender-mcp-full.md), [BLENDER-MCP ADDON - DEEP DIVE](../addons/blender-mcp.md)
 - **По темам:** [INSTALLATION GUIDE - COMPLETE SETUP](../guides/installation.md), [MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER](../mcp/architecture.md), [MCP SERVER API REFERENCE](../mcp/server-api.md)
 - **Теги:** #api, #blender, #modeling, #reference
+
+---
+
+## 🎯 ЦЕЛЬ
+
+Референс категории «Референсы», сложность —.
 

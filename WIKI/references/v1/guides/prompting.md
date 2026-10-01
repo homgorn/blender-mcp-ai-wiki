@@ -289,14 +289,9 @@ Optimize for render time / poly count / editability."
 
 ---
 
+---
+
 ## 🎯 ЦЕЛЬ
 
 Референс категории «Референсы», сложность —.
-
-import bpy
-for obj in bpy.context.selected_objects:
-    obj.modifiers.new('Bevel', 'BEVEL')
-    obj.modifiers['Bevel'].width = 0.02
-    obj.modifiers['Bevel'].segments = 3
-    bpy.ops.object.shade_smooth()
 

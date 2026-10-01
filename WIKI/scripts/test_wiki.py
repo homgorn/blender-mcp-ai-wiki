@@ -13,7 +13,7 @@ Covers the invariants that are easy to break silently:
   * site artifacts the browser actually loads (meta.json + chunks/*)
   * HTTP contract of wiki_api.py, incl. ETag/304, pagination, 404/405
 """
-import json, os, socket, sys, threading, unittest, urllib.request, urllib.error
+import json, os, re, socket, sys, threading, unittest, urllib.request, urllib.error
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 
@@ -154,7 +154,14 @@ class TestCorpus(unittest.TestCase):
             self.assertTrue(e.get("file_path"))
 
     def test_multilang_parity(self):
-        """Every translation must have a matching original file."""
+        """
+        Every translation must have a matching original file.
+
+        The original is the mirror's path relative to `multilang/<lang>/`. The
+        previous form, `WIKI/<category>/<name>`, only ever matched a flat category
+        directory, so it reported every nested mirror — references/v1/** — as an
+        orphan. It passed for years because no nested mirror existed.
+        """
         missing = []
         for lang in ("en", "ru", "es", "de", "zh"):
             base = WIKI / "multilang" / lang
@@ -164,14 +171,74 @@ class TestCorpus(unittest.TestCase):
                 rel = f.relative_to(base)
                 if len(rel.parts) < 2:
                     continue
-                if not (WIKI / rel.parts[0] / rel.name).exists():
+                if not (WIKI / rel).exists():
                     missing.append(f"{rel.as_posix()}")
         self.assertEqual(missing, [], f"translations without original: {missing[:10]}")
 
-    def test_lang_coverage_equal(self):
+    def test_every_mirror_is_accounted_for(self):
+        """
+        A mirror must be a real translation or a declared template, never neither.
+
+        The site publishes only `human` and `ai` mirrors, so a mirror file that
+        carries no `translation:` marker is a page the corpus offers and the site
+        refuses to serve — the kind of gap that only shows up as a missing page.
+        """
+        unmarked = []
+        for lang in ("en", "ru", "es", "de", "zh"):
+            base = WIKI / "multilang" / lang
+            if not base.exists():
+                continue
+            for f in base.rglob("*.md"):
+                text = f.read_text(encoding="utf-8")
+                if not re.search(r"^translation\s*:", text, re.MULTILINE):
+                    unmarked.append(f"multilang/{lang}/{f.relative_to(base).as_posix()}")
+        self.assertEqual(unmarked, [], f"mirrors with no translation marker: {unmarked[:10]}")
+
+    def test_lang_coverage_is_declared(self):
+        """
+        Coverage per language is recorded, and only the languages we claim are real.
+
+        The old test asserted all five languages hold the same number of files.
+        That assertion is the "5 languages" claim, and it was false: only 7
+        articles had real translations into es/de/zh, the rest were the original
+        text with a language header. Asserting equality would have kept a fiction
+        alive. What is worth asserting is that the difference is a recorded,
+        deliberate one, and that the languages we publish as real are the ones
+        with content.
+        """
         counts = {l: len(list((WIKI / "multilang" / l).rglob("*.md")))
                   for l in ("en", "ru", "es", "de", "zh")}
-        self.assertEqual(len(set(counts.values())), 1, f"lang parity broken: {counts}")
+        # Recorded here rather than derived, so that adding a translation is a
+        # decision with a diff, not a side effect.
+        self.assertGreaterEqual(counts["ru"], counts["es"])
+        self.assertGreater(counts["ru"], counts["en"],
+                           "the Russian corpus is the primary one and must lead")
+
+        # Every language the site advertises must have real content. Counted as
+        # published articles, not as translations: English is a real language here
+        # because 41 articles were *written* in it, not because anything was
+        # translated into it.
+        db = json.loads((WIKI / "db" / "wiki_database.json").read_text(encoding="utf-8"))
+        orig_lang = {}
+        for e in db["entries"]:
+            m = e["meta"]
+            if not m.get("is_translation"):
+                orig_lang[m.get("orig_id") or re.sub(r"__[a-z]{2}$", "", m["id"])] = m["language"]
+        published = {}
+        for e in db["entries"]:
+            m = e["meta"]
+            oid = m.get("orig_id") or re.sub(r"__[a-z]{2}$", "", m["id"])
+            if m.get("is_translation"):
+                if m.get("translation") not in ("human", "ai"):
+                    continue
+                if orig_lang.get(oid) == m["language"]:
+                    continue      # shadow: same URL as the original
+            published[m["language"]] = published.get(m["language"], 0) + 1
+        for l in ("en", "ru", "es", "de", "zh"):
+            self.assertGreaterEqual(published.get(l, 0), 7,
+                                    f"{l} is advertised but has almost no real content")
+        self.assertEqual(published.get("ru"), 160, "Russian is the primary language")
+        self.assertEqual(published.get("en"), 41)
 
     def test_content_hashes_match_files(self):
         """DB must not be stale relative to the markdown sources."""

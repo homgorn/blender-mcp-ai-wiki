@@ -12,10 +12,13 @@ import assert from 'node:assert/strict';
 import {
   resolvePath,
   isShadowMirror,
+  isTemplateMirror,
+  isRealTranslation,
   computeOrigLang,
   publishedEntries,
   buildBodyLinkMap,
   slugify,
+  REAL_TRANSLATIONS,
   type LinkEntry,
 } from '../src/lib/links.ts';
 
@@ -49,10 +52,12 @@ test('resolvePath collapses .. segments', () => {
 
 test('a translation in the original own language is a shadow', () => {
   // 163 of these. They resolve to the original's URL, so publishing them makes
-  // two entries own one URL and the template copy overwrites the original.
+  // two entries own one URL and the copy overwrites the original.
+  // The `translation: 'ai'` matters: without a quality marker the entry is a
+  // template and is dropped for a second, independent reason.
   const orig = E({ id: 'a', lang: 'ru' });
-  const sameLang = E({ id: 'a__ru', lang: 'ru', isTranslation: true });
-  const otherLang = E({ id: 'a__de', lang: 'de', isTranslation: true });
+  const sameLang = E({ id: 'a__ru', lang: 'ru', isTranslation: true, translation: 'ai' });
+  const otherLang = E({ id: 'a__de', lang: 'de', isTranslation: true, translation: 'ai' });
   const m = computeOrigLang([orig, sameLang, otherLang]);
 
   assert.equal(isShadowMirror(orig, m), false);
@@ -63,14 +68,54 @@ test('a translation in the original own language is a shadow', () => {
   assert.deepEqual(pub.map((e) => e.id), ['a', 'a__de']);
 });
 
-test('a human translation is never a shadow, whatever its language', () => {
-  // If a Russian original had a genuine human Russian rewrite, dropping it as a
-  // "shadow" would silently delete a page.
+test('a template mirror is never published', () => {
+  // The rule that removed 631 pages. A template mirror is the original text with
+  // a language header: publishing it as noindex was honest to a crawler and
+  // dishonest to a reader who had chosen that language.
   const orig = E({ id: 'a', lang: 'ru' });
-  const humanRu = E({ id: 'a__ru', lang: 'ru', isTranslation: true });
-  // isShadowMirror is language-based only; the quality flag is not consulted.
-  // Assert the behaviour explicitly so a future change has to be deliberate.
-  assert.equal(isShadowMirror(humanRu, computeOrigLang([orig, humanRu])), true);
+  const tmplEs = E({ id: 'a__es', lang: 'es', isTranslation: true, translation: 'template' });
+  const tmplZh = E({ id: 'a__zh', lang: 'zh', isTranslation: true, translation: 'template' });
+  const legacy = E({ id: 'a__de', lang: 'de', isTranslation: true, translation: 'legacy' });
+  const humanEs = E({ id: 'a__es', lang: 'es', isTranslation: true, translation: 'human' });
+  const aiZh = E({ id: 'a__zh', lang: 'zh', isTranslation: true, translation: 'ai' });
+
+  assert.equal(isTemplateMirror(tmplEs), true);
+  assert.equal(isTemplateMirror(legacy), true);
+  assert.equal(isTemplateMirror(humanEs), false);
+  assert.equal(isTemplateMirror(aiZh), false);
+  assert.equal(isTemplateMirror(orig), false);
+
+  const pub = publishedEntries([orig, tmplEs, tmplZh, legacy, humanEs, aiZh]);
+  assert.deepEqual(pub.map((e) => `${e.id}:${e.translation ?? 'original'}`),
+    ['a:original', 'a__es:human', 'a__zh:ai']);
+});
+
+test('an unmarked translation is treated as a template, not as real', () => {
+  // Failing open here would publish 790 pages of untranslated text.
+  const x = E({ id: 'x__es', lang: 'es', isTranslation: true });
+  assert.equal(isTemplateMirror(x), true);
+  assert.equal(isRealTranslation(x, new Map()), false);
+});
+
+test('a real translation in a new language is published', () => {
+  const orig = E({ id: 'a', lang: 'ru' });
+  const es = E({ id: 'a__es', lang: 'es', isTranslation: true, translation: 'ai' });
+  const m = computeOrigLang([orig, es]);
+  assert.equal(isRealTranslation(es, m), true);
+  assert.equal(isShadowMirror(es, m), false);
+});
+
+test('the duplicate test and the publication rule agree', () => {
+  // These two drifted once: the publication rule learned about `ai` and the
+  // isDuplicate test did not, so 19 Russian references were published and noindex
+  // at the same time — in the sitemap, invisible to search. The invariant is that
+  // nothing can be both published and a duplicate.
+  for (const q of ['human', 'ai', 'legacy', 'template', undefined] as const) {
+    const e = E({ id: 'x__es', lang: 'es', isTranslation: true, translation: q });
+    const published = publishedEntries([e]).length === 1;
+    const isDuplicate = !REAL_TRANSLATIONS.has((q ?? 'template') as never);
+    assert.equal(published && isDuplicate, false, `translation=${q} is published AND duplicate`);
+  }
 });
 
 test('an entry whose origId has no original is published', () => {
@@ -83,7 +128,7 @@ test('published entries never claim the same URL twice', () => {
   // entries write one URL and the later one wins silently.
   const all: LinkEntry[] = [E({ id: 'p01', origId: 'p01', lang: 'en' })];
   for (const lang of ['ru', 'es', 'de', 'zh'] as const) {
-    all.push(E({ id: `p01__${lang}`, origId: 'p01', lang, isTranslation: true }));
+    all.push(E({ id: `p01__${lang}`, origId: 'p01', lang, isTranslation: true, translation: 'ai' }));
   }
   const pub = publishedEntries(all);
   const urls = pub.map((e) => `/${e.lang}/${e.category}/${slugify(e.origId)}`);
@@ -128,10 +173,10 @@ test('a ../ link resolves to the target entry', () => {
 test('a link from a German page resolves to the German target', () => {
   // Sending a German reader to the Russian article when a German one exists is
   // the failure this guards.
-  const from = E({ id: 'c1__de', origId: 'c1', lang: 'de', isTranslation: true,
+  const from = E({ id: 'c1__de', origId: 'c1', lang: 'de', isTranslation: true, translation: 'ai',
     category: 'cases', filePath: 'multilang/de/cases/c1.md', body: '[S](../setups/s1.md)' });
   const ruTarget = E({ id: 's1', origId: 's1', lang: 'ru', category: 'setups', filePath: 'setups/s1.md' });
-  const deTarget = E({ id: 's1__de', origId: 's1', lang: 'de', isTranslation: true,
+  const deTarget = E({ id: 's1__de', origId: 's1', lang: 'de', isTranslation: true, translation: 'ai',
     category: 'setups', filePath: 'multilang/de/setups/s1.md' });
   const map = buildBodyLinkMap(from, ctx([from, ruTarget, deTarget]));
   assert.equal(map.get('../setups/s1.md'), '/de/setups/s1');
@@ -143,7 +188,7 @@ test('a translation body link resolves against the original folder', () => {
   // produced multilang/en/prompts/x.md, which does not exist — 78 dead links.
   // The mirror's own original must be present, or there is no original folder
   // to fall back to.
-  const from = E({ id: '05__en', origId: '05', lang: 'en', isTranslation: true,
+  const from = E({ id: '05__en', origId: '05', lang: 'en', isTranslation: true, translation: 'ai',
     filePath: 'multilang/en/prompts/05.md', body: '[P](../prompts/09.md)' });
   const ownOriginal = E({ id: '05', origId: '05', lang: 'ru', filePath: 'prompts/05.md' });
   const target = E({ id: '09', origId: '09', lang: 'en', filePath: 'prompts/09.md' });
@@ -154,7 +199,7 @@ test('a translation body link resolves against the original folder', () => {
 test('a translation with no original present cannot fall back', () => {
   // Guards the assumption above: without an original in the set the mirror's
   // links are simply unresolvable, and the gate must be the one to say so.
-  const orphan = E({ id: '05__en', origId: '05', lang: 'en', isTranslation: true,
+  const orphan = E({ id: '05__en', origId: '05', lang: 'en', isTranslation: true, translation: 'ai',
     filePath: 'multilang/en/prompts/05.md', body: '[P](../prompts/09.md)' });
   const target = E({ id: '09', origId: '09', lang: 'en', filePath: 'prompts/09.md' });
   const map = buildBodyLinkMap(orphan, ctx([orphan, target]));
@@ -213,7 +258,40 @@ test('image syntax is not mistaken for a link', () => {
   assert.equal(map.size, 0);
 });
 
-/* ---------------------------------------------------------------- slugify */
+test('the rule reads both shapes of entry', () => {
+  // The shared rule is called with database entries by the scripts and with the
+  // built objects by the Astro data layer, and the two spell their fields
+  // differently. A version that read only `is_translation` got `undefined` on
+  // the built objects, decided every entry was an original, and published all
+  // 794 mirrors — 935 pages instead of 285.
+  const dbEntry = {
+    meta: {
+      id: 'a__es', orig_id: 'a', language: 'es', category: 'prompts',
+      is_translation: true, translation: 'ai',
+    },
+  };
+  const built = {
+    id: 'a__es', origId: 'a', lang: 'es', category: 'prompts',
+    isTranslation: true, translation: 'ai',
+  };
+  const dbOriginal = { meta: { id: 'a', language: 'ru', category: 'prompts', is_translation: false } };
+  const builtOriginal = { id: 'a', origId: 'a', lang: 'ru', category: 'prompts', isTranslation: false };
+
+  for (const [orig, tr, asTemplate] of [
+    [dbOriginal, dbEntry, (t) => ({ meta: { ...t.meta, translation: 'template' } })],
+    [builtOriginal, built, (t) => ({ ...t, translation: 'template' })],
+  ]) {
+    const m = computeOrigLang([orig, tr]);
+    assert.equal(isShadowMirror(tr, m), false, 'es differs from the ru original');
+    assert.equal(isRealTranslation(tr, m), true);
+    assert.equal(isTemplateMirror(tr), false);
+    assert.equal(publishedEntries([orig, tr]).length, 2, 'both should be published');
+
+    const tmpl = asTemplate(tr);
+    assert.equal(isTemplateMirror(tmpl), true, 'a template is not a translation');
+    assert.equal(publishedEntries([orig, tmpl]).length, 1, 'the template must not be published');
+  }
+});
 
 test('slugify drops characters that cannot appear in a URL path', () => {
   assert.equal(slugify('01_geometry_basics'), '01-geometry-basics');
@@ -222,3 +300,5 @@ test('slugify drops characters that cannot appear in a URL path', () => {
   assert.equal(slugify('a.md'), 'a');
   assert.equal(slugify('--a--'), 'a');
 });
+
+/* ---------------------------------------------------------------- slugify */

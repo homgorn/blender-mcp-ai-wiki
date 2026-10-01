@@ -313,6 +313,8 @@ class MCPClientCustom(MCPClientBase):
 
 ---
 
+---
+
 ## 🎯 ЦЕЛЬ
 
 Референс категории «Референсы», сложность —.

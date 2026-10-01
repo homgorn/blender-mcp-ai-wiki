@@ -46,22 +46,25 @@ const entries = db.entries.map((e) => {
     url: `/${m.language}/${m.category || 'references'}/${slugify(origId)}`,
   };
 });
-const indexable = entries.filter((e) => !e.isTranslation || e.translation === 'human');
-/**
- * Mirrors published but marked noindex (excluded from the sitemap).
- * Mirrors whose language equals the original's language are NOT published at
- * all (they would collide on the same URL) — see dropShadowMirrors in
- * src/lib/content.ts. Checking those for noindex would demand the impossible.
- */
+// The publication rule is imported, not restated. This file used to carry its
+// own copy and it drifted from the site's: the site learned about the `ai`
+// quality tier, this gate did not, and 19 Russian references ended up in the
+// sitemap carrying `noindex`. A gate that keeps its own copy of the rule it
+// checks is one more place for the rule to be wrong.
+import { publishedEntries, emptyCategoryPairs, REAL_TRANSLATIONS } from '../src/lib/publish.mjs';
+
 const originalLang = new Map();
 for (const e of entries) {
   if (!e.isTranslation) originalLang.set(e.origId, e.lang);
 }
 const isShadow = (e) => e.isTranslation && originalLang.get(e.origId) === e.lang;
-const duplicates = entries.filter(
-  (e) => e.isTranslation && e.translation && e.translation !== 'human' && !isShadow(e),
-);
+const isTemplate = (e) => e.isTranslation && !REAL_TRANSLATIONS.has(e.translation || 'template');
+const published = entries.filter((e) => !isShadow(e) && !isTemplate(e));
+void publishedEntries;
+void emptyCategoryPairs;
+const indexable = published;
 const shadows = entries.filter(isShadow);
+const templates = entries.filter((e) => isTemplate(e) && !isShadow(e));
 const shadowUrls = new Set(shadows.map((e) => e.url));
 
 /* ----------------------------------------------------- file existence */
@@ -150,23 +153,39 @@ for (const e of indexable) {
 }
 if (!fails.length) ok(`${checked} indexable articles pass all head/JSON-LD/hreflang checks`);
 
-/* --------------------------------------- duplicates must be de-duplicated */
-console.log('== 3. Template mirrors: noindex + canonical to original ==');
-let dupOk = 0;
-for (const e of duplicates) {
-  if (shadowUrls.has(e.url)) continue;   // owned by the original, not by the mirror
-  const file = join(DIST, `${e.url}.html`);
-  if (!existsSync(file)) { fail(`mirror page missing: ${e.url}`); continue; }
-  const html = readFileSync(file, 'utf8');
-  const problems = [];
-  if (!/<meta name="robots" content="noindex/.test(html)) problems.push('missing noindex');
-  const canon = /<link rel="canonical" href="([^"]+)"/.exec(html)?.[1] ?? '';
-  if (!canon || canon.endsWith(e.url)) problems.push(`canonical not pointing at original (${canon})`);
-  if (problems.length) fail(`${e.url}: ${problems.join('; ')}`);
-  else dupOk++;
+/* --------------------------------- untranslated mirrors are not published */
+console.log('== 3. Template and shadow mirrors are not published ==');
+{
+  // A template mirror is the original text with a language header on it. It was
+  // published as noindex + canonical-to-origin, which is honest to a crawler and
+  // dishonest to a reader: someone who chose Spanish got Russian or English with
+  // a banner, and the language index pages counted articles they did not have.
+  // Neither kind of mirror may have an HTML page or a .md twin now.
+  let leaked = [];
+  for (const e of [...templates, ...shadows]) {
+    if (shadowUrls.has(e.url) && isShadow(e)) continue;  // URL owned by the original
+    if (existsSync(join(DIST, `${e.url}.html`))) leaked.push(`${e.url}.html`);
+    if (existsSync(join(DIST, `${e.url}.md`))) leaked.push(`${e.url}.md`);
+  }
+  if (leaked.length) {
+    for (const l of leaked.slice(0, 5)) fail(`untranslated mirror published: ${l}`);
+    fail(`${leaked.length} mirror artifact(s) for ${templates.length + shadows.length} untranslated entries`);
+  } else {
+    ok(`no artifact for ${templates.length} template or ${shadows.length} shadow mirrors`);
+  }
+
+  // And the reverse: a real translation must have its page.
+  const realTr = entries.filter(
+    (e) => e.isTranslation && REAL_TRANSLATIONS.has(e.translation || '') && !isShadow(e),
+  );
+  const missingTr = realTr.filter((e) => !existsSync(join(DIST, `${e.url}.html`)));
+  if (missingTr.length) {
+    for (const e of missingTr.slice(0, 5)) fail(`real translation not published: ${e.url} (${e.translation})`);
+    fail(`${missingTr.length} real translation(s) missing`);
+  } else {
+    ok(`all ${realTr.length} real translations (human/ai) are published`);
+  }
 }
-ok(`${dupOk} template mirrors carry noindex + canonical-to-origin`);
-ok(`${shadows.length} shadow mirrors correctly not published (URL owned by the original)`);
 
 /* --------------------------------------------------- markdown twin fidelity */
 console.log('== 3b. Markdown twins match their page ==');
@@ -243,9 +262,15 @@ console.log('== 4. sitemap ==');
       const search = locs.filter((l) => /\/search(\?|$)/.test(l));
       if (search.length) fail(`sitemap contains ${search.length} /search urls`);
       else ok('sitemap excludes search pages');
-      const dupLocs = locs.filter((l) => duplicates.some((d) => new URL(l).pathname === d.url));
-      if (dupLocs.length) fail(`sitemap contains ${dupLocs.length} noindex mirror urls`);
-      else ok('sitemap excludes noindex mirrors');
+      // Only templates are a defect here. A shadow's URL *is* the original's URL,
+      // so finding that path in the sitemap is the original being listed, which
+      // is exactly what should happen.
+      const dupLocs = locs.filter((l) => {
+        const p = new URL(l).pathname;
+        return templates.some((d) => d.url === p);
+      });
+      if (dupLocs.length) fail(`sitemap contains ${dupLocs.length} untranslated mirror urls`);
+      else ok('sitemap excludes untranslated template mirrors');
 
       // Coverage: the sitemap must equal the set of indexable pages that exist on
       // disk. This is the check that catches rule drift between the page builder
@@ -271,25 +296,14 @@ console.log('== 4d. Empty category pages ==');
   // index,follow inside the sitemap. Handing Google 48 empty pages is exactly
   // the kind of thin content the SEO work exists to prevent.
   //
-  // The emptiness rule is implemented twice on purpose: `categoryHasContent` in
-  // src/lib/content.ts drives the page's robots meta, and `emptyCategoryPaths`
-  // in astro.config.mjs drives the sitemap. The config runs before TS loads, so
-  // it cannot import the helper. This block is what makes the duplication safe:
-  // it recomputes the set from the database and checks the built pages against
-  // it, in both directions.
-  const filled = new Set();
-  const cats = new Set();
-  for (const e of db.entries) {
-    const m = e.meta ?? {};
-    if (m.category) cats.add(m.category);
-    const indexable = !m.is_translation || m.translation === 'human';
-    if (indexable && m.language && m.category) filled.add(`${m.language}/${m.category}`);
-  }
+  // The set comes from the shared rule, so this block no longer has to restate
+  // it — which is how it came to disagree with the site in the first place. It
+  // then checks the built pages in both directions: nothing empty may be
+  // indexable, and nothing with articles may be marked empty.
   const expectedEmpty = new Set();
-  for (const cat of cats) {
-    for (const l of ['ru', 'en', 'es', 'de', 'zh']) {
-      if (!filled.has(`${l}/${cat}`)) expectedEmpty.add(`/${l}/${cat}`);
-    }
+  for (const pair of emptyCategoryPairs(db.entries)) {
+    const [l, c] = pair.split('/');
+    expectedEmpty.add(`/${l}/${c}`);
   }
 
   // (1) None of them may be in the sitemap.
@@ -488,4 +502,4 @@ if (fails.length) {
   for (const f of fails.slice(0, 30)) console.log('  - ' + f);
   process.exit(1);
 }
-console.log(`RESULT: OK  (${indexable.length} indexable pages, ${duplicates.length} de-duplicated mirrors)`);
+console.log(`RESULT: OK  (${indexable.length} indexable pages, ${templates.length + shadows.length} untranslated mirrors not published)`);

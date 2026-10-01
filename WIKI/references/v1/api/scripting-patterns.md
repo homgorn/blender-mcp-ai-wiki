@@ -619,6 +619,8 @@ result = verify_step("Create floor", verify_floor_exists)
 
 ---
 
+---
+
 ## 🎯 ЦЕЛЬ
 
 Референс категории «Референсы», сложность —.

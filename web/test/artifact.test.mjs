@@ -23,6 +23,8 @@ const DB = join(ROOT, '..', 'WIKI', 'db', 'wiki_database.json');
 const slugify = (s) =>
   s.toLowerCase().replace(/\.md$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 const origOf = (m) => m.orig_id ?? String(m.id).replace(/__[a-z]{2}$/, '');
+/** Qualities that count as a real translation and therefore get a page. */
+const REAL = new Set(['human', 'ai']);
 
 let db, htmls, published, shadows, categories, langs;
 
@@ -36,14 +38,18 @@ before(() => {
     if (!m.is_translation) origLang.set(origOf(m), m.language);
   }
   const isShadow = (m) => m.is_translation && origLang.get(origOf(m)) === m.language;
+  // Must match publishedEntries() in src/lib/links.ts: a template mirror is the
+  // original with a language header, so it gets no page.
+  const isTemplate = (m) => m.is_translation && !REAL.has(m.translation ?? 'template');
   published = db.entries
-    .filter((e) => !isShadow(e.meta))
+    .filter((e) => !isShadow(e.meta) && !isTemplate(e.meta))
     .map((e) => ({
       url: `/${e.meta.language}/${e.meta.category || 'references'}/${slugify(origOf(e.meta))}`,
       id: e.meta.id,
       lang: e.meta.language,
       category: e.meta.category || 'references',
-      indexable: !e.meta.is_translation || e.meta.translation === 'human',
+      indexable: true,
+      translation: e.meta.translation,
     }));
   shadows = db.entries.filter((e) => isShadow(e.meta)).length;
 
@@ -108,6 +114,48 @@ test('no twin exists for a URL with no page', () => {
     .filter((p) => !existsSync(join(DIST, `${p.url}.html`)))
     .filter((p) => existsSync(join(DIST, `${p.url}.md`)));
   assert.deepEqual(orphans.map((o) => o.url), []);
+});
+
+test('an untranslated mirror has neither a page nor a twin', () => {
+  // The change that shrank the site. The files stay in the repository as the
+  // translation backlog, but nothing on the site may point at them: a reader who
+  // picks a language must not be handed the original text with a banner.
+  const origLang = new Map();
+  for (const e of db.entries) {
+    if (!e.meta.is_translation) origLang.set(origOf(e.meta), e.meta.language);
+  }
+  const leaked = [];
+  let templates = 0;
+  for (const e of db.entries) {
+    const m = e.meta;
+    if (!m.is_translation) continue;
+    if (REAL.has(m.translation ?? 'template')) continue;
+    if (origLang.get(origOf(m)) === m.language) continue;   // shadow: original owns the URL
+    templates++;
+    const url = `/${m.language}/${m.category || 'references'}/${slugify(origOf(m))}`;
+    if (existsSync(join(DIST, `${url}.html`))) leaked.push(`${url}.html`);
+    if (existsSync(join(DIST, `${url}.md`))) leaked.push(`${url}.md`);
+  }
+  assert.deepEqual(leaked.slice(0, 10), []);
+  assert.ok(templates > 0, 'no untranslated mirrors in the database — the check proves nothing');
+});
+
+test('every language with a page claims it honestly', () => {
+  // A language index that counts articles it does not have is the symptom that
+  // made five languages a claim rather than a fact.
+  const perLang = {};
+  for (const p of published) perLang[p.lang] = (perLang[p.lang] ?? 0) + 1;
+  for (const l of langs) {
+    const n = perLang[l] ?? 0;
+    const file = join(DIST, l, 'index.html');
+    if (!existsSync(file)) continue;
+    const html = readFileSync(file, 'utf8');
+    const claimed = Number(/(\d+)\s*(?:стат|article|art[ií]culo)/i.exec(html)?.[1] ?? NaN);
+    if (Number.isFinite(claimed) && claimed !== n) {
+      assert.equal(claimed, n, `/${l} claims ${claimed} articles but publishes ${n}`);
+    }
+  }
+  assert.ok(Object.keys(perLang).length >= 2, 'the site should have more than one real language');
 });
 
 /* ------------------------------------------------------------------ links */

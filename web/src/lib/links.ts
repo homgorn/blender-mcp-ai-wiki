@@ -17,6 +17,26 @@
  * under `node --test` directly. See test/site-logic.test.ts.
  */
 
+/**
+ * The publication rule lives in publish.mjs, not here.
+ *
+ * It was written here first and then restated by hand in the Astro config, the
+ * agent-file generator and the gates. They drifted: the config learned about the
+ * `ai` quality tier and one gate did not, which noindexed 19 pages that the
+ * sitemap still listed. Duplicated rules are a bug generator; a rule that has to
+ * be imported can only be wrong in one place, and the test that compares the two
+ * consumers is now redundant.
+ */
+export {
+  REAL_TRANSLATIONS,
+  isTemplateMirror,
+  isShadowMirror,
+  isRealTranslation,
+  computeOrigLang,
+  publishedEntries,
+  slugify,
+} from './publish.mjs';
+
 /** Minimal shape needed here, so tests need not import the full Entry type. */
 export interface LinkEntry {
   id: string;
@@ -25,9 +45,27 @@ export interface LinkEntry {
   category: string;
   filePath: string;
   isTranslation: boolean;
+  /** Translation quality: how good the translation actually is. */
+  translation?: TranslationQuality;
   /** Raw markdown body, used to find in-body links. */
   body: string;
 }
+
+/**
+ * How good a translation is.
+ *
+ *   human  — translated and reviewed by a person
+ *   ai     — a real translation produced with AI assistance, not human-reviewed
+ *   legacy — an older mirror, superseded; kept in the repo, not published
+ *   template — the original text with a language header. Not a translation
+ *
+ * `ai` exists because writing a Russian version of a reference article is neither
+ * a human translation nor a template, and calling it either would be false.
+ */
+export type TranslationQuality = 'human' | 'ai' | 'legacy' | 'template';
+
+import { computeOrigLang, isShadowMirror, isTemplateMirror, isRealTranslation, publishedEntries, slugify, REAL_TRANSLATIONS } from './publish.mjs';
+void [computeOrigLang, isShadowMirror, isTemplateMirror, isRealTranslation, publishedEntries, slugify, REAL_TRANSLATIONS];
 
 /**
  * Join a relative path onto a directory the way a browser does.
@@ -45,35 +83,6 @@ export function resolvePath(fromDir: string, rel: string): string {
     else out.push(seg);
   }
   return out.join('/');
-}
-
-/** origId -> language of the non-translation entry. */
-export function computeOrigLang<T extends { origId: string; lang: string; isTranslation: boolean }>(
-  entries: readonly T[],
-): Map<string, string> {
-  const m = new Map<string, string>();
-  for (const e of entries) if (!e.isTranslation) m.set(e.origId, e.lang);
-  return m;
-}
-
-/**
- * A translation whose language equals its original's resolves to the same URL
- * and is therefore not published. 163 of them, and the rule has to be identical
- * in the page builder, the agent-file generator and the SEO gate.
- */
-export function isShadowMirror(
-  e: { origId: string; lang: string; isTranslation: boolean },
-  origLangByOrig: ReadonlyMap<string, string>,
-): boolean {
-  if (!e.isTranslation) return false;
-  return origLangByOrig.get(e.origId) === e.lang;
-}
-
-export function publishedEntries<T extends { origId: string; lang: string; isTranslation: boolean }>(
-  entries: readonly T[],
-): T[] {
-  const orig = computeOrigLang(entries);
-  return entries.filter((e) => !isShadowMirror(e, orig));
 }
 
 export interface BodyLinkContext<T> {
@@ -146,13 +155,4 @@ export function buildBodyLinkMap<T extends LinkEntry>(e: T, ctx: BodyLinkContext
     }
   }
   return map;
-}
-
-/** Slug used in URLs. Ids may contain spaces, so they must not survive here. */
-export function slugify(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/\.md$/, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
 }
