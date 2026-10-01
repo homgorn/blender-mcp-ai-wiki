@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [geometry-nodes, prompt]
 ---
 # P24: GN SCATTER & DISTRIBUTION
 
@@ -78,5 +79,8 @@ def gn_scatter_advanced(target, collection, density_attr="", count=1000, smin=0.
 ---
 
 ## 🔗 СВЯЗИ
-- **Кейсы:** [Case 05](../cases/case_05_procedural_city.md)
-- **Следующий:** [P25: Procedural Building](./25_procedural_building.md)
+
+- **Прочие в категории «Промпты»:** [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md), [P25: PROCEDURAL BUILDING GENERATOR](25_procedural_building.md), [P30: OPTIMIZATION (SCENE & RENDER)](30_optimization.md)
+- **По темам:** [P45: GEOMETRY NODES SIMULATION ZONES](45_gn_simulation.md), [CASE 05: PROCEDURAL CITY](../cases/case_05_procedural_city.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md)
+- **Теги:** #density, #geometry-nodes, #lod, #poisson, #poisson-disk, #prompt, #scatter, #weight, #weight-paint
+

@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [pipeline]
 ---
 # PIPELINE & STUDIO: OPENPYPE / AYON
 

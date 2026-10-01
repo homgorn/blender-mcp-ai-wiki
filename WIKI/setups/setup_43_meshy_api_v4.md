@@ -2,7 +2,8 @@
 id: setup_43_meshy_api_v4
 lang: ru
 category: setups
-status: full
+status: stub
+tags: [ai-3d, api, setup]
 ---
 # SETUP 43: MESHY API V4
 
@@ -33,22 +34,9 @@ RU: "Meshy: text-to-3D 'stylized orc axe', text-to-texture, auto-UV, rig" / EN: 
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE
-
-### Endpoints
-- `POST /v4/text-to-3d`, `POST /v4/image-to-3d`, `POST /v4/text-to-texture`.
-- Poll до `SUCCEEDED`, скачай GLB/FBX + textures.
-
-### Текстурирование существующего меша
-1. Загрузи свой OBJ + промпт стиля.
-2. Meshy вернёт PBR-сет + auto-UV.
-3. В Blender: замени материалы, проверь texel density.
-
-### Лимиты
-- Draft: быстро/дешево для итераций; Refine: 1 раз в конце.
+- **Прочие в категории «Сетапы»:** [SETUP 42: TRIPO AI API](setup_42_tripo_ai_api.md), [SETUP 16: BLENDER + AUTOMATIC1111 API](setup_16_automatic1111_api.md), [SETUP 44: RODIN / HYPER3D GEN](setup_44_rodin_hyper3d.md), [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md), [SETUP 46: SHAP-E / POINT-E LOCAL](setup_46_shap_e_local.md)
+- **По темам:** [SETUP 47: ZERO123 / INSTANTMESH](setup_47_zero123_instantmesh.md), [SETUP 48: GAUSSIAN SPLATTING → BLENDER](setup_48_gaussian_splatting.md), [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md)
+- **Теги:** #ai-3d, #api, #setup
 

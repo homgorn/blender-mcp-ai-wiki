@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [lighting, prompt]
 ---
 # P13: LIGHTING & HDRI
 
@@ -276,18 +277,9 @@ def setup_mixed_lighting(hdri_path, target_obj, hdri_strength=0.5, studio_streng
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts:** [P16-P21 Lighting](../lighting/), [P09 Principled BSDF](./09_principled_bsdf.md)
-- **Workflows:** [WF 01: Text-to-Scene](../workflows/wf_01_text_to_scene.md), [WF 06: ArchViz](../workflows/wf_06_archviz_workflow.md)
-- **MCP Tools:** `download_polyhaven_asset`, `set_material`
-- **Next:** [P14: Camera & Composition](./14_camera_composition.md)
+- **Прочие в категории «Промпты»:** [P27: POLY HAVEN ASSET PIPELINE](27_polyhaven_pipeline.md), [P36: ASSET LICENSING (PIZZA/SKETCHFAB/HAVEN)](36_asset_licensing.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P32: LIGHT LINKING & SHADOWS](32_light_linking.md), [P42: LIGHT PORTALS & CAUSTICS](42_portals_caustics.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md)
+- **Теги:** #hdri, #ibl, #lighting, #polyhaven, #prompt, #studio, #volumetric
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/prompts/13_lighting_hdri.md` |
-| Russian | `multilang/ru/prompts/13_lighting_hdri.md` |

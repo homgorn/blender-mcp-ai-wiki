@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [integration, realtime, stable-diffusion, unreal, usd]
 ---
 # INTEGRATIONS: COMFYUI, UNREAL, USD, TOUCHDESIGNER
 

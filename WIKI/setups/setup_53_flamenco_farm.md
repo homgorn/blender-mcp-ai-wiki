@@ -2,7 +2,8 @@
 id: setup_53_flamenco_farm
 lang: ru
 category: setups
-status: full
+status: stub
+tags: [render-farm, setup]
 ---
 # SETUP 53: FLAMENCO FARM CLUSTER
 
@@ -33,23 +34,9 @@ RU: "Manager+3 workers, NFS storage, split 1-250 по 25 кадров, мони�
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE
-
-### Топология
-`Manager :8080` + workers с доступом к общей папке (NFS/SMB).
-Версия Blender одинаковая везде.
-
-### Сабмит
-1. Blend со всеми текстурами packed или относительными путями `//`.
-2. Job: frames 1-250 chunk 25, samples 128, output `//renders/`.
-3. Мониторинг: failed frames → перезапуск только их.
-
-### Типовые ошибки
-- Разные пути текстур → розовые материалы. Лечится `File → External Data → Make All Paths Relative`.
-- Разные версии Blender → разный результат. Пинь версию.
+- **Прочие в категории «Сетапы»:** [SETUP 05: RENDER FARM (FLAMENCO)](setup_05_render_farm.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [P29: BATCH PROCESSING & CLI](../prompts/29_batch_cli.md), [P47: ALEMBIC CACHE PIPELINE](../prompts/47_alembic_cache.md), [P49: RENDER FARM SUBMIT](../prompts/49_farm_submit.md)
+- **Теги:** #render-farm, #setup
 

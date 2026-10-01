@@ -3,6 +3,7 @@ id: setup_01_blender_mcp_basic
 lang: ru
 category: setups
 status: full
+tags: [blender, mcp, setup]
 ---
 # SETUP 01: BLENDER-MCP BASIC
 
@@ -207,17 +208,7 @@ codex mcp add blender -- uvx blender-mcp
 
 ## 🔗 СВЯЗИ
 
-- **Промпты:** [P01-P05](../prompts/) — базовые команды
-- **Кейсы:** [Case 02: Game Props](../cases/case_02_game_props.md)
-- **Воркфлоу:** [WF 01: Text-to-Scene](../workflows/wf_01_text_to_scene.md)
-- **MCP Docs:** [MCP Tools Reference](../references/v1/mcp/server-api.md)
-- **Следующий:** [Setup 02: GenesisCore Local](../setups/setup_02_genesiscore_local.md)
+- **Прочие в категории «Сетапы»:** [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 06: CUSTOM MCP TOOLS](setup_06_custom_mcp_tools.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md)
+- **Теги:** #blender, #mcp, #setup
 
----
-
-## 🌍 MULTILANG
-
-| Язык | Файл |
-|------|------|
-| English | `multilang/en/setups/setup_01_blender_mcp_basic.md` |
-| Русский | `multilang/ru/setups/setup_01_blender_mcp_basic.md` |

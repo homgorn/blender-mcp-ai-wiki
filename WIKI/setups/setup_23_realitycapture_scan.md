@@ -2,7 +2,8 @@
 id: setup_23_realitycapture_scan
 lang: ru
 category: setups
-status: full
+status: stub
+tags: [blender, photogrammetry, setup]
 ---
 # SETUP 23: REALITYCAPTURE SCAN TO BLENDER
 
@@ -33,20 +34,9 @@ RU: "Импорт RC mesh 5M tris → Quad Remesher 20k → Smart UV → bake 8k
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE
-
-### Пайплайн
-1. RC: align → dense → mesh 5M → simplify preview.
-2. Export OBJ + 8k textures.
-3. Blender: Quad Remesher 20k → Smart UV → bake normal/AO/curvature с high.
-4. LOD: 20k/8k/2k + billboard.
-
-### Проверка
-- [ ] Масштаб реальный (scale bar)
-- [ ] Normal map без швов на стыках чанков
+- **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)](setup_10_compositing_roundtrip.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 11: BLENDER + TOUCHDESIGNER REALTIME VISUALS](setup_11_touchdesigner.md), [SETUP 12: BLENDER + UNREAL ENGINE 5 LIVE LINK](setup_12_unreal_livelink.md)
+- **Теги:** #blender, #photogrammetry, #setup
 

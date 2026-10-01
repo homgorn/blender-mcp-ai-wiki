@@ -34,7 +34,11 @@ def set_key(fm, key, val):
 
 changed = {"stub": 0, "full": 0, "human": 0, "template": 0}
 for cat in ["setups", "workflows", "cases"]:
-    for f in sorted((WIKI/cat).glob("*.md")):
+    # Recursive for robustness: the corpus nests elsewhere (references/v1/**),
+    # and a flat glob meant a file added in a subfolder of one of these
+    # categories would silently never get its status. `references` is
+    # deliberately not in this list — reference docs carry no stub status.
+    for f in sorted((WIKI/cat).rglob("*.md")):
         t = f.read_text(encoding="utf-8")
         fm, body = split_fm(t)
         is_full = any(mk in t for mk in FULL_MARKERS) or len(t) >= 2500

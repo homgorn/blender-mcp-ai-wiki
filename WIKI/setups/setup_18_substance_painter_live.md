@@ -2,7 +2,8 @@
 id: setup_18_substance_painter_live
 lang: ru
 category: setups
-status: full
+status: stub
+tags: [setup, substance]
 ---
 # SETUP 18: SUBSTANCE PAINTER LIVE-LINK
 
@@ -33,20 +34,9 @@ RU: "Экспорт FBX с UDIM в Substance, запеки ID/curvature/AO, ве
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE
-
-### Roundtrip
-1. Blender → FBX с UDIM в Substance Painter.
-2. Bake: ID, curvature, AO, thickness, position.
-3. Smart materials + слои wear/dirt/damage.
-4. Export 4k PBR → Blender Principled (BaseColor sRGB, остальные Non-Color).
-
-### Проверка
-- [ ] UDIM-тайлы совпадают
-- [ ] Curvature-маски дают чистый edge wear
+- **Прочие в категории «Сетапы»:** [SETUP 19: SUBSTANCE DESIGNER SBSAR](setup_19_substance_designer_sbsar.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 05: RENDER FARM (FLAMENCO)](setup_05_render_farm.md), [SETUP 06: CUSTOM MCP TOOLS](setup_06_custom_mcp_tools.md)
+- **Теги:** #setup, #substance
 

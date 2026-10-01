@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [performance]
 ---
 # PERFORMANCE: PROFILING, MEMORY, GPU OPTIMIZATION
 

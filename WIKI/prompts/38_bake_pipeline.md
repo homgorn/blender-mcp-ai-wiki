@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [pipeline, prompt]
 ---
 # P38: HIGH→LOW BAKE PIPELINE
 
@@ -67,5 +68,8 @@ def bake_maps(high_name, low_name, out_dir="//bakes/", res=2048, margin=16, cage
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P05 UV](./05_uv_unwrapping.md), [P06 Retopo](./06_retopology_workflow.md)
-- **Следующий:** [P39: Export Presets](./39_export_presets.md)
+
+- **Прочие в категории «Промпты»:** [P46: UDIM WORKFLOW](46_udim_workflow.md), [P12: TEXTURE PAINTING](12_texture_painting.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P27: POLY HAVEN ASSET PIPELINE](27_polyhaven_pipeline.md), [P36: ASSET LICENSING (PIZZA/SKETCHFAB/HAVEN)](36_asset_licensing.md)
+- **По темам:** [P39: EXPORT PRESETS (GLB/FBX/USD)](39_export_presets.md), [P47: ALEMBIC CACHE PIPELINE](47_alembic_cache.md), [CASE 02: GAME PROPS PIPELINE](../cases/case_02_game_props.md)
+- **Теги:** #ao, #baking, #cage, #curvature, #normal, #pipeline, #prompt
+

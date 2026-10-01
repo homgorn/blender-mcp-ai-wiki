@@ -3,6 +3,7 @@ id: setup_35_readyplayerme
 lang: ru
 category: setups
 status: stub
+tags: [automation, blender, llm, mcp, rigging, setup, stable-diffusion]
 ---
 # SETUP 35: READY PLAYER ME AVATARS
 
@@ -33,5 +34,9 @@ RU: "RPM API: 10 аватаров GLB full-body, Mixamo rig, импорт в Ble
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Сетапы»:** [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 15: BLENDER + COMFYUI SDXL](setup_15_comfyui_sdxl.md), [SETUP 16: BLENDER + AUTOMATIC1111 API](setup_16_automatic1111_api.md)
+- **Теги:** #automation, #blender, #llm, #mcp, #rigging, #setup, #stable-diffusion
+

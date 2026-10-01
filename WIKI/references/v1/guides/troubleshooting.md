@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [addon, blender, mcp, reference]
+---
 # TROUBLESHOOTING GUIDE
 
 ## Blender Installation Issues

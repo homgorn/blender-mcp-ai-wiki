@@ -3,6 +3,7 @@ id: wf_07_game_asset_pipeline
 lang: ru
 category: workflows
 status: full
+tags: [pipeline, workflow]
 ---
 # WF 07: GAME ASSET PIPELINE
 
@@ -354,34 +355,9 @@ Material: Unlit/Transparent Cutout"
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Poly Haven:** https://polyhaven.com/
-- **Poly Pizza:** https://poly.pizza/
-- **Sketchfab:** https://sketchfab.com/
-- **Substance 3D:** https://www.adobe.com/products/substance3d.html
-- **Setup 08:** [Asset Pipeline](../setups/setup_08_asset_pipeline.md)
-- **Case 02:** [Game Props](../cases/case_02_game_props.md)
-- **Next:** [WF 08: Batch Processing](../workflows/wf_08_batch_processing.md)
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/workflows/wf_07_game_asset_pipeline.md` |
-| Russian | `multilang/ru/workflows/wf_07_game_asset_pipeline.md` |
-
----
-
-## FULL ADDENDUM: engine gates
-
-### Unity gate
-- [ ] FBX + bake transform, NLA baked, scale applied
-- [ ] Mask map packed (R=metallic G=AO B=detail A=smoothness) при нужде
-### Unreal gate
-- [ ] FBX + smoothing groups + tangents, LOD suffixes _LOD0/1/2
-### Godot gate
-- [ ] GLB без Draco (или проверить чтение), animations separate
+- **Прочие в категории «Воркфлоу»:** [WF 01: TEXT-TO-SCENE](wf_01_text_to_scene.md), [WF 02: IMAGE-TO-3D](wf_02_image_to_3d.md), [WF 03: TEXTURE PIPELINE](wf_03_texture_pipeline.md), [WF 05: PROCEDURAL ASSETS](wf_05_procedural_assets.md), [WF 17: STOP-MOTION FELT LOOK](wf_17_stop_motion_felt.md)
+- **По темам:** [WF 19: VOXEL ART PIPELINE](wf_19_voxel_art_pipeline.md), [WF 23: VIRTUAL PRODUCTION LED](wf_23_virtual_production_led.md), [WF 24: PHOTOGRAMMETRY CLEANUP](wf_24_photogrammetry_cleanup.md)
+- **Теги:** #pipeline, #workflow
 

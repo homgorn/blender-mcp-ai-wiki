@@ -3,6 +3,7 @@ id: setup_21_marvelous_clo3d
 lang: ru
 category: setups
 status: stub
+tags: [clothing, setup]
 ---
 # SETUP 21: MARVELOUS / CLO3D CLOTH
 
@@ -33,5 +34,9 @@ RU: "Импорт Alembic одежды, solidify 0.002м, collision с тело�
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md), [SETUP 05: RENDER FARM (FLAMENCO)](setup_05_render_farm.md)
+- **По темам:** [P03: MODIFIERS STACK](../prompts/03_modifiers_stack.md), [P21: PHYSICS SIMULATION](../prompts/21_physics_simulation.md), [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md)
+- **Теги:** #clothing, #setup
+

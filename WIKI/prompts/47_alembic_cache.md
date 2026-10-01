@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [pipeline, prompt]
 ---
 # P47: ALEMBIC CACHE PIPELINE
 
@@ -69,6 +70,8 @@ def import_alembic(filepath, as_background_job=False):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P21 Physics](./21_physics_simulation.md), [P40 Version Control](./40_version_control.md)
-- **Сетяпы:** [Setup 05 Render Farm](../setups/setup_05_render_farm.md)
-- **Следующий:** [P48: Eevee vs Cycles](./48_eevee_vs_cycles.md)
+
+- **Прочие в категории «Промпты»:** [P22: PARTICLE SYSTEMS](22_particles.md), [P21: PHYSICS SIMULATION](21_physics_simulation.md), [P29: BATCH PROCESSING & CLI](29_batch_cli.md), [P49: RENDER FARM SUBMIT](49_farm_submit.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [CASE 05: PROCEDURAL CITY](../cases/case_05_procedural_city.md), [CASE 07: STYLIZED BARREL (HAND-PAINT)](../cases/case_07_stylized_barrel.md), [CASE 08: SCI-FI CORRIDOR MODULAR](../cases/case_08_sci_fi_corridor.md)
+- **Теги:** #alembic, #cache, #pipeline, #prompt, #render, #render-farm, #simulation
+

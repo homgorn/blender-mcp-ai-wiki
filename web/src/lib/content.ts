@@ -268,6 +268,25 @@ export function isIndexable(e: Entry): boolean {
   return !e.isDuplicate;
 }
 
+/**
+ * Does this language have any indexable article in this category?
+ *
+ * Category pages are generated for the full cartesian product of
+ * category × language, so a language with no content in a category still gets a
+ * page. 48 of those were empty, and they were published `index, follow` and
+ * listed in the sitemap — handing Google 48 pages with nothing on them. The
+ * page itself is worth keeping (it explains the situation and points at the
+ * languages that do have content, and footer links resolve), but it must not
+ * ask to be indexed.
+ *
+ * The predicate lives here, once, because the rule has to hold in four places
+ * — the page, the sitemap filter, llms.txt and the consistency gate. When those
+ * disagreed, the sitemap and the pages did too.
+ */
+export function categoryHasContent(lang: Lang, category: string): boolean {
+  return entries.some((e) => e.lang === lang && e.category === category && isIndexable(e));
+}
+
 /** Related articles: shared tags, same language preferred, originals only. */
 export function related(e: Entry, limit = 6): Entry[] {
   const group = byOrigId.get(e.origId);

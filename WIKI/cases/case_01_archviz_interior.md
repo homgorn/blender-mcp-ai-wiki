@@ -3,6 +3,7 @@ id: case_01_archviz_interior
 lang: ru
 category: cases
 status: full
+tags: [archviz, case]
 ---
 # CASE 01: ARCHVIZ INTERIOR
 
@@ -175,30 +176,9 @@ Output: EXR 32-bit MultiLayer + PNG 16-bit"
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts Used:** P01-P03, P07, P09, P11-P15
-- **Setups:** [Setup 01: blender-mcp](../setups/setup_01_blender_mcp_basic.md)
-- **Workflows:** [WF 01: Text-to-Scene](../workflows/wf_01_text_to_scene.md), [WF 06: ArchViz](../workflows/wf_06_archviz_workflow.md)
-- **Prompts:** P01, P02, P03, P07, P09, P11, P12, P13, P14, P15
+- **Прочие в категории «Кейсы»:** [CASE 08: SCI-FI CORRIDOR MODULAR](case_08_sci_fi_corridor.md), [CASE 02: GAME PROPS PIPELINE](case_02_game_props.md), [CASE 03: PRODUCT VISUALIZATION](case_03_product_viz.md), [CASE 04: CHARACTER RIG & ANIMATION](case_04_character_rig.md), [CASE 05: PROCEDURAL CITY](case_05_procedural_city.md)
+- **По темам:** [CASE 06: ANIMATION LOOP](case_06_animation_loop.md), [CASE 07: STYLIZED BARREL (HAND-PAINT)](case_07_stylized_barrel.md), [CASE 09: ANIME HEAD BUST](case_09_anime_head_bust.md)
+- **Теги:** #archviz, #case
 
----
-
-## 💡 PRO TIPS
-
-| Tip | Why |
-|-----|-----|
-| Используй Collection для организации | Легко скрывать/показывать этажи/комнаты |
-| Light Linking в Cycles | Контроль отражений в окнах |
-| Render Region (Ctrl+B) | Быстрый предпросмотр участков |
-| Save versions каждые 30 мин | `File > Save As > v001, v002...` |
-| Denoising + 256 samples = Production | Баланс скорость/качество |
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/cases/case_01_archviz_interior.md` |
-| Russian | `multilang/ru/cases/case_01_archviz_interior.md` |

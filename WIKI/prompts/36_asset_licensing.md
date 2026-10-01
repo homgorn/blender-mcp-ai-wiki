@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [assets, lighting, modeling, pipeline, prompt]
 ---
 # P36: ASSET LICENSING (PIZZA/SKETCHFAB/HAVEN)
 
@@ -60,5 +61,8 @@ def stamp_attribution(obj_name, author, source, licence):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P27 Poly Haven](./27_polyhaven_pipeline.md)
-- **Следующий:** [P37: Seamless Textures](./37_seamless_textures.md)
+
+- **Прочие в категории «Промпты»:** [P27: POLY HAVEN ASSET PIPELINE](27_polyhaven_pipeline.md), [P13: LIGHTING & HDRI](13_lighting_hdri.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [CASE 05: PROCEDURAL CITY](../cases/case_05_procedural_city.md), [P03: MODIFIERS STACK](03_modifiers_stack.md)
+- **Теги:** #assets, #cc, #cc-by, #licensing, #lighting, #modeling, #pipeline, #poly, #poly-pizza, #polyhaven
+

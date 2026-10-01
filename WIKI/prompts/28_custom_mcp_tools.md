@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [mcp, prompt]
 ---
 # P28: CUSTOM MCP TOOLS DEVELOPMENT
 
@@ -61,5 +62,8 @@ class MyTools(ToolsPackageBase):
 ---
 
 ## 🔗 СВЯЗИ
-- **Сетяпы:** [Setup 06](../setups/setup_06_custom_mcp_tools.md)
-- **Следующий:** [P29: Batch & CLI](./29_batch_cli.md)
+
+- **Прочие в категории «Промпты»:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](26_mcp_basics.md), [P27: POLY HAVEN ASSET PIPELINE](27_polyhaven_pipeline.md), [P35: MCP ERROR RECOVERY](35_mcp_error_recovery.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md)
+- **По темам:** [MCP ADVANCED: STREAMING & TOOL COMPOSITION](../mcp_advanced/streaming_tools.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md)
+- **Теги:** #addon, #custom, #custom-tools, #fastmcp, #mcp, #prompt, #python
+

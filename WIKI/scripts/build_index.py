@@ -8,9 +8,12 @@ WIKI = Path(r"C:\BLENDER ai\WIKI")
 DB = WIKI/"db"/"wiki_database.json"
 
 def list_md(d):
+    # Recursive: the corpus nests (references/v1/guides/*.md). A flat glob hid
+    # 19 files from this index. Relative posix paths, not basenames, so two
+    # files with the same name in different subfolders cannot collide.
     p = WIKI/d
     if not p.exists(): return []
-    return sorted([f.name for f in p.glob("*.md")])
+    return sorted(f.relative_to(p).as_posix() for f in p.rglob("*.md"))
 
 prompts = list_md("prompts"); cases = list_md("cases"); setups = list_md("setups")
 wfs = list_md("workflows"); adv = {}

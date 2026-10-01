@@ -3,6 +3,7 @@ id: setup_02_genesiscore_local
 lang: ru
 category: setups
 status: full
+tags: [llm, mcp, setup]
 ---
 # SETUP 02: GENESISCORE LOCAL (OLLAMA)
 
@@ -160,18 +161,9 @@ ollama pull deepseek-coder:6.7b-q4_K_M  # 3.8GB → 2.5GB
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Ollama Models:** https://ollama.com/library
-- **GenesisCore Repo:** https://github.com/AIGODLIKE/GenesisCore
-- **Setup 01:** [blender-mcp Basic](../setups/setup_01_blender_mcp_basic.md)
-- **Next:** [Setup 03: Dream Textures](../setups/setup_03_dream_textures.md)
+- **Прочие в категории «Сетапы»:** [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 06: CUSTOM MCP TOOLS](setup_06_custom_mcp_tools.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [MCP ADVANCED: STREAMING & TOOL COMPOSITION](../mcp_advanced/streaming_tools.md), [P27: POLY HAVEN ASSET PIPELINE](../prompts/27_polyhaven_pipeline.md)
+- **Теги:** #llm, #mcp, #setup
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_02_genesiscore_local.md` |
-| Russian | `multilang/ru/setups/setup_02_genesiscore_local.md` |

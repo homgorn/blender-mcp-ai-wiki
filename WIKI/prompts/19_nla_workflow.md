@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [animation, modeling, prompt, texturing]
 ---
 # P19: NLA EDITOR WORKFLOW
 
@@ -75,6 +76,8 @@ def push_to_nla(obj_name, action_name, track_name="Track", blend='REPLACE', repe
 ---
 
 ## 🔗 СВЯЗИ
-- **Кейсы:** [Case 04](../cases/case_04_character_rig.md), [Case 06](../cases/case_06_animation_loop.md)
-- **Промпты:** [P18 Drivers](./18_drivers_constraints.md), [P20 Shape Keys](./20_shape_keys.md)
-- **Следующий:** [P20: Shape Keys](./20_shape_keys.md)
+
+- **Прочие в категории «Промпты»:** [P12: TEXTURE PAINTING](12_texture_painting.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P43: CAMERA SWITCHING & MARKERS](43_camera_switching.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md)
+- **По темам:** [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md)
+- **Теги:** #actions, #animation, #blending, #layers, #modeling, #nla, #nonlinear, #prompt, #texturing
+

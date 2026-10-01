@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [prompt, shading]
 ---
 # P11: PROCEDURAL TEXTURES
 
@@ -321,18 +322,9 @@ create_procedural_material("Proc_Rusted_Iron", "RUST", {'base_color': (0.5, 0.45
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts:** [P09 Principled BSDF](./09_principled_bsdf.md), [P10 Node Groups](./10_node_groups.md)
-- **Workflows:** [WF 03: Texture Pipeline](../workflows/wf_03_texture_pipeline.md)
-- **Cases:** [Case 03: Product Viz](../cases/case_03_product_viz.md)
-- **Next:** [P12: Texture Painting](./12_texture_painting.md)
+- **Прочие в категории «Промпты»:** [P10: NODE GROUP CREATION](10_node_groups.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md)
+- **По темам:** [P09: PRINCIPLED BSDF SETUP](09_principled_bsdf.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md)
+- **Теги:** #math, #math-nodes, #musgrave, #noise, #procedural, #prompt, #shading, #textures, #voronoi
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/materials/11_procedural_textures.md` |
-| Russian | `multilang/ru/materials/11_procedural_textures.md` |

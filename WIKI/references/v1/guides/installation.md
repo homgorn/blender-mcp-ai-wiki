@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [addon, blender, mcp, reference, stable-diffusion]
+---
 # INSTALLATION GUIDE - COMPLETE SETUP
 
 ## Prerequisites

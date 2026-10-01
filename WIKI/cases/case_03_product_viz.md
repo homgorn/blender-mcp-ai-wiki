@@ -3,6 +3,7 @@ id: case_03_product_viz
 lang: ru
 category: cases
 status: full
+tags: [case, compositing, lighting, pipeline, render, shading, texturing]
 ---
 # CASE 03: PRODUCT VISUALIZATION
 
@@ -158,29 +159,9 @@ Output: 4K EXR 32-bit + 4K PNG 16-bit"
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts:** P01-P05, P09, P11-P15
-- **Workflows:** [WF 01](../workflows/wf_01_text_to_scene.md), [WF 03: Texture Pipeline](../workflows/wf_03_texture_pipeline.md)
-- **Prompts Used:** P01, P02, P03, P04, P05, P09, P11, P12, P13, P14, P15
+- **Прочие в категории «Кейсы»:** [CASE 05: PROCEDURAL CITY](case_05_procedural_city.md), [CASE 07: STYLIZED BARREL (HAND-PAINT)](case_07_stylized_barrel.md), [CASE 08: SCI-FI CORRIDOR MODULAR](case_08_sci_fi_corridor.md), [CASE 02: GAME PROPS PIPELINE](case_02_game_props.md), [CASE 13: HARD-SURFACE SCI-FI GUN](case_13_hard_surface_gun.md)
+- **По темам:** [WF 17: STOP-MOTION FELT LOOK](../workflows/wf_17_stop_motion_felt.md), [P46: UDIM WORKFLOW](../prompts/46_udim_workflow.md), [WF 23: VIRTUAL PRODUCTION LED](../workflows/wf_23_virtual_production_led.md), [WF 24: PHOTOGRAMMETRY CLEANUP](../workflows/wf_24_photogrammetry_cleanup.md)
+- **Теги:** #case, #compositing, #lighting, #pipeline, #render, #shading, #texturing
 
----
-
-## 💡 PRO TIPS
-
-| Tip | Why |
-|-----|-----|
-| Real-world scale (метры) | Правильный DOF, физика света |
-| Anisotropic Tangent = UV | Правильные блики на металле |
-| Cryptomatte по материалам | Маски для каждого материала |
-| Render Region (Ctrl+B) | Быстрый рендер деталей |
-| 4K + 512 samples = Print Ready | Качество для маркетинга |
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/cases/case_03_product_viz.md` |
-| Russian | `multilang/ru/cases/case_03_product_viz.md` |

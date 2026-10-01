@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [api, blender, modeling, reference]
+---
 # BLENDER MESH OPERATIONS API REFERENCE
 
 ## Primitive Creation

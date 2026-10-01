@@ -3,6 +3,7 @@ id: setup_06_custom_mcp_tools
 lang: ru
 category: setups
 status: full
+tags: [mcp, setup]
 ---
 # SETUP 06: CUSTOM MCP TOOLS
 
@@ -483,19 +484,9 @@ echo '{"type":"create_procedural_building","params":{"name":"TestTower","width":
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Blender-MCP Repo:** https://github.com/ahujasid/blender-mcp
-- **GenesisCore Repo:** https://github.com/AIGODLIKE/GenesisCore
-- **FastMCP Docs:** https://github.com/jlowin/fastmcp
-- **Setup 05:** [Render Farm](../setups/setup_05_render_farm.md)
-- **Next:** [Setup 07: CI/CD Integration](../setups/setup_07_ci_cd.md)
+- **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [MCP ADVANCED: STREAMING & TOOL COMPOSITION](../mcp_advanced/streaming_tools.md), [P27: POLY HAVEN ASSET PIPELINE](../prompts/27_polyhaven_pipeline.md)
+- **Теги:** #mcp, #setup
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_06_custom_mcp_tools.md` |
-| Russian | `multilang/ru/setups/setup_06_custom_mcp_tools.md` |

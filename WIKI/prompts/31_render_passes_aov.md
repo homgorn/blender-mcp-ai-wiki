@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [prompt, render]
 ---
 # P31: RENDER PASSES & AOV
 
@@ -73,5 +74,8 @@ def enable_passes():
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P15 Compositing](./15_compositing.md), [P13 Lighting](./13_lighting_hdri.md)
-- **Следующий:** [P32: Light Linking](./32_light_linking.md)
+
+- **Прочие в категории «Промпты»:** [P15: COMPOSITING](15_compositing.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P29: BATCH PROCESSING & CLI](29_batch_cli.md), [P30: OPTIMIZATION (SCENE & RENDER)](30_optimization.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [P40: VERSION CONTROL & RENDER JOBS](40_version_control.md), [P41: DISPLACEMENT & MICRO-DETAIL](41_displacement_micro.md)
+- **Теги:** #aov, #compositing, #cryptomatte, #exr, #passes, #prompt, #render
+

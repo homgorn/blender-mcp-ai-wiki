@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [animation, lighting, prompt, render]
 ---
 # P14: CAMERA & COMPOSITION
 
@@ -298,18 +299,9 @@ def set_render_for_camera(camera_obj, resolution_x=1920, resolution_y=1080, samp
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts:** [P13 Lighting](./13_lighting_hdri.md), [P15 Compositing](./15_compositing.md)
-- **Workflows:** [WF 01: Text-to-Scene](../workflows/wf_01_text_to_scene.md), [WF 04: Animation](../workflows/wf_04_character_animation.md)
-- **MCP Tools:** `execute_blender_code`, `get_viewport_screenshot`
-- **Next:** [P15: Compositing](./15_compositing.md)
+- **Прочие в категории «Промпты»:** [P33: CAMERA PATH ANIMATION](33_camera_path.md), [P43: CAMERA SWITCHING & MARKERS](43_camera_switching.md), [P13: LIGHTING & HDRI](13_lighting_hdri.md), [P16: KEYFRAME ANIMATION BASICS](16_keyframe_animation.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md), [P20: SHAPE KEYS & MORPHING](20_shape_keys.md)
+- **Теги:** #animation, #camera, #composition, #dof, #framing, #lighting, #prompt, #render
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/prompts/14_camera_composition.md` |
-| Russian | `multilang/ru/prompts/14_camera_composition.md` |

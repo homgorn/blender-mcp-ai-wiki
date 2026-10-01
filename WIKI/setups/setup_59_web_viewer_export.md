@@ -3,6 +3,7 @@ id: setup_59_web_viewer_export
 lang: ru
 category: setups
 status: stub
+tags: [pipeline, setup, web]
 ---
 # SETUP 59: WEB VIEWER EXPORT
 
@@ -33,5 +34,9 @@ RU: "GLB Draco + KTX2, three.js viewer template, deploy GitHub Pages" / EN: "Dra
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Сетапы»:** [SETUP 08: ASSET PIPELINE](setup_08_asset_pipeline.md), [SETUP 14: BLENDER + GODOT PIPELINE](setup_14_godot_pipeline.md), [SETUP 38: FAB.COM (EPIC) PIPELINE](setup_38_fab_epic.md), [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md), [SETUP 49: FFMPEG + VSE PIPELINE](setup_49_ffmpeg_vse_pipeline.md)
+- **По темам:** [P39: EXPORT PRESETS (GLB/FBX/USD)](../prompts/39_export_presets.md), [SETUP 55: AI UPSCALE PIPELINE](setup_55_ai_upscale_pipeline.md), [CASE 02: GAME PROPS PIPELINE](../cases/case_02_game_props.md)
+- **Теги:** #pipeline, #setup, #web
+

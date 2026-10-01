@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [api, blender, reference, shading]
+---
 # BLENDER MATERIALS API REFERENCE
 
 ## Principled BSDF (Standard PBR)

@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [api, mcp, reference]
+---
 # MCP SERVER API REFERENCE
 
 ## blender-mcp Tools (28+)

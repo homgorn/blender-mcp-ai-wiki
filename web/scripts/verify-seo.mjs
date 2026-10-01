@@ -209,7 +209,94 @@ console.log('== 4. sitemap ==');
   }
 }
 
+/* ------------------------------------------- empty category pages (thin) */
+console.log('== 4d. Empty category pages ==');
+{
+  // 48 category pages had no articles in their language and were published
+  // index,follow inside the sitemap. Handing Google 48 empty pages is exactly
+  // the kind of thin content the SEO work exists to prevent.
+  //
+  // The emptiness rule is implemented twice on purpose: `categoryHasContent` in
+  // src/lib/content.ts drives the page's robots meta, and `emptyCategoryPaths`
+  // in astro.config.mjs drives the sitemap. The config runs before TS loads, so
+  // it cannot import the helper. This block is what makes the duplication safe:
+  // it recomputes the set from the database and checks the built pages against
+  // it, in both directions.
+  const filled = new Set();
+  const cats = new Set();
+  for (const e of db.entries) {
+    const m = e.meta ?? {};
+    if (m.category) cats.add(m.category);
+    const indexable = !m.is_translation || m.translation === 'human';
+    if (indexable && m.language && m.category) filled.add(`${m.language}/${m.category}`);
+  }
+  const expectedEmpty = new Set();
+  for (const cat of cats) {
+    for (const l of ['ru', 'en', 'es', 'de', 'zh']) {
+      if (!filled.has(`${l}/${cat}`)) expectedEmpty.add(`/${l}/${cat}`);
+    }
+  }
+
+  // (1) None of them may be in the sitemap.
+  const smFiles = readdirSync(DIST).filter((f) => /^sitemap-\d+\.xml$/.test(f));
+  const smLocs = smFiles.flatMap((f) =>
+    [...readFileSync(join(DIST, f), 'utf8').matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname));
+  const leaked = smLocs.filter((p) => expectedEmpty.has(p));
+  if (leaked.length) fail(`sitemap contains ${leaked.length} empty category page(s): ${leaked.slice(0, 3)}`);
+  else ok(`sitemap excludes all ${expectedEmpty.size} empty category pages`);
+
+  // (2) Every published one must actually be empty, and must be noindex.
+  let scanned = 0;
+  const notEmpty = [];
+  const indexableButEmpty = [];
+  for (const p of expectedEmpty) {
+    const f = join(DIST, `${p}.html`);
+    if (!existsSync(f)) continue;
+    scanned++;
+    const html = readFileSync(f, 'utf8');
+    const [, l, cat] = /^\/([a-z]{2})\/([^/]+)$/.exec(p);
+    // An article link is a path two segments deeper: /{lang}/{category}/{slug}.
+    const links = [...html.matchAll(new RegExp(`href="/${l}/${cat}/[^"#]+"`, 'g'))];
+    if (links.length) notEmpty.push(p);
+    const robots = /<meta name="robots" content="([^"]+)"/.exec(html)?.[1] ?? '';
+    if (!/noindex/.test(robots)) indexableButEmpty.push(p);
+  }
+  if (notEmpty.length) {
+    fail(`${notEmpty.length} page(s) counted as empty but list articles: ${notEmpty.slice(0, 3)}`);
+  } else {
+    ok(`all ${scanned} published empty category pages list no articles`);
+  }
+  if (indexableButEmpty.length) {
+    fail(`${indexableButEmpty.length} empty category page(s) are not noindex: ${indexableButEmpty.slice(0, 3)}`);
+  } else {
+    ok('every empty category page is noindex');
+  }
+}
+
 /* ------------------------------------------------------------- llms.txt */
+console.log('== 4c. Syntax highlighting ==');
+{
+  // Measured on the artifact, not asserted by the build script: Astro
+  // re-evaluates components per page, so a "log once" guard is not available.
+  let shiki = 0;
+  let plain = 0;
+  const sample = indexable.slice(0, 60);
+  for (const e of sample) {
+    const f = join(DIST, `${e.url}.html`);
+    if (!existsSync(f)) continue;
+    const html = readFileSync(f, 'utf8');
+    shiki += (html.match(/class="shiki/g) || []).length;
+    plain += (html.match(/<pre><code/g) || []).length;
+  }
+  if (shiki === 0 && plain === 0) {
+    warn('no code blocks found in the sampled pages — nothing to verify');
+  } else if (plain > 0) {
+    fail(`${plain} unhighlighted code block(s) remain in the sample (${shiki} highlighted)`);
+  } else {
+    ok(`all ${shiki} code blocks in the sample are highlighted`);
+  }
+}
+
 console.log('== 4b. Open Graph image ==');
 {
   const og = join(DIST, 'og-default.png');

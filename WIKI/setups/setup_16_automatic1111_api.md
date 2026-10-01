@@ -3,6 +3,7 @@ id: setup_16_automatic1111_api
 lang: ru
 category: setups
 status: stub
+tags: [api, blender, setup, stable-diffusion]
 ---
 # SETUP 16: BLENDER + AUTOMATIC1111 API
 
@@ -33,5 +34,9 @@ RU: "Через A1111 API: img2img strength 0.5, 30 steps, seamless tile" / EN: 
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Сетапы»:** [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 15: BLENDER + COMFYUI SDXL](setup_15_comfyui_sdxl.md), [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)](setup_10_compositing_roundtrip.md)
+- **Теги:** #api, #blender, #setup, #stable-diffusion
+

@@ -3,6 +3,7 @@ id: setup_12_unreal_livelink
 lang: ru
 category: setups
 status: full
+tags: [blender, setup, unreal]
 ---
 # SETUP 12: BLENDER + UNREAL ENGINE 5 LIVE LINK
 
@@ -655,41 +656,9 @@ class MYGAME_API AMyCharacter : public ACharacter
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Unreal Live Link:** https://docs.unrealengine.com/5.3/en-US/live-link-in-unreal-engine/
-- **Datasmith:** https://docs.unrealengine.com/5.3/en-US/datasmith-overview/
-- **USD in Unreal:** https://docs.unrealengine.com/5.3/en-US/universal-scene-description-in-unreal-engine/
-- **Live Link Face:** https://developer.apple.com/arkit/live-link-face/
-- **Virtual Camera:** https://docs.unrealengine.com/5.3/en-US/virtual-camera-plugin-in-unreal-engine/
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_12_unreal_livelink.md` |
-| Russian | `multilang/ru/setups/setup_12_unreal_livelink.md` |
-
----
-
-## FULL GUIDE
-
-### Методы
-| Метод | Кейс |
-|-------|------|
-| Live Link | Камеры, мокап в реальном времени |
-| Datasmith | Статика/архитектура |
-| USD | Пайплайн, варианты, LOD |
-| Alembic | Анимация/кэш |
-| FBX | Быстрый обмен |
-
-### FBX-пресет под Unreal
-- Apply Unit Scale, FBX Scale All, bake transform OFF для Unreal (cm через unit scale).
-- Forward Y, Up X. Leaf bones OFF. NLA strips baked.
-
-### Проверка
-- [ ] Масштаб персонажа 180cm в Unreal
-- [ ] Анимации играют, root motion отдельно
+- **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)](setup_10_compositing_roundtrip.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 11: BLENDER + TOUCHDESIGNER REALTIME VISUALS](setup_11_touchdesigner.md), [SETUP 13: BLENDER + UNITY ROUNDTRIP](setup_13_unity_roundtrip.md)
+- **Теги:** #blender, #setup, #unreal
 

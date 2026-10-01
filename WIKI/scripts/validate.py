@@ -199,16 +199,26 @@ print("== 13. Template conformance (see WIKI/templates, WIKI/CONTRIBUTING.md) ==
 # of the section, not the language of its heading.
 REQUIRED = {
     "prompts":   {"goal": ["ЦЕЛЬ", "GOAL"], "prompt": ["ПРОМПТ", "PROMPT"],
-                  "mcp": ["MCP"], "links": ["СВЯЗИ", "LINKS", "MULTILANG"]},
-    "setups":    {"goal": ["ЦЕЛЬ", "GOAL", "ЗАДАЧА"], "links": ["СВЯЗИ", "LINKS", "MULTILANG"]},
-    "workflows": {"goal": ["ЦЕЛЬ", "GOAL"], "links": ["СВЯЗИ", "LINKS", "MULTILANG"]},
-    "cases":     {"goal": ["ЦЕЛЬ", "GOAL", "Задача", "Brief"], "links": ["СВЯЗИ", "LINKS", "MULTILANG"]},
+                  # "How do I invoke this" — an MCP tool call, or a command block.
+                  # P29 (CLI) and P40 (version control) are driven from a shell,
+                  # not from an MCP session, so demanding MCP there was wrong.
+                  "mcp": ["MCP", "КОМАНДЫ", "COMMANDS"], "links": ["СВЯЗИ", "LINKS"]},
+    "setups":    {"goal": ["ЦЕЛЬ", "GOAL", "ЗАДАЧА"], "links": ["СВЯЗИ", "LINKS"]},
+    "workflows": {"goal": ["ЦЕЛЬ", "GOAL"], "links": ["СВЯЗИ", "LINKS"]},
+    "cases":     {"goal": ["ЦЕЛЬ", "GOAL", "Задача", "Brief"], "links": ["СВЯЗИ", "LINKS"]},
 }
 nonconform = {}
 for cat, groups in REQUIRED.items():
-    for f in (WIKI/cat).glob("*.md"):
+    # Recursive: 19 articles under references/v1/** were never conformance-checked.
+    for f in (WIKI/cat).rglob("*.md"):
         t = f.read_text(encoding="utf-8")
-        miss = [name for name, marks in groups.items() if not any(mk in t for mk in marks)]
+        # Case-insensitive on purpose: bulk-authored files use
+        # `## 🎯 Цель / Goal` and `## 🔗 Связи / Links`, and a case-sensitive
+        # compare reported 67 goals and 47 links as missing while they were
+        # present. A gate that cries wolf is ignored.
+        upper = t.upper()
+        miss = [name for name, marks in groups.items()
+                if not any(mk.upper() in upper for mk in marks)]
         if miss:
             nonconform[f"{cat}/{f.name}"] = miss
 if nonconform:

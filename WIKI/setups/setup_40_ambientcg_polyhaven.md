@@ -2,7 +2,8 @@
 id: setup_40_ambientcg_polyhaven
 lang: ru
 category: setups
-status: full
+status: stub
+tags: [assets, automation, setup]
 ---
 # SETUP 40: AMBIENTCG + POLYHAVEN BATCH
 
@@ -33,25 +34,9 @@ RU: "Скачай 10 PBR 2k ambientCG+PolyHaven: concrete/wood/metal/fabric + 3 
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE
-
-### Источники
-- Poly Haven (CC0): textures + HDRIs, API без ключа.
-- ambientCG (CC0): `https://ambientcg.com/api/v2/downloads` batch.
-
-### Структура пачки
-```
-//assets/pbr/{surface}/2k/{surface}_2k_{map}.png
-//assets/hdri/{name}_{res}.hdr
-```
-
-### Проверка каждой текстуры
-- [ ] Все карты одного разрешения
-- [ ] Normal OpenGL (не DirectX)
-- [ ] Roughness/metallic Non-Color
+- **Прочие в категории «Сетапы»:** [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md), [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 37: BLENDERKIT ASSETS](setup_37_blenderkit_assets.md), [SETUP 38: FAB.COM (EPIC) PIPELINE](setup_38_fab_epic.md), [SETUP 39: QUIXEL BRIDGE STANDALONE](setup_39_quixel_bridge.md)
+- **По темам:** [P18: DRIVERS & CONSTRAINTS](../prompts/18_drivers_constraints.md), [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [P27: POLY HAVEN ASSET PIPELINE](../prompts/27_polyhaven_pipeline.md)
+- **Теги:** #assets, #automation, #setup
 

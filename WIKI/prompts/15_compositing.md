@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [compositing, prompt]
 ---
 # P15: COMPOSITING
 
@@ -383,18 +384,9 @@ def create_film_look_nodes(tree):
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts:** [P13 Lighting](./13_lighting_hdri.md), [P14 Camera](./14_camera_composition.md)
-- **Workflows:** [WF 01: Text-to-Scene](../workflows/wf_01_text_to_scene.md), [WF 08: Batch Processing](../workflows/wf_08_batch_processing.md)
-- **Cases:** [Case 01: ArchViz](../cases/case_01_archviz_interior.md), [Case 03: Product Viz](../cases/case_03_product_viz.md)
-- **MCP Tools:** `execute_blender_code`, `get_viewport_screenshot`
+- **Прочие в категории «Промпты»:** [P31: RENDER PASSES & AOV](31_render_passes_aov.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [COLOR MANAGEMENT: OCIO / ACES](../color/ocio_aces.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md)
+- **Теги:** #color, #color-grading, #compositing, #cryptomatte, #nodes, #passes, #post, #post-processing, #prompt
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/prompts/15_compositing.md` |
-| Russian | `multilang/ru/prompts/15_compositing.md` |

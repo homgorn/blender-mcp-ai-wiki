@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [mcp]
 ---
 # MCP ADVANCED: STREAMING & TOOL COMPOSITION
 

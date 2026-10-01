@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [prompt, render]
 ---
 # P30: OPTIMIZATION (SCENE & RENDER)
 
@@ -69,5 +70,8 @@ def optimize_scene(target_tris=500000, tex_res=2048, samples=128):
 ---
 
 ## 🔗 СВЯЗИ
-- **Кейсы:** [Case 02](../cases/case_02_game_props.md)
-- **Воркфлоу:** [WF 07](../workflows/wf_07_game_asset_pipeline.md)
+
+- **Прочие в категории «Промпты»:** [P06: RETOPOLOGY WORKFLOW](06_retopology_workflow.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md)
+- **По темам:** [P24: GN SCATTER & DISTRIBUTION](24_gn_scatter.md), [P29: BATCH PROCESSING & CLI](29_batch_cli.md), [P31: RENDER PASSES & AOV](31_render_passes_aov.md)
+- **Теги:** #decimate, #denoise, #instances, #lod, #optimization, #prompt, #render, #samples
+

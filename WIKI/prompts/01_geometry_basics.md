@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [modeling, prompt]
 ---
 # P01: PRIMITIVE CREATION BASICS
 
@@ -107,16 +108,7 @@ Example: "Create cube 'Box_01' at (2, 0, 1) scale (1, 2, 1) rotation (0, 0, 0.78
 
 ## 🔗 СВЯЗИ
 
-- **Кейсы:** [Case 02: Game Props](../cases/case_02_game_props.md)
-- **Воркфлоу:** [WF 01: Text-to-Scene](../workflows/wf_01_text_to_scene.md)
-- **Сетяпы:** [Setup 01: blender-mcp Basic](../setups/setup_01_blender_mcp_basic.md)
-- **Следующий:** [P02: Boolean Operations](./02_boolean_operations.md)
+- **Прочие в категории «Промпты»:** [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md), [P45: GEOMETRY NODES SIMULATION ZONES](45_gn_simulation.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P03: MODIFIERS STACK](03_modifiers_stack.md)
+- **По темам:** [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md)
+- **Теги:** #basics, #bpy, #bpy.ops, #geometry, #modeling, #primitives, #prompt
 
----
-
-## 🌍 MULTILANG
-
-| Язык | Файл |
-|------|------|
-| English | `multilang/en/prompts/01_geometry_basics.md` |
-| Русский | `multilang/ru/prompts/01_geometry_basics.md` |

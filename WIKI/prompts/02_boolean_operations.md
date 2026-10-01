@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [modeling, prompt]
 ---
 # P02: BOOLEAN OPERATIONS
 
@@ -129,16 +130,7 @@ bpy.ops.object.mode_set(mode='OBJECT')
 
 ## 🔗 СВЯЗИ
 
-- **Кейсы:** [Case 01: ArchViz Interior](../cases/case_01_archviz_interior.md) — окна/двери в стенах
-- **Воркфлоу:** [WF 01: Text-to-Scene](../workflows/wf_01_text_to_scene.md)
-- **Связанные промпты:** [P01 Primitives](./01_geometry_basics.md), [P03 Modifiers Stack](./03_modifiers_stack.md)
-- **Следующий:** [P03: Modifiers Stack](./03_modifiers_stack.md)
+- **Прочие в категории «Промпты»:** [P03: MODIFIERS STACK](03_modifiers_stack.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md)
+- **По темам:** [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md)
+- **Теги:** #boolean, #difference, #intersect, #modeling, #modifiers, #prompt, #union
 
----
-
-## 🌍 MULTILANG
-
-| Язык | Файл |
-|------|------|
-| English | `multilang/en/prompts/02_boolean_operations.md` |
-| Русский | `multilang/ru/prompts/02_boolean_operations.md` |

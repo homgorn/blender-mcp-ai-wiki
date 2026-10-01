@@ -3,6 +3,7 @@ id: setup_04_headless_render
 lang: ru
 category: setups
 status: full
+tags: [automation, ci, render, setup]
 ---
 # SETUP 04: HEADLESS RENDER (CLI / CI/CD)
 
@@ -340,18 +341,9 @@ done
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Blender CLI Docs:** https://docs.blender.org/manual/en/latest/advanced/command_line/arguments.html
-- **Blender Python API:** https://docs.blender.org/api/current/
-- **Setup 05:** [Render Farm (Flamenco)](../setups/setup_05_render_farm.md)
-- **Next:** [Setup 05: Render Farm (Flamenco)](../setups/setup_05_render_farm.md)
+- **Прочие в категории «Сетапы»:** [SETUP 05: RENDER FARM (FLAMENCO)](setup_05_render_farm.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md), [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 40: AMBIENTCG + POLYHAVEN BATCH](setup_40_ambientcg_polyhaven.md), [SETUP 54: CLOUD RENDER AWS/GCP](setup_54_cloud_render_aws.md)
+- **По темам:** [P29: BATCH PROCESSING & CLI](../prompts/29_batch_cli.md), [P40: VERSION CONTROL & RENDER JOBS](../prompts/40_version_control.md), [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md)
+- **Теги:** #automation, #ci, #render, #setup
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_04_headless_render.md` |
-| Russian | `multilang/ru/setups/setup_04_headless_render.md` |

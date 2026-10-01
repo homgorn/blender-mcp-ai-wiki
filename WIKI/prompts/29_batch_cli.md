@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [automation, prompt]
 ---
 # P29: BATCH PROCESSING & CLI
 
@@ -55,6 +56,8 @@ bpy.ops.render.render(animation=True)
 ---
 
 ## 🔗 СВЯЗИ
-- **Сетяпы:** [Setup 04](../setups/setup_04_headless_render.md), [Setup 05](../setups/setup_05_render_farm.md)
-- **Воркфлоу:** [WF 08](../workflows/wf_08_batch_processing.md)
-- **Следующий:** [P30: Optimization](./30_optimization.md)
+
+- **Прочие в категории «Промпты»:** [P47: ALEMBIC CACHE PIPELINE](47_alembic_cache.md), [P49: RENDER FARM SUBMIT](49_farm_submit.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P22: PARTICLE SYSTEMS](22_particles.md)
+- **По темам:** [P30: OPTIMIZATION (SCENE & RENDER)](30_optimization.md), [P31: RENDER PASSES & AOV](31_render_passes_aov.md), [P40: VERSION CONTROL & RENDER JOBS](40_version_control.md)
+- **Теги:** #automation, #batch, #cli, #headless, #prompt, #render, #render-farm
+

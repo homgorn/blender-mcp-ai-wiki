@@ -3,6 +3,7 @@ id: case_04_character_rig
 lang: ru
 category: cases
 status: full
+tags: [animation, case, rigging]
 ---
 # CASE 04: CHARACTER RIG & ANIMATION
 
@@ -133,29 +134,9 @@ Output: EXR + MP4 (H.264 High)"
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts:** P01, P04, P05, P06, P08, P12, P22-P26, P49
-- **Workflows:** [WF 04: Character Animation](../workflows/wf_04_character_animation.md)
-- **Prompts Used:** P01, P04, P05, P06, P08, P12, P13, P14, P15, P22-P26
+- **Прочие в категории «Кейсы»:** [CASE 06: ANIMATION LOOP](case_06_animation_loop.md), [CASE 01: ARCHVIZ INTERIOR](case_01_archviz_interior.md), [CASE 02: GAME PROPS PIPELINE](case_02_game_props.md), [CASE 03: PRODUCT VISUALIZATION](case_03_product_viz.md), [CASE 05: PROCEDURAL CITY](case_05_procedural_city.md)
+- **По темам:** [CASE 07: STYLIZED BARREL (HAND-PAINT)](case_07_stylized_barrel.md), [CASE 08: SCI-FI CORRIDOR MODULAR](case_08_sci_fi_corridor.md), [CASE 09: ANIME HEAD BUST](case_09_anime_head_bust.md)
+- **Теги:** #animation, #case, #rigging
 
----
-
-## 💡 PRO TIPS
-
-| Tip | Why |
-|-----|-----|
-| Используй Rigify + Custom Face | Баланс скорость/контроль |
-| Corrective Shapes для коленей/локтей | Без "сладких" деформаций |
-| Twist Bones (Forearm/Thigh) | Правильное вращение запястий/ступней |
-| UDIM для текстуры кожи | 4k на голову без урезанности |
-| Anim Layers (NLA) | Слои: Base + Additive + Override |
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/cases/case_04_character_rig.md` |
-| Russian | `multilang/ru/cases/case_04_character_rig.md` |

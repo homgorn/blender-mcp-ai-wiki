@@ -3,6 +3,7 @@ id: setup_09_blenderbot_ai
 lang: ru
 category: setups
 status: full
+tags: [blender, mcp, setup]
 ---
 # SETUP 09: BLENDERBOT / AI CODING AGENT
 
@@ -218,43 +219,9 @@ async def generate_boilerplate(template: str) -> str:
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **BlenderGPT:** https://github.com/BlenderGPT/BlenderGPT
-- **Blender Copilot:** https://github.com/blender-copilot
-- **MCP Spec:** https://modelcontextprotocol.io/
-- **FastMCP:** https://github.com/jlowin/fastmcp
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_09_blenderbot_ai.md` |
-| Russian | `multilang/ru/setups/setup_09_blenderbot_ai.md` |
-
----
-
-## FULL GUIDE
-
-### Архитектура
-```
-Blender N-panel → HTTP localhost → LLM API → code → Text Editor → Run
-```
-
-### Шаги
-1. API-ключ провайдера (OpenRouter/DeepSeek) в настройках аддона.
-2. Промпт с контекстом сцены: `get_scene_info` → вставить в запрос.
-3. Сгенерированный код ВСЕГДА проверять: dry-run на копии сцены.
-4. Частые задачи: примитивы+модификаторы, расстановка, рендер-пресеты.
-
-### MCP промпт
-```
-"Сгенерируй bpy-скрипт: [задача]. Контекст сцены: [get_scene_info]. Только безопасные ops, без os/sys."
-```
-
-### Проверка
-- [ ] Скрипт выполняется без ошибок на пустой сцене
-- [ ] Нет `os.system`, `subprocess`, записи вне `//`
+- **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 06: CUSTOM MCP TOOLS](setup_06_custom_mcp_tools.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md)
+- **Теги:** #blender, #mcp, #setup
 

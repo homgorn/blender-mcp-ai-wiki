@@ -3,6 +3,7 @@ id: wf_08_batch_processing
 lang: ru
 category: workflows
 status: full
+tags: [automation, workflow]
 ---
 # WF 08: BATCH PROCESSING
 
@@ -639,28 +640,9 @@ class BatchLogger:
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Blender CLI:** https://docs.blender.org/manual/en/latest/advanced/command_line/
-- **Blender Python API:** https://docs.blender.org/api/current/
-- **Setup 04:** [Headless Render](../setups/setup_04_headless_render.md)
-- **Setup 05:** [Render Farm](../setups/setup_05_render_farm.md)
-- **Setup 07:** [CI/CD](../setups/setup_07_ci_cd.md)
-- **Setup 08:** [Asset Pipeline](../setups/setup_08_asset_pipeline.md)
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/workflows/wf_08_batch_processing.md` |
-| Russian | `multilang/ru/workflows/wf_08_batch_processing.md` |
-
----
-
-## FULL ADDENDUM: logging
-
-- Structured logging каждого батча (JSON): operation/target/duration.
-- Ретрай только упавших чанков, таймаут на кадр.
+- **Прочие в категории «Воркфлоу»:** [WF 01: TEXT-TO-SCENE](wf_01_text_to_scene.md), [WF 02: IMAGE-TO-3D](wf_02_image_to_3d.md), [WF 03: TEXTURE PIPELINE](wf_03_texture_pipeline.md), [WF 04: CHARACTER ANIMATION](wf_04_character_animation.md), [WF 05: PROCEDURAL ASSETS](wf_05_procedural_assets.md)
+- **По темам:** [P18: DRIVERS & CONSTRAINTS](../prompts/18_drivers_constraints.md), [P29: BATCH PROCESSING & CLI](../prompts/29_batch_cli.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](../setups/setup_04_headless_render.md), [SETUP 35: READY PLAYER ME AVATARS](../setups/setup_35_readyplayerme.md)
+- **Теги:** #automation, #workflow
 

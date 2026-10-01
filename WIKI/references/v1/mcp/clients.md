@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [mcp, reference]
+---
 # MCP CLIENT CONFIGURATIONS
 
 ## OpenCode

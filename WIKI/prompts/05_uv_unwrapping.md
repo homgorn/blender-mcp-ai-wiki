@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [prompt, uv]
 ---
 # P05: UV UNWRAPPING STRATEGIES
 
@@ -213,16 +214,7 @@ for i, (sf, df) in enumerate(zip(src.data.polygons, dst.data.polygons)):
 
 ## 🔗 СВЯЗИ
 
-- **Кейсы:** [Case 03: Product Viz](../cases/case_03_product_viz.md)
-- **Воркфлоу:** [WF 03: Texture Pipeline](../workflows/wf_03_texture_pipeline.md)
-- **Промпты:** [P04 BMesh](./04_mesh_editing_bmesh.md), [P11 Procedural Textures](./11_procedural_textures.md)
-- **Следующий:** [P06: Retopology Workflow](./06_retopology_workflow.md)
+- **Прочие в категории «Промпты»:** [P37: SEAMLESS TEXTURE WORKFLOW](37_seamless_textures.md), [P46: UDIM WORKFLOW](46_udim_workflow.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md)
+- **По темам:** [P10: NODE GROUP CREATION](10_node_groups.md), [P11: PROCEDURAL TEXTURES](11_procedural_textures.md), [P12: TEXTURE PAINTING](12_texture_painting.md)
+- **Теги:** #procedural, #prompt, #texturing, #unwrapping, #uv
 
----
-
-## 🌍 MULTILANG
-
-| Язык | Файл |
-|------|------|
-| English | `multilang/en/prompts/05_uv_unwrapping.md` |
-| Русский | `multilang/ru/prompts/05_uv_unwrapping.md` |

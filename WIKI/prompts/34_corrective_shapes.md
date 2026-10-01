@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [animation, prompt]
 ---
 # P34: CORRECTIVE SHAPE KEYS
 
@@ -58,5 +59,8 @@ def corrective_key(mesh_name, key_name, rig_name, bone_name, lo=0.5, hi=1.2):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P20 Shape Keys](./20_shape_keys.md), [P17 Rigify](./17_rigify_setup.md)
-- **Следующий:** [P35: MCP Error Recovery](./35_mcp_error_recovery.md)
+
+- **Прочие в категории «Промпты»:** [P20: SHAPE KEYS & MORPHING](20_shape_keys.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P16: KEYFRAME ANIMATION BASICS](16_keyframe_animation.md), [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md)
+- **По темам:** [P33: CAMERA PATH ANIMATION](33_camera_path.md), [P43: CAMERA SWITCHING & MARKERS](43_camera_switching.md), [CASE 04: CHARACTER RIG & ANIMATION](../cases/case_04_character_rig.md)
+- **Теги:** #animation, #corrective, #deform, #drivers, #prompt, #rig, #shape, #shape-keys
+

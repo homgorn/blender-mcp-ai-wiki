@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [prompt, texturing]
 ---
 # P37: SEAMLESS TEXTURE WORKFLOW
 
@@ -61,5 +62,8 @@ def tile_material(obj_name, scale=4.0):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P11 Procedural](./11_procedural_textures.md), [P12 Texture Paint](./12_texture_painting.md)
-- **Следующий:** [P38: Bake Pipeline](./38_bake_pipeline.md)
+
+- **Прочие в категории «Промпты»:** [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md), [P46: UDIM WORKFLOW](46_udim_workflow.md), [P12: TEXTURE PAINTING](12_texture_painting.md), [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P03: MODIFIERS STACK](03_modifiers_stack.md)
+- **Теги:** #dream, #dream-textures, #inpaint, #prompt, #seamless, #texturing, #tiling, #uv
+

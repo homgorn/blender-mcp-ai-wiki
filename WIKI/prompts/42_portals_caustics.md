@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [lighting, prompt]
 ---
 # P42: LIGHT PORTALS & CAUSTICS
 
@@ -83,5 +84,8 @@ def enable_caustics(samples=256):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P13 Lighting](./13_lighting_hdri.md), [P09 Principled](./09_principled_bsdf.md)
-- **Следующий:** [P43: Camera Switching](./43_camera_switching.md)
+
+- **Прочие в категории «Промпты»:** [P32: LIGHT LINKING & SHADOWS](32_light_linking.md), [P13: LIGHTING & HDRI](13_lighting_hdri.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P36: ASSET LICENSING (PIZZA/SKETCHFAB/HAVEN)](36_asset_licensing.md), [P41: DISPLACEMENT & MICRO-DETAIL](41_displacement_micro.md)
+- **По темам:** [P48: EEVEE VS CYCLES DECISION](48_eevee_vs_cycles.md), [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md)
+- **Теги:** #caustics, #cycles, #daylight, #glass, #interior, #lighting, #portals, #prompt
+

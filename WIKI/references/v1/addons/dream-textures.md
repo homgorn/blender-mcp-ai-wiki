@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [addon, reference, stable-diffusion]
+---
 # DREAM TEXTURES ADDON - DEEP DIVE
 
 ## Overview

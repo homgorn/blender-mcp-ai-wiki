@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [modeling, prompt]
 ---
 # P04: MESH EDITING (BMESH)
 
@@ -223,16 +224,7 @@ bmesh.update_edit_mesh(obj.data)
 
 ## 🔗 СВЯЗИ
 
-- **Кейсы:** [Case 05: Procedural City](../cases/case_05_procedural_city.md)
-- **Воркфлоу:** [WF 05: Procedural Assets](../workflows/wf_05_procedural_assets.md)
-- **Промпты:** [P03 Modifiers](./03_modifiers_stack.md), [P05: UV Unwrapping](./05_uv_unwrapping.md)
-- **Следующий:** [P05: UV Unwrapping Strategies](./05_uv_unwrapping.md)
+- **Прочие в категории «Промпты»:** [P03: MODIFIERS STACK](03_modifiers_stack.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md), [P25: PROCEDURAL BUILDING GENERATOR](25_procedural_building.md)
+- **По темам:** [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md)
+- **Теги:** #bmesh, #edit, #edit-mode, #low, #low-level, #mesh, #mesh-manipulation, #modeling, #procedural, #prompt
 
----
-
-## 🌍 MULTILANG
-
-| Язык | Файл |
-|------|------|
-| English | `multilang/en/prompts/04_mesh_editing_bmesh.md` |
-| Русский | `multilang/ru/prompts/04_mesh_editing_bmesh.md` |

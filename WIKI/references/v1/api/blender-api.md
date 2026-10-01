@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [api, blender, reference]
+---
 # BLENDER PYTHON API REFERENCE (4.x)
 
 ## Quick Reference

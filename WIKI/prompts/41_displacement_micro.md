@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [cycles, prompt, render, shading]
 ---
 # P41: DISPLACEMENT & MICRO-DETAIL
 
@@ -93,5 +94,8 @@ def true_displacement(obj_name, height_img_path, scale=0.1, midlevel=0.5, dicing
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P11 Procedural](./11_procedural_textures.md), [P38 Bake](./38_bake_pipeline.md)
-- **Следующий:** [P42: Portals & Caustics](./42_portals_caustics.md)
+
+- **Прочие в категории «Промпты»:** [P48: EEVEE VS CYCLES DECISION](48_eevee_vs_cycles.md), [P09: PRINCIPLED BSDF SETUP](09_principled_bsdf.md), [P10: NODE GROUP CREATION](10_node_groups.md), [P11: PROCEDURAL TEXTURES](11_procedural_textures.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P29: BATCH PROCESSING & CLI](29_batch_cli.md)
+- **Теги:** #adaptive, #adaptive-subdivision, #cycles, #displacement, #micro, #micro-detail, #prompt, #render, #shading, #true
+

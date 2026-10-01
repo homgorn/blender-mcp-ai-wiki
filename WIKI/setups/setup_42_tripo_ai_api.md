@@ -2,7 +2,8 @@
 id: setup_42_tripo_ai_api
 lang: ru
 category: setups
-status: full
+status: stub
+tags: [ai-3d, api, setup]
 ---
 # SETUP 42: TRIPO AI API
 
@@ -33,29 +34,9 @@ RU: "Tripo API: image-to-3D + text refine 'worn leather', PBR, auto-rig quad" / 
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE
-
-### API setup
-1. Ключ: https://platform.tripo3d.ai/ → API Keys.
-2. Endpoint: `POST /v2/openapi/task` с `type: text_to_model` или `image_to_model`.
-3. Poll `GET /v2/openapi/task/{id}` до `status: success`.
-4. Скачай `model.glb` + `textures/*.png`.
-
-### Параметры
-| Параметр | Значение |
-|----------|----------|
-| mode | `high` для hero, `draft` для блокаута |
-| texture | `true`, resolution 2048 |
-| pbr | `true` (metallic/roughness/normal) |
-| rig | `false` (риг отдельно Mixamo) |
-
-### Blender cleanup
-1. Import GLB → Apply scale → Recalculate normals.
-2. Decimate до target tris → Smart UV (если UV грязные) → bake normal.
-3. Материалы: Principled, BaseColor sRGB, остальные Non-Color.
+- **Прочие в категории «Сетапы»:** [SETUP 43: MESHY API V4](setup_43_meshy_api_v4.md), [SETUP 16: BLENDER + AUTOMATIC1111 API](setup_16_automatic1111_api.md), [SETUP 44: RODIN / HYPER3D GEN](setup_44_rodin_hyper3d.md), [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md), [SETUP 46: SHAP-E / POINT-E LOCAL](setup_46_shap_e_local.md)
+- **По темам:** [SETUP 47: ZERO123 / INSTANTMESH](setup_47_zero123_instantmesh.md), [SETUP 48: GAUSSIAN SPLATTING → BLENDER](setup_48_gaussian_splatting.md), [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md)
+- **Теги:** #ai-3d, #api, #setup
 

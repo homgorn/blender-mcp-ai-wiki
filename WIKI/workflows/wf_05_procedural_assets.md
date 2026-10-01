@@ -3,6 +3,7 @@ id: wf_05_procedural_assets
 lang: ru
 category: workflows
 status: full
+tags: [geometry-nodes, modeling, pipeline, vegetation, workflow]
 ---
 # WF 05: PROCEDURAL ASSETS
 
@@ -268,30 +269,9 @@ STYLES = {
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **GN Docs:** https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/
-- **CG Cookie GN Course:** https://cgcookie.com/courses/geometry-nodes
-- **Erindale GN:** https://www.youtube.com/@Erindale
-- **Setup 05:** [Render Farm](../setups/setup_05_render_farm.md)
-- **Case 05:** [Procedural City](../cases/case_05_procedural_city.md)
-- **Next:** [WF 06: ArchViz Workflow](../workflows/wf_06_archviz_workflow.md)
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/workflows/wf_05_procedural_assets.md` |
-| Russian | `multilang/ru/workflows/wf_05_procedural_assets.md` |
-
----
-
-## FULL ADDENDUM: performance gates
-
-- Collection Instancing: 1 draw call на тип.
-- Distance culling + decimate LOD.
-- Billboard impostors > 500м.
-- Seed = frame для детерминированного трафика.
+- **Прочие в категории «Воркфлоу»:** [WF 01: TEXT-TO-SCENE](wf_01_text_to_scene.md), [WF 02: IMAGE-TO-3D](wf_02_image_to_3d.md), [WF 03: TEXTURE PIPELINE](wf_03_texture_pipeline.md), [WF 07: GAME ASSET PIPELINE](wf_07_game_asset_pipeline.md), [WF 12: CROWD SIM GN](wf_12_crowd_sim_gn.md)
+- **По темам:** [CASE 05: PROCEDURAL CITY](../cases/case_05_procedural_city.md), [P22: PARTICLE SYSTEMS](../prompts/22_particles.md), [P07: INSTANCING & ARRAYS](../prompts/07_instancing_arrays.md), [P23: GEOMETRY NODES BASICS](../prompts/23_geometry_nodes_basics.md)
+- **Теги:** #geometry-nodes, #modeling, #pipeline, #vegetation, #workflow
 

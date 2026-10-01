@@ -3,6 +3,7 @@ id: setup_24_metashape_scan
 lang: ru
 category: setups
 status: stub
+tags: [photogrammetry, setup]
 ---
 # SETUP 24: AGISOFT METASHAPE
 
@@ -33,5 +34,9 @@ RU: "Импорт Metashape OBJ 8k текстурой, ретопо, UDIM, за�
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Сетапы»:** [SETUP 23: REALITYCAPTURE SCAN TO BLENDER](setup_23_realitycapture_scan.md), [SETUP 25: POLYCAM / LUMA / KIRI SCAN](setup_25_polycam_luma.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md), [SETUP 05: RENDER FARM (FLAMENCO)](setup_05_render_farm.md)
+- **Теги:** #photogrammetry, #setup
+

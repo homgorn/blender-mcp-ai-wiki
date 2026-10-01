@@ -79,13 +79,19 @@ for cat in CATS:
     d = WIKI / cat
     if not d.exists():
         continue
-    for f in sorted(d.glob("*.md")):
+    # Recursive on purpose: the corpus nests (references/v1/guides/*.md). A flat
+    # glob left all 19 of those files with no declared `lang:`, no `status:` and
+    # no `tags:`, because every other repair script used the same flat glob and
+    # missed them the same way. They were still being detected downstream by
+    # content heuristics, so the gap was invisible in the output — it only
+    # became visible once a URL was built from an undeclared value.
+    for f in sorted(d.rglob("*.md")):
         t = f.read_text(encoding="utf-8")
         m = FM.match(t)
         if m and re.search(r"^lang\s*:", m.group(1), re.MULTILINE):
             continue  # already explicit
         lang, ratio = guess(t)
-        decisions.append((cat, f.name, lang, ratio))
+        decisions.append((cat, f.relative_to(d).as_posix(), lang, ratio))
         if DRY:
             continue
         if m:

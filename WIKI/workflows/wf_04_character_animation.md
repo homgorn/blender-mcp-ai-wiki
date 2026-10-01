@@ -3,6 +3,7 @@ id: wf_04_character_animation
 lang: ru
 category: workflows
 status: full
+tags: [animation, workflow]
 ---
 # WF 04: CHARACTER ANIMATION
 
@@ -283,32 +284,9 @@ print(f"Done! Exported {len(actions)} animations to {args.output_dir}")
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Rigify Docs:** https://docs.blender.org/manual/en/latest/animation/rigging/rigify.html
-- **NLA Guide:** https://docs.blender.org/manual/en/latest/animation/nla.html
-- **Game Export:** https://docs.blender.org/manual/en/latest/addons/import_export/scene_fbx.html
-- **Setup 30:** [Rigify Advanced](../setups/setup_30_rigify_advanced.md)
-- **Case 04:** [Character Rig](../cases/case_04_character_rig.md)
-- **Next:** [WF 05: Procedural Assets](../workflows/wf_05_procedural_assets.md)
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/workflows/wf_04_character_animation.md` |
-| Russian | `multilang/ru/workflows/wf_04_character_animation.md` |
-
----
-
-## FULL ADDENDUM: engine gates
-
-### Unity gate
-- [ ] FBX + bake transform, NLA baked, scale applied
-### Unreal gate
-- [ ] FBX + smoothing + tangents, LOD suffixes
-### Godot gate
-- [ ] GLB без Draco, animations separate
+- **Прочие в категории «Воркфлоу»:** [WF 09: REALTIME VJ LOOP](wf_09_realtime_vj_loop.md), [WF 14: CLOTH FASHION SHOW](wf_14_cloth_fashion_show.md), [WF 17: STOP-MOTION FELT LOOK](wf_17_stop_motion_felt.md), [WF 23: VIRTUAL PRODUCTION LED](wf_23_virtual_production_led.md), [WF 24: PHOTOGRAMMETRY CLEANUP](wf_24_photogrammetry_cleanup.md)
+- **По темам:** [CASE 04: CHARACTER RIG & ANIMATION](../cases/case_04_character_rig.md), [CASE 06: ANIMATION LOOP](../cases/case_06_animation_loop.md), [P14: CAMERA & COMPOSITION](../prompts/14_camera_composition.md)
+- **Теги:** #animation, #workflow
 

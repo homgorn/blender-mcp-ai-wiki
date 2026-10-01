@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [prompt, retopology]
 ---
 # P06: RETOPOLOGY WORKFLOW
 
@@ -173,18 +174,9 @@ bpy.ops.object.modifier_apply(modifier="DataTransfer")
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Cases:** [Case 02: Game Props](../cases/case_02_game_props.md)
-- **Workflows:** [WF 07: Game Asset Pipeline](../workflows/wf_07_game_asset_pipeline.md)
-- **Prompts:** [P04 BMesh](./04_mesh_editing_bmesh.md), [P05 UV](./05_uv_unwrapping.md)
-- **Next:** [P07: Instancing & Arrays](./07_instancing_arrays.md)
+- **Прочие в категории «Промпты»:** [P30: OPTIMIZATION (SCENE & RENDER)](30_optimization.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md)
+- **По темам:** [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P08: SCULPTING BASICS](08_sculpting_basics.md)
+- **Теги:** #game, #game-ready, #optimization, #prompt, #quads, #retopo, #retopology
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/prompts/06_retopology_workflow.md` |
-| Russian | `multilang/ru/prompts/06_retopology_workflow.md` |

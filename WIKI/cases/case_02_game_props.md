@@ -3,6 +3,7 @@ id: case_02_game_props
 lang: ru
 category: cases
 status: full
+tags: [case, game-assets, pipeline]
 ---
 # CASE 02: GAME PROPS PIPELINE
 
@@ -164,16 +165,7 @@ OpenCode: "Экспорт пропса в GLB с тангентами, прим�
 
 ## 🔗 СВЯЗИ
 
-- **Воркфлоу:** [WF 07: Game Asset Pipeline](../workflows/wf_07_game_asset_pipeline.md)
-- **Сетяп:** [Setup 01: blender-mcp Basic](../setups/setup_01_blender_mcp_basic.md)
-- **Кейсы:** [Case 05: Procedural City](../cases/case_05_procedural_city.md) — масштабирование
-- **Следующий:** [Case 03: Product Viz](../cases/case_03_product_viz.md)
+- **Прочие в категории «Кейсы»:** [CASE 03: PRODUCT VISUALIZATION](case_03_product_viz.md), [CASE 05: PROCEDURAL CITY](case_05_procedural_city.md), [CASE 07: STYLIZED BARREL (HAND-PAINT)](case_07_stylized_barrel.md), [CASE 08: SCI-FI CORRIDOR MODULAR](case_08_sci_fi_corridor.md), [CASE 16: DUNGEON TILESET](case_16_dungeon_tileset.md)
+- **По темам:** [CASE 01: ARCHVIZ INTERIOR](case_01_archviz_interior.md), [CASE 04: CHARACTER RIG & ANIMATION](case_04_character_rig.md), [CASE 06: ANIMATION LOOP](case_06_animation_loop.md)
+- **Теги:** #case, #game-assets, #pipeline
 
----
-
-## 🌍 MULTILANG
-
-| Язык | Файл |
-|------|------|
-| English | `multilang/en/cases/case_02_game_props.md` |
-| Русский | `multilang/ru/cases/case_02_game_props.md` |

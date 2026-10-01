@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [prompt, render]
 ---
 # P40: VERSION CONTROL & RENDER JOBS
 
@@ -55,5 +56,8 @@ bpy.ops.wm.save_as_mainfile(filepath=f"//versions/scene_v{v}.blend")
 ---
 
 ## 🔗 СВЯЗИ
-- **Сетяпы:** [Setup 04](../setups/setup_04_headless_render.md), [Setup 05](../setups/setup_05_render_farm.md), [Setup 07](../setups/setup_07_ci_cd.md)
-- **Воркфлоу:** [WF 08](../workflows/wf_08_batch_processing.md)
+
+- **Прочие в категории «Промпты»:** [P49: RENDER FARM SUBMIT](49_farm_submit.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P29: BATCH PROCESSING & CLI](29_batch_cli.md), [P30: OPTIMIZATION (SCENE & RENDER)](30_optimization.md)
+- **По темам:** [P31: RENDER PASSES & AOV](31_render_passes_aov.md), [P41: DISPLACEMENT & MICRO-DETAIL](41_displacement_micro.md), [P43: CAMERA SWITCHING & MARKERS](43_camera_switching.md)
+- **Теги:** #backup, #ci, #flamenco, #git, #lfs, #prompt, #render, #versioning
+

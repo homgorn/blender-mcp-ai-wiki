@@ -3,6 +3,7 @@ id: wf_02_image_to_3d
 lang: ru
 category: workflows
 status: full
+tags: [ai-3d, pipeline, workflow]
 ---
 # WF 02: IMAGE-TO-3D
 
@@ -210,35 +211,9 @@ def generate_3d(image_path, output_dir, steps=50):
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **TripoSR:** https://github.com/VAST-AI-Research/TripoSR
-- **LRM:** https://github.com/lrm-dev/LRM
-- **InstantMesh:** https://github.com/TencentARC/InstantMesh
-- **Hunyuan3D:** https://3d.hunyuan.tencent.com/
-- **Hyper3D:** https://hyper3d.ai/
-- **Meshy:** https://www.meshy.ai/
-- **Setup 03:** [Dream Textures](../setups/setup_03_dream_textures.md)
-- **Next:** [WF 03: Texture Pipeline](../workflows/wf_03_texture_pipeline.md)
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/workflows/wf_02_image_to_3d.md` |
-| Russian | `multilang/ru/workflows/wf_02_image_to_3d.md` |
-
----
-
-## FULL ADDENDUM: post-process checklist
-
-1. Import GLB → scale to meters → apply transforms.
-2. `Mesh → Clean Up → Merge by Distance` (0.0001).
-3. Recalculate normals outside.
-4. Quad Remesher / Decimate до target tris.
-5. Smart UV → pack margin 0.005 → bake normal from high (если есть исходник).
-6. PBR assign: basecolor sRGB, остальные Non-Color.
-7. Turntable preview 120f + скриншот.
+- **Прочие в категории «Воркфлоу»:** [WF 01: TEXT-TO-SCENE](wf_01_text_to_scene.md), [WF 03: TEXTURE PIPELINE](wf_03_texture_pipeline.md), [WF 05: PROCEDURAL ASSETS](wf_05_procedural_assets.md), [WF 07: GAME ASSET PIPELINE](wf_07_game_asset_pipeline.md), [WF 17: STOP-MOTION FELT LOOK](wf_17_stop_motion_felt.md)
+- **По темам:** [SETUP 45: HUNYUAN3D 2.1 LOCAL](../setups/setup_45_hunyuan3d_21.md), [WF 19: VOXEL ART PIPELINE](wf_19_voxel_art_pipeline.md), [WF 23: VIRTUAL PRODUCTION LED](wf_23_virtual_production_led.md)
+- **Теги:** #ai-3d, #pipeline, #workflow
 

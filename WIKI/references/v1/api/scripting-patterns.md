@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [blender, reference]
+---
 # BLENDER SCRIPTING PATTERNS - SAFE & EFFECTIVE
 
 ## Core Principles

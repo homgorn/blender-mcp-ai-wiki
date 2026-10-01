@@ -3,6 +3,7 @@ id: setup_34_metahuman_blender
 lang: ru
 category: setups
 status: stub
+tags: [blender, character, setup]
 ---
 # SETUP 34: METAHUMAN → BLENDER
 
@@ -33,5 +34,9 @@ RU: "Quixel Bridge MetaHuman LOD0, groom→curves, materials to Principled" / EN
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Сетапы»:** [SETUP 32: DAZ → BLENDER (DIFFEOMORPHIC)](setup_32_daz_diffeomorphic.md), [SETUP 36: VROID STUDIO → BLENDER](setup_36_vroid_studio.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)](setup_10_compositing_roundtrip.md)
+- **Теги:** #blender, #character, #setup
+

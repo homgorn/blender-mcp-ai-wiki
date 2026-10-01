@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [prompt, render, render-farm]
 ---
 # P49: RENDER FARM SUBMIT
 
@@ -77,5 +78,8 @@ def chunk_frames(start, end, chunk=25):
 ---
 
 ## 🔗 СВЯЗИ
-- **Сетяпы:** [Setup 05 Render Farm](../setups/setup_05_render_farm.md), [Setup 04 Headless](../setups/setup_04_headless_render.md)
-- **Следующий:** [P50: Turntable QA](./50_turntable_qa.md)
+
+- **Прочие в категории «Промпты»:** [P29: BATCH PROCESSING & CLI](29_batch_cli.md), [P40: VERSION CONTROL & RENDER JOBS](40_version_control.md), [P47: ALEMBIC CACHE PIPELINE](47_alembic_cache.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P22: PARTICLE SYSTEMS](22_particles.md)
+- **По темам:** [P30: OPTIMIZATION (SCENE & RENDER)](30_optimization.md), [P31: RENDER PASSES & AOV](31_render_passes_aov.md), [P41: DISPLACEMENT & MICRO-DETAIL](41_displacement_micro.md)
+- **Теги:** #chunks, #flamenco, #jobs, #monitor, #prompt, #render, #render-farm
+

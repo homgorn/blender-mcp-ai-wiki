@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [lighting, prompt]
 ---
 # P32: LIGHT LINKING & SHADOWS
 
@@ -58,5 +59,8 @@ def tune_shadows(light_name, soft_size=0.5, clip_start=0.1, clip_end=100.0):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P13 Lighting](./13_lighting_hdri.md), [P31 Passes](./31_render_passes_aov.md)
-- **Следующий:** [P33: Camera Path](./33_camera_path.md)
+
+- **Прочие в категории «Промпты»:** [P42: LIGHT PORTALS & CAUSTICS](42_portals_caustics.md), [P48: EEVEE VS CYCLES DECISION](48_eevee_vs_cycles.md), [P13: LIGHTING & HDRI](13_lighting_hdri.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P36: ASSET LICENSING (PIZZA/SKETCHFAB/HAVEN)](36_asset_licensing.md)
+- **По темам:** [P41: DISPLACEMENT & MICRO-DETAIL](41_displacement_micro.md), [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [EEVEE NEXT (BLENDER 4.2+)](../realtime/eevee_next.md)
+- **Теги:** #collections, #cycles, #eevee, #light, #light-linking, #lighting, #prompt, #shadows
+

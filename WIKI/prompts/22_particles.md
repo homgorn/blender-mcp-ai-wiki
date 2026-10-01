@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [geometry-nodes, modeling, pipeline, prompt, render]
 ---
 # P22: PARTICLE SYSTEMS
 
@@ -74,5 +75,8 @@ def create_hair(obj_name, count=500, length=0.3, children=10):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P21 Physics](./21_physics_simulation.md)
-- **Следующий:** [P23: Geometry Nodes Basics](./23_geometry_nodes_basics.md)
+
+- **Прочие в категории «Промпты»:** [P45: GEOMETRY NODES SIMULATION ZONES](45_gn_simulation.md), [P47: ALEMBIC CACHE PIPELINE](47_alembic_cache.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md), [P25: PROCEDURAL BUILDING GENERATOR](25_procedural_building.md)
+- **По темам:** [CASE 05: PROCEDURAL CITY](../cases/case_05_procedural_city.md), [P36: ASSET LICENSING (PIZZA/SKETCHFAB/HAVEN)](36_asset_licensing.md), [P43: CAMERA SWITCHING & MARKERS](43_camera_switching.md)
+- **Теги:** #cache, #children, #emitter, #geometry-nodes, #hair, #modeling, #particles, #pipeline, #prompt, #render
+

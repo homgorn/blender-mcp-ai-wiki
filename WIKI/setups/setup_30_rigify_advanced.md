@@ -2,7 +2,8 @@
 id: setup_30_rigify_advanced
 lang: ru
 category: setups
-status: full
+status: stub
+tags: [rigging, setup]
 ---
 # SETUP 30: RIGIFY ADVANCED + FACE
 
@@ -33,20 +34,9 @@ RU: "Rigify human + face rig 52 кости, corrective shapes колени/ло�
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE
-
-### Rigify + лицо
-1. Meta-rig human + face rig (52 кости: jaw/eyes/brows/lips).
-2. Generate → weights auto → чистка: плечи/таз градиенты, пальцы по фалангам.
-3. Correctives: колени/локти (см. P34).
-4. Game export: bake deform, remove drivers.
-
-### Проверка
-- [ ] Экстремальные позы без разрывов
-- [ ] Лицо: 6 базовых эмоций читаются
+- **Прочие в категории «Сетапы»:** [SETUP 27: MIXAMO AUTO-RIG](setup_27_mixamo_autorig.md), [SETUP 28: ACCURIG / ACTORCORE RIG](setup_28_accurig_cc.md), [SETUP 29: AUTO-RIG PRO](setup_29_autorignpro.md), [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md)
+- **По темам:** [CASE 04: CHARACTER RIG & ANIMATION](../cases/case_04_character_rig.md), [P17: RIGIFY HUMANOID SETUP](../prompts/17_rigify_setup.md), [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md)
+- **Теги:** #rigging, #setup
 

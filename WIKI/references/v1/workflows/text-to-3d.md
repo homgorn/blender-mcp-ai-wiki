@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [ai-3d, blender, mcp, reference]
+---
 # TEXT-TO-3D WORKFLOWS
 
 ## Overview

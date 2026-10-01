@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [pipeline, usd]
 ---
 # USD / MATERIALX / OPENUSD PIPELINE
 

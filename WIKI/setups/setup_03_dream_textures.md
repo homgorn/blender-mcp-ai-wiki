@@ -3,6 +3,7 @@ id: setup_03_dream_textures
 lang: ru
 category: setups
 status: full
+tags: [blender, setup, stable-diffusion]
 ---
 # SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)
 
@@ -183,20 +184,9 @@ xattr -r -d com.apple.quarantine ~/Library/Application\ Support/Blender/4.x/scri
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Repo:** https://github.com/carson-katri/dream-textures
-- **Wiki:** https://github.com/carson-katri/dream-textures/wiki
-- **Discord:** https://discord.gg/EmDJ8CaWZ7
-- **Releases:** https://github.com/carson-katri/dream-textures/releases
-- **Setup 02:** [GenesisCore Local](../setups/setup_02_genesiscore_local.md)
-- **Next:** [Setup 04: Headless Render](../setups/setup_04_headless_render.md)
+- **Прочие в категории «Сетапы»:** [SETUP 15: BLENDER + COMFYUI SDXL](setup_15_comfyui_sdxl.md), [SETUP 16: BLENDER + AUTOMATIC1111 API](setup_16_automatic1111_api.md), [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)](setup_10_compositing_roundtrip.md)
+- **Теги:** #blender, #setup, #stable-diffusion
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_03_dream_textures.md` |
-| Russian | `multilang/ru/setups/setup_03_dream_textures.md` |

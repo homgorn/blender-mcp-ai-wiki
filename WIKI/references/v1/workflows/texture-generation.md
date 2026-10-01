@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [reference, texturing]
+---
 # TEXTURE GENERATION WORKFLOWS
 
 ## Overview

@@ -3,6 +3,7 @@ id: setup_57_face_mocap_arkit
 lang: ru
 category: setups
 status: stub
+tags: [mocap, setup, vr]
 ---
 # SETUP 57: FACE MOCAP ARKIT
 
@@ -33,5 +34,9 @@ RU: "ARKit 52 blendshapes → shape keys, smoothing 5, audio lip-sync rough" / E
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Сетапы»:** [SETUP 56: MOCAP ROKOKO / MOVE AI](setup_56_mocap_rokoko.md), [SETUP 58: VR SCENE INSPECTION](setup_58_vr_scene_inspection.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [P44: MOCAP RETARGETING](../prompts/44_mocap_retarget.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md)
+- **Теги:** #mocap, #setup, #vr
+

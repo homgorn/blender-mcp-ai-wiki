@@ -20,15 +20,16 @@
     "verify:consistency": "node scripts/verify-consistency.mjs",
     "preflight": "node preflight.mjs",
     "all": "npm run build:full && npm run verify",
-    "deploy": "npm run all && npm run preflight && wrangler deploy",
-    "deploy:preview": "npm run all && npm run preflight && wrangler deploy --env preview",
+    "deploy": "npm run all && npm run preflight && wrangler pages deploy dist --project-name=bender-skills",
+    "deploy:preview": "npm run build:full && wrangler pages deploy dist --project-name=bender-skills-preview --branch=preview",
     "whoami": "wrangler whoami"
   },
   "dependencies": {
     "@astrojs/rss": "4.0.19",
     "@astrojs/sitemap": "3.7.4",
     "astro": "7.3.5",
-    "marked": "18.0.14"
+    "marked": "18.0.14",
+    "shiki": "^4.5.0"
   },
   "devDependencies": {
     "pagefind": "1.5.2",

@@ -1,7 +1,8 @@
 # Blender AI Wiki — web
 
-Статический сайт базы знаний. Astro 7 → Cloudflare Workers (static assets).
-Без рантайм-сервера, без БД, без внешних зависимостей на этапе выполнения.
+Статический сайт базы знаний. Astro 7 → Cloudflare Pages, домен
+`bender-skills.refertur.net`. Без рантайм-сервера, без БД, без внешних
+зависимостей на этапе выполнения.
 
 ## Что здесь лежит
 
@@ -51,10 +52,21 @@ sitemap и robots.txt. Сборка с `localhost` проходит гейты, 
 заваливает: нельзя публиковать сайт, у которого канонический адрес — `localhost`.
 
 ```powershell
-npx wrangler login       # один раз
-$env:PUBLIC_SITE_URL="https://blender-ai-wiki.<subdomain>.workers.dev"
-npm run deploy           # build + verify + wrangler deploy
+npx wrangler login       # один раз, интерактивно
+$env:PUBLIC_SITE_URL="https://bender-skills.refertur.net"
+npm run deploy           # build + verify + preflight + wrangler pages deploy
 ```
+
+Деплой создаёт проект Pages `bender-skills` и загружает в него `dist/`. Он **не**
+делает так, чтобы имя резолвилось: apex-зону `refertur.net` обслуживает Timeweb
+(не регистратор), и кастомный домен заработает только после CNAME
+
+```
+bender-skills  CNAME  bender-skills.pages.dev
+```
+
+Cloudflare примет домен и покажет `pending` до появления записи. Проверять надо
+`Resolve-DnsName bender-skills.refertur.net`, а не статус в панели.
 
 ## Правило дедупликации (обязательно к соблюдению)
 

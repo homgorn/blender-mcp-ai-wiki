@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [geometry-nodes, modeling, prompt]
 ---
 # P07: INSTANCING & ARRAYS
 
@@ -172,18 +173,9 @@ distribute.inputs['Density Attribute'].default_value = "Density"
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Cases:** [Case 05: Procedural City](../cases/case_05_procedural_city.md)
-- **Workflows:** [WF 05: Procedural Assets](../workflows/wf_05_procedural_assets.md)
-- **Prompts:** [P03 Modifiers](./03_modifiers_stack.md), [P29 Procedural Building](./25_procedural_building.md)
-- **Next:** [P08: Sculpting Basics](./08_sculpting_basics.md)
+- **Прочие в категории «Промпты»:** [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md), [P25: PROCEDURAL BUILDING GENERATOR](25_procedural_building.md), [P45: GEOMETRY NODES SIMULATION ZONES](45_gn_simulation.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P03: MODIFIERS STACK](03_modifiers_stack.md)
+- **По темам:** [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P22: PARTICLE SYSTEMS](22_particles.md)
+- **Теги:** #array, #collection, #geometry, #geometry-nodes, #instances, #modeling, #procedural, #prompt
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/prompts/07_instancing_arrays.md` |
-| Russian | `multilang/ru/prompts/07_instancing_arrays.md` |

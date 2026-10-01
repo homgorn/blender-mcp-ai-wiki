@@ -11,6 +11,7 @@
  * (Pagefind requirement).
  */
 import { marked } from 'marked';
+import { codeToHtml } from 'shiki';
 import type { Entry } from '../lib/content';
 
 interface Props {
@@ -58,6 +59,68 @@ renderer.link = function ({ href, title, tokens }) {
 
 const html = marked.parse(entry.body, { renderer, async: false }) as string;
 
+/**
+ * Syntax highlighting, done after markdown rendering.
+ *
+ * `marked` emits bare <pre><code class="language-x">. Rather than re-plumb
+ * marked's async walk, the already-rendered HTML is post-processed: the corpus
+ * is code-heavy (5 120 blocks) and a regex over <pre> is predictable here —
+ * marked escapes the content, so the pattern cannot appear inside a code block
+ * by accident.
+ *
+ * A language with no Shiki grammar falls back to escaped plain text rather than
+ * failing the build: an unknown language must never break a page.
+ */
+const LANGS: Record<string, string> = {
+  py: 'python', python: 'python', bash: 'bash', sh: 'bash', shell: 'bash',
+  powershell: 'powershell', ps1: 'powershell', json: 'json', yaml: 'yaml',
+  yml: 'yaml', js: 'javascript', javascript: 'javascript', ts: 'typescript',
+  typescript: 'typescript', glsl: 'glsl', c: 'c', cpp: 'cpp', cxx: 'cpp',
+  go: 'go', rust: 'rust', rs: 'rust', sql: 'sql', html: 'html', xml: 'xml',
+  ini: 'ini', toml: 'toml', diff: 'diff', text: 'text', txt: 'text', '': 'text',
+  // Git config files are INI-shaped; there is no grammar of their own.
+  gitattributes: 'ini', gitignore: 'ini', conf: 'ini', cfg: 'ini',
+};
+
+let highlighted = 0;
+let failed = 0;
+const finalHtml = await (async () => {
+  const blocks = [...html.matchAll(
+    /<pre><code(?: class="language-([\w+#-]+)")?>([\s\S]*?)<\/code><\/pre>/g,
+  )];
+  if (!blocks.length) return html;
+  const out: string[] = [];
+  let last = 0;
+  for (const m of blocks) {
+    out.push(html.slice(last, m.index));
+    const lang = LANGS[(m[1] ?? '').toLowerCase()] ?? (m[1] ?? '');
+    const code = m[2]
+      .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+    try {
+      const themed = await codeToHtml(code, {
+        lang: lang || 'text',
+        theme: 'github-dark',
+        transformers: [],
+      });
+      out.push(themed);
+      highlighted++;
+    } catch {
+      // Unknown grammar: keep the escaped original.
+      out.push(m[0]);
+      failed++;
+    }
+    last = m.index + m[0].length;
+  }
+  out.push(html.slice(last));
+  return out.join('');
+})();
+
+// No build-time logging here: Astro re-evaluates this module per page, so any
+// "log once" guard would print 900 lines. Whether highlighting actually landed
+// is verified against the built output in scripts/verify-seo.mjs, which is the
+// only place a measurement of an artifact belongs.
+
 // Table of contents from h2/h3 — also used by the sidebar.
 const toc = [...entry.body.matchAll(/^(#{2,3})\s+(.+)$/gm)].map((m) => ({
   level: m[1].length,
@@ -65,7 +128,7 @@ const toc = [...entry.body.matchAll(/^(#{2,3})\s+(.+)$/gm)].map((m) => ({
 }));
 ---
 
-<Fragment set:html={html} />
+<Fragment set:html={finalHtml} />
 
 <style>
   [data-pagefind-body] a[rel~='nofollow']::after {
@@ -73,5 +136,14 @@ const toc = [...entry.body.matchAll(/^(#{2,3})\s+(.+)$/gm)].map((m) => ({
     font-size: 0.8em;
     margin-left: 2px;
     color: var(--text-faint);
+  }
+  /* Shiki inlines its own colours; the prose rule must not fight them. */
+  .prose :is(pre, pre code) {
+    background: transparent !important;
+    color: inherit;
+  }
+  .prose pre.shiki {
+    background: var(--panel-2) !important;
+    padding: 14px 16px;
   }
 </style>

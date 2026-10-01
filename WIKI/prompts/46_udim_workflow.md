@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [blender, pipeline, prompt, shading, texturing]
 ---
 # P46: UDIM WORKFLOW
 
@@ -75,5 +76,8 @@ def udim_fill_template(obj_name, tile=1001, color=(0.5, 0.5, 0.5, 1.0), res=2048
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P05 UV](./05_uv_unwrapping.md), [P38 Bake](./38_bake_pipeline.md)
-- **Следующий:** [P47: Alembic Cache](./47_alembic_cache.md)
+
+- **Прочие в категории «Промпты»:** [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md), [P12: TEXTURE PAINTING](12_texture_painting.md), [P37: SEAMLESS TEXTURE WORKFLOW](37_seamless_textures.md), [P38: HIGH→LOW BAKE PIPELINE](38_bake_pipeline.md), [P09: PRINCIPLED BSDF SETUP](09_principled_bsdf.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [WF 17: STOP-MOTION FELT LOOK](../workflows/wf_17_stop_motion_felt.md), [P10: NODE GROUP CREATION](10_node_groups.md)
+- **Теги:** #baking, #blender, #mari, #pipeline, #prompt, #shading, #texturing, #udim, #uv, #uv-tiles
+

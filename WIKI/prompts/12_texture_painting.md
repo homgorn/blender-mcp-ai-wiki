@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [prompt, texturing]
 ---
 # P12: TEXTURE PAINTING
 
@@ -210,18 +211,9 @@ print("Exported to:", bpy.path.abspath(export_dir))
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts:** [P09 Principled BSDF](./09_principled_bsdf.md), [P11 Procedural Textures](./11_procedural_textures.md)
-- **Workflows:** [WF 03: Texture Pipeline](../workflows/wf_03_texture_pipeline.md)
-- **Cases:** [Case 03: Product Viz](../cases/case_03_product_viz.md)
-- **Next:** [P13: Lighting & HDRI](./13_lighting_hdri.md)
+- **Прочие в категории «Промпты»:** [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md), [P46: UDIM WORKFLOW](46_udim_workflow.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md), [P08: SCULPTING BASICS](08_sculpting_basics.md), [P09: PRINCIPLED BSDF SETUP](09_principled_bsdf.md)
+- **По темам:** [P37: SEAMLESS TEXTURE WORKFLOW](37_seamless_textures.md), [P38: HIGH→LOW BAKE PIPELINE](38_bake_pipeline.md), [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md)
+- **Теги:** #baking, #brushes, #layers, #pbr, #prompt, #texture, #texture-paint, #texturing
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/prompts/12_texture_painting.md` |
-| Russian | `multilang/ru/prompts/12_texture_painting.md` |

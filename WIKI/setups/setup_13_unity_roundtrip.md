@@ -3,6 +3,7 @@ id: setup_13_unity_roundtrip
 lang: ru
 category: setups
 status: full
+tags: [blender, setup, unity]
 ---
 # SETUP 13: BLENDER + UNITY ROUNDTRIP
 
@@ -76,25 +77,9 @@ EN: "Export selected to FBX for Unity URP: apply scale, bake NLA, LOD suffixes, 
 - [ ] UV0 + UV2 (lightmap)
 - [ ] Textures: BaseColor sRGB, others Non-Color
 
-## 🔗 Связи / Links
-Setup 08 Asset Pipeline, Setup 01 blender-mcp, WF-07 Game Asset Pipeline, Case 02
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE
-
-### FBX-пресет под Unity
-- Apply Unit Scale, bake space transform ON, Forward Y.
-- NLA strips baked, deform bones only.
-
-### Материалы URP/HDRP
-| Blender | Unity |
-|---------|-------|
-| BaseColor (sRGB) | Base Map |
-| Metallic/Roughness | Mask Map + Smoothness remap |
-| Normal OpenGL | Normal Map (flip Y) |
-
-### Проверка
-- [ ] Префаб собирается, LOD-суффиксы распознаны
-- [ ] Нормали без инверсии (flip Y при артефактах)
+- **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)](setup_10_compositing_roundtrip.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 11: BLENDER + TOUCHDESIGNER REALTIME VISUALS](setup_11_touchdesigner.md), [SETUP 12: BLENDER + UNREAL ENGINE 5 LIVE LINK](setup_12_unreal_livelink.md)
+- **Теги:** #blender, #setup, #unity
 

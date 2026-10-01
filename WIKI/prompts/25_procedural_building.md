@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [geometry-nodes, modeling, prompt]
 ---
 # P25: PROCEDURAL BUILDING GENERATOR
 
@@ -72,6 +73,8 @@ def procedural_building(name, w=10, d=10, h=30, floors=10, win_cols=5, win_rows=
 ---
 
 ## 🔗 СВЯЗИ
-- **Кейсы:** [Case 05](../cases/case_05_procedural_city.md)
-- **Воркфлоу:** [WF 05](../workflows/wf_05_procedural_assets.md)
-- **Следующий:** [P26: MCP Basics](./26_mcp_basics.md)
+
+- **Прочие в категории «Промпты»:** [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md)
+- **По темам:** [P22: PARTICLE SYSTEMS](22_particles.md), [P45: GEOMETRY NODES SIMULATION ZONES](45_gn_simulation.md), [CASE 05: PROCEDURAL CITY](../cases/case_05_procedural_city.md)
+- **Теги:** #architecture, #array, #building, #geometry-nodes, #modeling, #procedural, #prompt
+

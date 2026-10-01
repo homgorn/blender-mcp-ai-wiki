@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [reference, stable-diffusion]
+---
 # DREAM TEXTURES - FULL WIKI DOCUMENTATION
 
 ## Overview

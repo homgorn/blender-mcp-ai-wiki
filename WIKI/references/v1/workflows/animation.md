@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [animation, reference]
+---
 # ANIMATION WORKFLOWS
 
 ## Overview

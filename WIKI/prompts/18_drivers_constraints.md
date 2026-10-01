@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [animation, automation, modeling, prompt]
 ---
 # P18: DRIVERS & CONSTRAINTS
 
@@ -79,5 +80,8 @@ def add_track_to(obj_name, target_name):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P17 Rigify](./17_rigify_setup.md), [P19 NLA](./19_nla_workflow.md)
-- **Следующий:** [P19: NLA Workflow](./19_nla_workflow.md)
+
+- **Прочие в категории «Промпты»:** [P34: CORRECTIVE SHAPE KEYS](34_corrective_shapes.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md)
+- **По темам:** [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md), [P25: PROCEDURAL BUILDING GENERATOR](25_procedural_building.md), [P43: CAMERA SWITCHING & MARKERS](43_camera_switching.md)
+- **Теги:** #animation, #automation, #constraints, #drivers, #modeling, #procedural, #prompt, #rig
+

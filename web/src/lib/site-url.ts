@@ -8,6 +8,9 @@
  * advertising another — the worst possible SEO bug, because each file looked fine.
  *
  * Priority: PUBLIC_SITE_URL (build env) -> astro.config `site` -> localhost.
+ * The localhost tail is for `npm run dev` only; preflight.mjs refuses to deploy a
+ * build that fell through to it, because a site whose canonical is localhost
+ * cannot be indexed.
  */
 const RAW = (import.meta.env?.PUBLIC_SITE_URL || import.meta.env?.SITE || 'http://localhost:4321').toString();
 

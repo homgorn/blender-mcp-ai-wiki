@@ -2,7 +2,8 @@
 id: setup_15_comfyui_sdxl
 lang: ru
 category: setups
-status: full
+status: stub
+tags: [blender, setup, stable-diffusion]
 ---
 # SETUP 15: BLENDER + COMFYUI SDXL
 
@@ -33,41 +34,9 @@ RU: "Сгенерируй через ComfyUI SDXL seamless PBR 1k: basecolor+rou
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE (дополнение до уровня setup_01)
-
-### Архитектура
-```
-Blender viewport depth → ControlNet depth → SDXL base → SDXL refiner → seamless tile → PBR split
-```
-
-### Пошагово
-1. ComfyUI: Manager → Install `ComfyUI-ControlNet`, `SeamlessTile`, `UltimateSDUpscale`.
-2. Чекпоинты: `sd_xl_base_1.0.safetensors` + `sd_xl_refiner_1.0.safetensors` в `models/checkpoints/`.
-3. ControlNet: `control_v11f1p_sd15_depth.pth` (или SDXL-depth) в `models/controlnet/`.
-4. Workflow: Load Checkpoint → CLIP Text (positive/negative) → ControlNet Apply (depth image из Blender viewport) → KSampler 30 steps → VAE Decode → Seamless Tile → Save.
-5. Blender: depth снимается через viewport render (OpenGL) 1024px, подаётся в ControlNet.
-6. Split на карты: basecolor = output; roughness = desaturate+levels; normal = MiDaS→NormalMap node.
-
-### Параметры
-| Параметр | Значение |
-|----------|----------|
-| Steps | 30 (base 20 + refiner 10) |
-| CFG | 6.5 |
-| Denoise | 0.55 |
-| Seamless | X+Y tiling ON |
-| Resolution | 1024 (VRAM 8GB) / 512 (VRAM 4GB) |
-
-### MCP промпт
-```
-"Через ComfyUI SDXL: depth из viewport → ControlNet weight 0.8, 30 steps, seamless XY, split basecolor/rough/normal, примени с repeat 4"
-```
-
-### Проверка
-- [ ] Нет видимых швов при repeat 4x
-- [ ] Depth совпадает с геометрией (проверить overlay 50%)
+- **Прочие в категории «Сетапы»:** [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 16: BLENDER + AUTOMATIC1111 API](setup_16_automatic1111_api.md), [SETUP 35: READY PLAYER ME AVATARS](setup_35_readyplayerme.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)](setup_10_compositing_roundtrip.md)
+- **Теги:** #blender, #setup, #stable-diffusion
 

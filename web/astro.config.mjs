@@ -16,7 +16,7 @@ const DB_PATH = resolve(HERE, '../WIKI/db/wiki_database.json');
  * REQUIRED in production: a wrong canonical actively hurts SEO, and a localhost
  * origin would ship a sitemap full of localhost URLs.
  */
-const SITE = process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'http://localhost:4321';
+const SITE = process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://bender-skills.refertur.net';
 if (/^https?:\/\/(localhost|127\.0\.0\.1)/.test(SITE)) {
   console.warn(`[site] building with a local origin (${SITE}). Set PUBLIC_SITE_URL before deploying.`);
 }
@@ -42,7 +42,7 @@ function classify() {
     db = JSON.parse(readFileSync(DB_PATH, 'utf8'));
   } catch {
     console.warn('[seo] wiki_database.json not found — sitemap filter falls back to "index everything"');
-    return { noindex: new Set(), shadow: new Set() };
+    return { noindex: new Set(), shadow: new Set(), emptyCategories: new Set() };
   }
   const all = db.entries ?? [];
   const originalLang = new Map();
@@ -68,15 +68,50 @@ function classify() {
       noindex.add(path);
     }
   }
-  return { noindex, shadow };
+  return { noindex, shadow, emptyCategories: emptyCategoryPaths(all) };
 }
 
-const { noindex: NOINDEX, shadow: SHADOW } = classify();
+/**
+ * /{lang}/{category} paths whose language has no indexable article in them.
+ *
+ * Category pages are generated for every category × language, so most pairs in
+ * this corpus are empty (48 of them were). An empty page is useful to a reader
+ * but is thin content and must not be in the sitemap.
+ *
+ * This duplicates `categoryHasContent` in src/lib/content.ts on purpose: the
+ * config runs before any TS module is loaded, so it cannot import it. The
+ * duplication is only safe because verify-consistency.mjs asserts the two agree
+ * against the built output — if they ever drift, the build fails.
+ *
+ * "Indexable" must match content.ts exactly: original, or a human translation.
+ */
+function emptyCategoryPaths(all) {
+  const filled = new Set();
+  for (const e of all) {
+    const m = e.meta ?? {};
+    const indexable = !m.is_translation || m.translation === 'human';
+    if (indexable && m.language && m.category) {
+      filled.add(`${m.language}/${m.category}`);
+    }
+  }
+  const cats = new Set(all.map((e) => e.meta?.category).filter(Boolean));
+  const out = new Set();
+  for (const cat of cats) {
+    for (const lang of ['ru', 'en', 'es', 'de', 'zh']) {
+      if (!filled.has(`${lang}/${cat}`)) out.add(`/${lang}/${cat}`);
+    }
+  }
+  return out;
+}
+
+const { noindex: NOINDEX, shadow: SHADOW, emptyCategories: EMPTY_CATS } = classify();
 
 export default defineConfig({
   site: SITE,
   // Static output: every entry is prerendered to real HTML. No adapter is needed
-  // for static output, and Cloudflare Workers serves ./dist as static assets.
+  // for static output, and Cloudflare Pages serves ./dist directly. (The
+  // "Pages support removed from @astrojs/cloudflare" note applies to on-demand
+  // rendering only — see SDD/adr/0005.)
   output: 'static',
   // /foo -> /foo.html (not /foo/index.html). This is what makes the llms.txt v2
   // "same URL, .md extension" twin possible: /ru/prompts/01-geometry-basics.md
@@ -95,6 +130,11 @@ export default defineConfig({
         if (NOINDEX.has(path)) return false;
         if (path.endsWith('.md')) return false;      // markdown twins
         if (/\/search$/.test(path)) return false;     // no search results in a sitemap
+        // Category pages that list zero articles in their language are thin
+        // content. They stay published (the notice and the language switcher
+        // are useful, and footer links must resolve) but they are noindex, so
+        // they must not be here.
+        if (EMPTY_CATS.has(path)) return false;
         return true;
       },
       serialize(item) {

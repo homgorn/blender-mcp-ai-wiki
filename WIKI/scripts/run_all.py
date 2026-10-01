@@ -29,11 +29,21 @@ PY = sys.executable
 CORE = [
     ("frontmatter fix",   [str(S / "fix_frontmatter.py")], True),
     ("lang frontmatter",  [str(S / "fix_lang_frontmatter.py")], True),
+    # Tags feed the search index, /api/tags and the cross-reference graph. An
+    # untagged article is invisible to all three, so filling them is part of
+    # building the database, not a separate chore. Not a gate: a new file whose
+    # title matches no vocabulary entry should not break the build.
+    ("tag articles",      [str(S / "tag_articles.py")], False),
     ("mark stubs",        [str(S / "mark_stubs.py")], False),
     ("parity check",      [str(S / "check_missing.py")], True),
     ("build database",    [str(S / "build_database.py")], True),
     ("build graph",       [str(S / "build_graph.py")], True),
 ]
+
+# Deliberately NOT part of the pipeline: complete_sections.py rewrites prose in
+# the corpus (it converts "Setup 01, WF-01" into real links). A build must not
+# silently edit source articles. Run it on purpose:
+#     python WIKI/scripts/complete_sections.py [--refresh]
 TAIL = [
     ("rebuild crossref",  [str(S / "rebuild_crossref.py")], False),
     ("build index",       [str(S / "build_index.py")], True),
@@ -107,6 +117,14 @@ def main():
             print(out[-3000:])
             return 1
     run("quality report", [str(S / "quality_report.py")])
+
+    # --strict adds template conformance as a hard gate. It is on now that the
+    # report reads 0: a section is considered present only if a marker matches
+    # case-insensitively and MULTILANG does not count as a cross-reference.
+    ok, out = run("validate.py --strict", [str(S / "validate.py"), "--strict"])
+    if not ok:
+        print(out[-2000:])
+        return 1
 
     # The Astro site reads the database this pipeline just rebuilt, so it is
     # part of the same correctness chain — not a separate optional build.

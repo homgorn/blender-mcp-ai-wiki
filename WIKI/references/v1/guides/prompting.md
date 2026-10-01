@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [blender, reference]
+---
 # PROMPTING GUIDE - EFFECTIVE AI COMMANDS FOR BLENDER
 
 ## Core Principles

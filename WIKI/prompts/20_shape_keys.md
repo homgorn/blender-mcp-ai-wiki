@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [animation, prompt]
 ---
 # P20: SHAPE KEYS & MORPHING
 
@@ -79,6 +80,8 @@ def drive_shape_from_bone(obj_name, key_name, rig_name, bone_name, axis='LOC_Z',
 ---
 
 ## 🔗 СВЯЗИ
-- **Кейсы:** [Case 04](../cases/case_04_character_rig.md)
-- **Промпты:** [P19 NLA](./19_nla_workflow.md)
-- **Следующий:** P21 (Physics, чанк B)
+
+- **Прочие в категории «Промпты»:** [P34: CORRECTIVE SHAPE KEYS](34_corrective_shapes.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P16: KEYFRAME ANIMATION BASICS](16_keyframe_animation.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md)
+- **По темам:** [P33: CAMERA PATH ANIMATION](33_camera_path.md), [P43: CAMERA SWITCHING & MARKERS](43_camera_switching.md), [CASE 04: CHARACTER RIG & ANIMATION](../cases/case_04_character_rig.md)
+- **Теги:** #animation, #blendshapes, #corrective, #facial, #morph, #prompt, #shape, #shape-keys
+

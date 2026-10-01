@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [addon, blender, mcp, reference]
+---
 # BLENDER-MCP ADDON - DEEP DIVE
 
 ## Overview

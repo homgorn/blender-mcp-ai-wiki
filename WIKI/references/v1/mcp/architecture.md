@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [blender, mcp, reference]
+---
 # MCP ARCHITECTURE - MODEL CONTEXT PROTOCOL FOR BLENDER
 
 ## Overview

@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [geometry-nodes, modeling, prompt]
 ---
 # P23: GEOMETRY NODES BASICS
 
@@ -82,5 +83,8 @@ def create_gn_scatter(obj_name, group_name="GN_Scatter", collection_name=None):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P07 Instancing](./07_instancing_arrays.md), [P24 Scatter](./24_gn_scatter.md)
-- **Следующий:** [P24: GN Scatter](./24_gn_scatter.md)
+
+- **Прочие в категории «Промпты»:** [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P25: PROCEDURAL BUILDING GENERATOR](25_procedural_building.md), [P45: GEOMETRY NODES SIMULATION ZONES](45_gn_simulation.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P03: MODIFIERS STACK](03_modifiers_stack.md)
+- **По темам:** [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P22: PARTICLE SYSTEMS](22_particles.md)
+- **Теги:** #attributes, #geometry, #geometry-nodes, #instances, #modeling, #procedural, #prompt
+

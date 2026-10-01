@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [prompt, sculpt]
 ---
 # P08: SCULPTING BASICS
 
@@ -179,18 +180,9 @@ bpy.ops.sculpt.face_set_create(name="Eyes")
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Cases:** [Case 04: Character Rig](../cases/case_04_character_rig.md)
-- **Workflows:** [WF 04: Character Animation](../workflows/wf_04_character_animation.md)
-- **Prompts:** [P06 Retopology](./06_retopology_workflow.md), [P04 BMesh](./04_mesh_editing_bmesh.md)
-- **Next:** [P10: Node Group Creation](./10_node_groups.md)
+- **Прочие в категории «Промпты»:** [P12: TEXTURE PAINTING](12_texture_painting.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md)
+- **По темам:** [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md), [P06: RETOPOLOGY WORKFLOW](06_retopology_workflow.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md)
+- **Теги:** #brushes, #dyntopo, #highpoly, #multires, #prompt, #sculpt, #sculpting
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/prompts/08_sculpting_basics.md` |
-| Russian | `multilang/ru/prompts/08_sculpting_basics.md` |

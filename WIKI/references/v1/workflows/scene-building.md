@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [ai-3d, animation, assets, automation, blender, geometry-nodes, mcp, modeling]
+---
 # WORKFLOWS - PRODUCTION PIPELINES
 
 ## Workflow 1: Text-to-3D Scene Generation

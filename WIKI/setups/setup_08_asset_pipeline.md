@@ -3,6 +3,7 @@ id: setup_08_asset_pipeline
 lang: ru
 category: setups
 status: full
+tags: [pipeline, setup]
 ---
 # SETUP 08: ASSET PIPELINE
 
@@ -684,18 +685,9 @@ targets:
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Git LFS:** https://git-lfs.github.com/
-- **USD Docs:** https://openusd.org/
-- **glTF Spec:** https://github.com/KhronosGroup/gltf
-- **Setup 07:** [CI/CD Integration](../setups/setup_07_ci_cd.md)
+- **Прочие в категории «Сетапы»:** [SETUP 14: BLENDER + GODOT PIPELINE](setup_14_godot_pipeline.md), [SETUP 38: FAB.COM (EPIC) PIPELINE](setup_38_fab_epic.md), [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md), [SETUP 49: FFMPEG + VSE PIPELINE](setup_49_ffmpeg_vse_pipeline.md), [SETUP 55: AI UPSCALE PIPELINE](setup_55_ai_upscale_pipeline.md)
+- **По темам:** [SETUP 59: WEB VIEWER EXPORT](setup_59_web_viewer_export.md), [CASE 02: GAME PROPS PIPELINE](../cases/case_02_game_props.md), [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md)
+- **Теги:** #list, #none, #pipeline, #setup
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_08_asset_pipeline.md` |
-| Russian | `multilang/ru/setups/setup_08_asset_pipeline.md` |

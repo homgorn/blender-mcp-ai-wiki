@@ -27,7 +27,7 @@ const WEB = join(HERE, '..');
 const DIST = join(WEB, 'dist');
 const DB = join(WEB, '..', 'WIKI', 'db', 'wiki_database.json');
 
-const SITE = (process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'http://localhost:4321').replace(/\/+$/, '');
+const SITE = (process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://bender-skills.refertur.net').replace(/\/+$/, '');
 const LANGS = ['ru', 'en', 'es', 'de', 'zh'];
 const LOCALE = { ru: 'ru-RU', en: 'en-US', es: 'es-ES', de: 'de-DE', zh: 'zh-CN' };
 const NATIVE = { ru: 'Русский', en: 'English', es: 'Español', de: 'Deutsch', zh: '中文' };
@@ -104,7 +104,9 @@ for (const e of entries) {
   const counts = originals.reduce((acc, e) => ((acc[e.category] = (acc[e.category] ?? 0) + 1), acc), {});
   const featured = originals
     .filter((e) => e.difficulty > 0 && e.codeBlocks > 0)
-    .sort((a, b) => b.codeBlocks - a.codeBlocks)
+    // Russian first (this file is Russian-primary), then by code volume.
+    .sort((a, b) => (a.lang === 'ru' ? 0 : 1) - (b.lang === 'ru' ? 0 : 1)
+                   || b.codeBlocks - a.codeBlocks)
     .slice(0, 12);
 
   const L = [];
@@ -125,13 +127,38 @@ for (const e of entries) {
   for (const [cat, n] of Object.entries(counts).sort((a, b) => b[1] - a[1])) {
     const m = CATEGORY_META[cat];
     if (!m) continue;
-    L.push(`- [${m.icon} ${m.ru} (${n})](${abs(`/ru/${cat}`)}): ${m.blurb}`);
+    // Only offer a category that actually has Russian content. Sending a
+    // Russian-primary reader to /ru/references, which is empty (the reference
+    // articles are English), wastes the reader's first click. Categories with
+    // no ru articles are still reachable from the site and are listed in
+    // llms-full.txt under their real language.
+    const ruN = entries.filter((e) => e.category === cat && e.lang === 'ru' && indexable(e)).length;
+    if (ruN === 0) {
+      const langs = LANGS.filter((l) =>
+        entries.some((e) => e.category === cat && e.lang === l && indexable(e)));
+      // Link the first language that actually has content, rather than naming
+      // the language and leaving the reader to guess the path.
+      const first = langs[0];
+      const n = entries.filter((e) => e.category === cat && e.lang === first && indexable(e)).length;
+      L.push(`- ${m.icon} ${m.ru} — на русском нет; доступно на: `
+           + langs.map((l) => (l === first
+              ? `[${l} (${n})](${abs(`/${l}/${cat}`)})`
+              : l)).join(', '));
+      continue;
+    }
+    L.push(`- [${m.icon} ${m.ru} (${ruN})](${abs(`/ru/${cat}`)}): ${m.blurb}`);
   }
   L.push('');
   L.push('## Статьи с готовым кодом');
   L.push('');
   for (const e of featured) {
-    L.push(`- [${e.title}](${abs(`/ru/${e.category}/${slugify(e.origId)}`)}): ${e.description.slice(0, 160)}`);
+    // e.url, not a hardcoded /ru/ path. `featured` is drawn from originals of
+    // every language, so prefixing /ru/ produced links to pages that were never
+    // built (the dead-link gate caught /ru/references/text-to-3d, an English
+    // article). The corpus is Russian-primary, so Russian is preferred when
+    // ranking, but the URL must follow the entry's own language.
+    const blurb = e.description ? `: ${e.description.slice(0, 160)}` : '';
+    L.push(`- [${e.title}](${abs(e.url)})${blurb}`);
   }
   L.push('');
   L.push('## Справочные данные');

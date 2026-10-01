@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [mcp, prompt]
 ---
 # P35: MCP ERROR RECOVERY
 
@@ -65,5 +66,8 @@ def safe_run(label, func):
 ---
 
 ## 🔗 СВЯЗИ
-- **Сетяпы:** [Setup 01](../setups/setup_01_blender_mcp_basic.md)
-- **Следующий:** [P36: Asset Licensing](./36_asset_licensing.md)
+
+- **Прочие в категории «Промпты»:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](26_mcp_basics.md), [P27: POLY HAVEN ASSET PIPELINE](27_polyhaven_pipeline.md), [P28: CUSTOM MCP TOOLS DEVELOPMENT](28_custom_mcp_tools.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md)
+- **По темам:** [MCP ADVANCED: STREAMING & TOOL COMPOSITION](../mcp_advanced/streaming_tools.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md)
+- **Теги:** #errors, #mcp, #prompt, #retry, #scene, #scene-check, #validation
+

@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [animation, prompt]
 ---
 # P33: CAMERA PATH ANIMATION
 
@@ -63,5 +64,8 @@ def camera_follow_path(cam_name, curve_name, frames=250, target_name=None):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P14 Camera](./14_camera_composition.md), [P16 Keyframes](./16_keyframe_animation.md)
-- **Следующий:** [P34: Corrective Shapes](./34_corrective_shapes.md)
+
+- **Прочие в категории «Промпты»:** [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P43: CAMERA SWITCHING & MARKERS](43_camera_switching.md), [P16: KEYFRAME ANIMATION BASICS](16_keyframe_animation.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md)
+- **По темам:** [P20: SHAPE KEYS & MORPHING](20_shape_keys.md), [P34: CORRECTIVE SHAPE KEYS](34_corrective_shapes.md), [CASE 04: CHARACTER RIG & ANIMATION](../cases/case_04_character_rig.md)
+- **Теги:** #animation, #camera, #dof, #follow, #follow-path, #prompt, #rack, #rack-focus, #track, #track-to
+

@@ -3,6 +3,7 @@ id: wf_01_text_to_scene
 lang: ru
 category: workflows
 status: full
+tags: [assets, pipeline, render, workflow]
 ---
 # WF 01: TEXT-TO-SCENE
 
@@ -215,17 +216,7 @@ for variant in variants:
 
 ## 🔗 СВЯЗИ
 
-- **Промпты:** [P01-P05](../prompts/), [P09-P15](../materials/), [P16-P21](../lighting/)
-- **Кейсы:** [Case 01: ArchViz](../cases/case_01_archviz_interior.md), [Case 02: Game Props](../cases/case_02_game_props.md)
-- **Сетяп:** [Setup 01: blender-mcp](../setups/setup_01_blender_mcp_basic.md)
-- **MCP:** [MCP Tools Reference](../references/v1/mcp/server-api.md)
-- **Следующий:** [WF 02: Image-to-3D](../workflows/wf_02_image_to_3d.md)
+- **Прочие в категории «Воркфлоу»:** [WF 17: STOP-MOTION FELT LOOK](wf_17_stop_motion_felt.md), [WF 23: VIRTUAL PRODUCTION LED](wf_23_virtual_production_led.md), [WF 24: PHOTOGRAMMETRY CLEANUP](wf_24_photogrammetry_cleanup.md), [WF 02: IMAGE-TO-3D](wf_02_image_to_3d.md), [WF 03: TEXTURE PIPELINE](wf_03_texture_pipeline.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [CASE 05: PROCEDURAL CITY](../cases/case_05_procedural_city.md), [CASE 07: STYLIZED BARREL (HAND-PAINT)](../cases/case_07_stylized_barrel.md), [CASE 08: SCI-FI CORRIDOR MODULAR](../cases/case_08_sci_fi_corridor.md)
+- **Теги:** #assets, #pipeline, #render, #workflow
 
----
-
-## 🌍 MULTILANG
-
-| Язык | Файл |
-|------|------|
-| English | `multilang/en/workflows/wf_01_text_to_scene.md` |
-| Русский | `multilang/ru/workflows/wf_01_text_to_scene.md` |

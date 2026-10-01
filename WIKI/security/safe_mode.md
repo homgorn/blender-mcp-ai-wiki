@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [security]
 ---
 # SECURITY & SAFE MODE
 

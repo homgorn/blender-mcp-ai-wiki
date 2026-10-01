@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [cycles, eevee, prompt]
 ---
 # P48: EEVEE VS CYCLES DECISION
 
@@ -78,5 +79,8 @@ def apply_engine_preset(preset='cycles_preview'):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P13 Lighting](./13_lighting_hdri.md), [P48→P30 Optimization](./30_optimization.md)
-- **Следующий:** [P49: Farm Submit](./49_farm_submit.md)
+
+- **Прочие в категории «Промпты»:** [P32: LIGHT LINKING & SHADOWS](32_light_linking.md), [P41: DISPLACEMENT & MICRO-DETAIL](41_displacement_micro.md), [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P29: BATCH PROCESSING & CLI](29_batch_cli.md)
+- **По темам:** [P30: OPTIMIZATION (SCENE & RENDER)](30_optimization.md), [P31: RENDER PASSES & AOV](31_render_passes_aov.md), [P40: VERSION CONTROL & RENDER JOBS](40_version_control.md)
+- **Теги:** #cycles, #decision, #eevee, #performance, #presets, #prompt, #render, #render-engine
+

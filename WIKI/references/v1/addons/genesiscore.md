@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [addon, mcp, reference]
+---
 # GENESISCORE ADDON - DEEP DIVE
 
 ## Overview

@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [geometry-nodes, modeling, simulation]
 ---
 # SIMULATION & PHYSICS: GEOMETRY NODES 4.0+
 

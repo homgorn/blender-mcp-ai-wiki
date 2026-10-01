@@ -238,8 +238,16 @@ def extract_metadata(content: str, filepath: Path) -> Dict:
         for match in matches:
             if isinstance(match, str):
                 for raw in re.split(r'[,\s]+', match):
-                    tag = raw.strip().lower().strip('*_`').lstrip('#')
+                    # Strip list punctuation as well as emphasis: frontmatter
+                    # written as `tags: [a, b]` was yielding tags like
+                    # "setup]" and "prompt]" because only *_`# were removed.
+                    tag = raw.strip().lower().strip('*_`[]').lstrip('#')
                     if not tag or len(tag) < 2 or len(tag) > 30:
+                        continue
+                    # Brackets anywhere, not just at the ends: a type hint like
+                    # `list[str]` leaves "list[str" after the end-strip and
+                    # becomes a search tag nobody would ever query.
+                    if '[' in tag or ']' in tag:
                         continue
                     if not re.match(r'[^\W\d_]', tag, re.UNICODE):
                         continue  # должен начинаться с буквы

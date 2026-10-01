@@ -3,6 +3,7 @@ id: setup_07_ci_cd
 lang: ru
 category: setups
 status: full
+tags: [ci, setup]
 ---
 # SETUP 07: CI/CD INTEGRATION
 
@@ -506,19 +507,9 @@ def record_render(scene, resolution, duration, frames, status):
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **GitHub Actions Docs:** https://docs.github.com/en/actions
-- **GitLab CI Docs:** https://docs.gitlab.com/ee/ci/
-- **Blender CLI:** https://docs.blender.org/manual/en/latest/advanced/command_line/
-- **Setup 06:** [Custom MCP Tools](../setups/setup_06_custom_mcp_tools.md)
-- **Next:** [Setup 08: Asset Pipeline](../setups/setup_08_asset_pipeline.md)
+- **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)](setup_10_compositing_roundtrip.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 11: BLENDER + TOUCHDESIGNER REALTIME VISUALS](setup_11_touchdesigner.md), [SETUP 12: BLENDER + UNREAL ENGINE 5 LIVE LINK](setup_12_unreal_livelink.md)
+- **Теги:** #blender, #ci, #setup
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_07_ci_cd.md` |
-| Russian | `multilang/ru/setups/setup_07_ci_cd.md` |

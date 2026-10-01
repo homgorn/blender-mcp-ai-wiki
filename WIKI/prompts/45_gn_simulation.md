@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [geometry-nodes, modeling, prompt]
 ---
 # P45: GEOMETRY NODES SIMULATION ZONES
 
@@ -90,5 +91,8 @@ def bake_simulation(obj_name, frame_start=1, frame_end=120):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P23 GN Basics](./23_geometry_nodes_basics.md), [P21 Physics](./21_physics_simulation.md)
-- **Следующий:** [P46: UDIM Workflow](./46_udim_workflow.md)
+
+- **Прочие в категории «Промпты»:** [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P21: PHYSICS SIMULATION](21_physics_simulation.md)
+- **По темам:** [P25: PROCEDURAL BUILDING GENERATOR](25_procedural_building.md), [SIMULATION & PHYSICS: GEOMETRY NODES 4.0+](../simulation/rigid_body_gn.md), [CASE 05: PROCEDURAL CITY](../cases/case_05_procedural_city.md)
+- **Теги:** #blender, #blender-4, #geometry, #geometry-nodes, #modeling, #particles, #physics, #prompt, #simulation
+

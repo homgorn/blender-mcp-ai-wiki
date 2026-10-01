@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [clothing, prompt, simulation]
 ---
 # P21: PHYSICS SIMULATION
 
@@ -110,5 +111,8 @@ def export_alembic(objects, filepath, start=1, end=250):
 ---
 
 ## 🔗 СВЯЗИ
-- **Воркфлоу:** [WF 05](../workflows/wf_05_procedural_assets.md)
-- **Следующий:** [P22: Particles](./22_particles.md)
+
+- **Прочие в категории «Промпты»:** [P45: GEOMETRY NODES SIMULATION ZONES](45_gn_simulation.md), [P47: ALEMBIC CACHE PIPELINE](47_alembic_cache.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md)
+- **По темам:** [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md)
+- **Теги:** #cache, #cloth, #clothing, #collision, #fluid, #physics, #prompt, #rigid, #rigid-body, #simulation
+

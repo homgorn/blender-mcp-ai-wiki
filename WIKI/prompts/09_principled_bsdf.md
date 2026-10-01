@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [prompt, shading]
 ---
 # P09: PRINCIPLED BSDF SETUP
 
@@ -248,17 +249,7 @@ principled.inputs['Anisotropic Rotation'].default_value = 0.25  # 90°
 
 ## 🔗 СВЯЗИ
 
-- **Кейсы:** [Case 01: ArchViz](../cases/case_01_archviz_interior.md), [Case 03: Product Viz](../cases/case_03_product_viz.md)
-- **Воркфлоу:** [WF 03: Texture Pipeline](../workflows/wf_03_texture_pipeline.md)
-- **Промпты:** [P10 Node Groups](./10_node_groups.md), [P11 Procedural Textures](./11_procedural_textures.md)
-- **MCP Tool:** `set_material` (базовый), `execute_blender_code` (полный)
-- **Следующий:** [P10: Node Group Creation](./10_node_groups.md)
+- **Прочие в категории «Промпты»:** [P10: NODE GROUP CREATION](10_node_groups.md), [P11: PROCEDURAL TEXTURES](11_procedural_textures.md), [P12: TEXTURE PAINTING](12_texture_painting.md), [P41: DISPLACEMENT & MICRO-DETAIL](41_displacement_micro.md), [P46: UDIM WORKFLOW](46_udim_workflow.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md)
+- **Теги:** #materials, #pbr, #principled, #principled-bshf, #prompt, #rrggbb, #shader, #shader-nodes, #shading
 
----
-
-## 🌍 MULTILANG
-
-| Язык | Файл |
-|------|------|
-| English | `multilang/en/prompts/09_principled_bsdf.md` |
-| Русский | `multilang/ru/prompts/09_principled_bsdf.md` |

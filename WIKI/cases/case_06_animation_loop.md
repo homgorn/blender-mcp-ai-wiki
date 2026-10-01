@@ -3,6 +3,7 @@ id: case_06_animation_loop
 lang: ru
 category: cases
 status: full
+tags: [animation, case]
 ---
 # CASE 06: ANIMATION LOOP
 
@@ -211,29 +212,9 @@ for obj in bpy.data.objects:
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts:** P01, P07, P22, P24, P25, P26, P27, P28, P29, P30
-- **Workflows:** [WF 04: Character Animation](../workflows/wf_04_character_animation.md), [WF 08: Batch](../workflows/wf_08_batch_processing.md)
-- **Prompts Used:** P01, P07, P22-P30
+- **Прочие в категории «Кейсы»:** [CASE 04: CHARACTER RIG & ANIMATION](case_04_character_rig.md), [CASE 01: ARCHVIZ INTERIOR](case_01_archviz_interior.md), [CASE 02: GAME PROPS PIPELINE](case_02_game_props.md), [CASE 03: PRODUCT VISUALIZATION](case_03_product_viz.md), [CASE 05: PROCEDURAL CITY](case_05_procedural_city.md)
+- **По темам:** [CASE 07: STYLIZED BARREL (HAND-PAINT)](case_07_stylized_barrel.md), [CASE 08: SCI-FI CORRIDOR MODULAR](case_08_sci_fi_corridor.md), [CASE 09: ANIME HEAD BUST](case_09_anime_head_bust.md)
+- **Теги:** #animation, #case
 
----
-
-## 💡 PRO TIPS
-
-| Tip | Why |
-|-----|-----|
-| `fcurve.extrapolation = 'CYCLIC'` | Автоматический лоб для всех кривых |
-| NLA Repeat вместо копирования | Экономия памяти, легкость редактирования |
-| Frame 1 = Frame N+1 (не N) | Правильный лоб при рендере |
-| Gopsize = Frame Count | Один ключевой кадр на весь лоб = меньше артефактов |
-| Validate Loop перед рендером | Экономит часы переработки |
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/cases/case_06_animation_loop.md` |
-| Russian | `multilang/ru/cases/case_06_animation_loop.md` |

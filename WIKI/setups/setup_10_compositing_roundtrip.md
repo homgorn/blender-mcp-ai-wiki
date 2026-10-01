@@ -3,6 +3,7 @@ id: setup_10_compositing_roundtrip
 lang: ru
 category: setups
 status: full
+tags: [blender, compositing, setup]
 ---
 # SETUP 10: BLENDER + COMPOSITING (NUKE/AFTER EFFECTS ROUNDTRIP)
 
@@ -324,19 +325,9 @@ nuke.root()['OCIO_viewTransform'].setValue('ACES 1.3 SDR-video')
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **OpenEXR Spec:** https://www.openexr.com/
-- **Nuke Python API:** https://docs.foundry.com/nuke/13.0/pythondevguide/
-- **AE Scripting:** https://extendscript.docsforadobe.dev/
-- **OCIO Configs:** https://github.com/AcademySoftwareFoundation/OpenColorIO-Configs
-- **ACES Central:** https://acescentral.com/
+- **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md), [SETUP 09: BLENDERBOT / AI CODING AGENT](setup_09_blenderbot_ai.md), [SETUP 11: BLENDER + TOUCHDESIGNER REALTIME VISUALS](setup_11_touchdesigner.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [SETUP 12: BLENDER + UNREAL ENGINE 5 LIVE LINK](setup_12_unreal_livelink.md), [SETUP 13: BLENDER + UNITY ROUNDTRIP](setup_13_unity_roundtrip.md)
+- **Теги:** #blender, #compositing, #setup
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_10_compositing_roundtrip.md` |
-| Russian | `multilang/ru/setups/setup_10_compositing_roundtrip.md` |

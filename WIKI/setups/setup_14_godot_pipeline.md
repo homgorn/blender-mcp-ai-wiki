@@ -3,6 +3,7 @@ id: setup_14_godot_pipeline
 lang: ru
 category: setups
 status: full
+tags: [blender, godot, pipeline, setup]
 ---
 # SETUP 14: BLENDER + GODOT PIPELINE
 
@@ -64,4 +65,10 @@ EN: "Export GLB for Godot 4: apply transforms, bake anims, Draco off, KTX2/Basis
 ### Проверка
 - [ ] GLB открывается в Godot без ошибок
 - [ ] Анимации в списке, LOD-суффиксы на месте
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Сетапы»:** [SETUP 45: HUNYUAN3D 2.1 LOCAL](setup_45_hunyuan3d_21.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 07: CI/CD INTEGRATION](setup_07_ci_cd.md), [SETUP 08: ASSET PIPELINE](setup_08_asset_pipeline.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [P39: EXPORT PRESETS (GLB/FBX/USD)](../prompts/39_export_presets.md), [P46: UDIM WORKFLOW](../prompts/46_udim_workflow.md)
+- **Теги:** #blender, #godot, #pipeline, #setup
 

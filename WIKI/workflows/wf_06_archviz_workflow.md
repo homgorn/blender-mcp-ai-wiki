@@ -3,6 +3,7 @@ id: wf_06_archviz_workflow
 lang: ru
 category: workflows
 status: full
+tags: [archviz, workflow]
 ---
 # WF 06: ARCHVIZ WORKFLOW
 
@@ -257,29 +258,9 @@ ICC Profile embedded в EXR/PNG"
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Poly Haven:** https://polyhaven.com/
-- **Poly Pizza:** https://poly.pizza/
-- **Sketchfab:** https://sketchfab.com/
-- **Blender ArchViz:** https://www.blender.org/community/archviz/
-- **Case 01:** [ArchViz Interior](../cases/case_01_archviz_interior.md)
-- **Setup 01:** [blender-mcp Basic](../setups/setup_01_blender_mcp_basic.md)
-- **Next:** [WF 07: Game Asset Pipeline](../workflows/wf_07_game_asset_pipeline.md)
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/workflows/wf_06_archviz_workflow.md` |
-| Russian | `multilang/ru/workflows/wf_06_archviz_workflow.md` |
-
----
-
-## FULL ADDENDUM: portals + delivery
-
-- Порталы на окнах: 3–5x меньше шума в интерьере.
-- Delivery: 4K EXR + PNG + MP4 H.264; HDR — ProRes/HEVC с метадатой.
+- **Прочие в категории «Воркфлоу»:** [WF 11: ARCHVIZ DAY→NIGHT](wf_11_archviz_day_night.md), [WF 24: PHOTOGRAMMETRY CLEANUP](wf_24_photogrammetry_cleanup.md), [WF 01: TEXT-TO-SCENE](wf_01_text_to_scene.md), [WF 02: IMAGE-TO-3D](wf_02_image_to_3d.md), [WF 03: TEXTURE PIPELINE](wf_03_texture_pipeline.md)
+- **По темам:** [CASE 01: ARCHVIZ INTERIOR](../cases/case_01_archviz_interior.md), [CASE 08: SCI-FI CORRIDOR MODULAR](../cases/case_08_sci_fi_corridor.md), [WF 04: CHARACTER ANIMATION](wf_04_character_animation.md)
+- **Теги:** #archviz, #workflow
 

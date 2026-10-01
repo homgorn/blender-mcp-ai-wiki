@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [mocap, prompt]
 ---
 # P44: MOCAP RETARGETING
 
@@ -91,6 +92,8 @@ def despike_action(action_name, threshold=0.5):
 ---
 
 ## 🔗 СВЯЗИ
-- **Сетяпы:** [Setup 56 Mocap](../setups/setup_56_mocap_rokoko.md)
-- **Промпты:** [P17 Rigify](./17_rigify_setup.md), [P19 NLA](./19_nla_workflow.md)
-- **Следующий:** [P45: GN Simulation](./45_gn_simulation.md)
+
+- **Прочие в категории «Промпты»:** [P17: RIGIFY HUMANOID SETUP](17_rigify_setup.md), [P39: EXPORT PRESETS (GLB/FBX/USD)](39_export_presets.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P03: MODIFIERS STACK](03_modifiers_stack.md)
+- **По темам:** [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md), [P06: RETOPOLOGY WORKFLOW](06_retopology_workflow.md)
+- **Теги:** #curves, #fbx, #mocap, #prompt, #retarget, #rigify, #rokoko
+

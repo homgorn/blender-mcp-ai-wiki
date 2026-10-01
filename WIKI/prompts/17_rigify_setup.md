@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [prompt, rigging]
 ---
 # P17: RIGIFY HUMANOID SETUP
 
@@ -74,6 +75,8 @@ def rigify_setup(mesh_name):
 ---
 
 ## 🔗 СВЯЗИ
-- **Кейсы:** [Case 04: Character Rig](../cases/case_04_character_rig.md)
-- **Промпты:** [P16 Keyframes](./16_keyframe_animation.md), [P18 Drivers](./18_drivers_constraints.md)
-- **Следующий:** [P18: Drivers & Constraints](./18_drivers_constraints.md)
+
+- **Прочие в категории «Промпты»:** [P44: MOCAP RETARGETING](44_mocap_retarget.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md)
+- **По темам:** [CASE 04: CHARACTER RIG & ANIMATION](../cases/case_04_character_rig.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md), [P06: RETOPOLOGY WORKFLOW](06_retopology_workflow.md)
+- **Теги:** #armature, #humanoid, #prompt, #rigging, #rigify, #weights
+

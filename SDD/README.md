@@ -32,8 +32,8 @@ python "C:\BLENDER ai\WIKI\scripts\quality_report.py"         # бэклог п�
 cd "C:\BLENDER ai\web"
 npm install
 npm run all            # build → agent files → pagefind → SEO-гейты
-npm run preflight      # домен + лимиты Workers, обязателен перед деплоем
-npm run deploy         # all + preflight + wrangler deploy
+npm run preflight      # домен + лимиты Pages, обязателен перед деплоем
+npm run deploy         # all + preflight + wrangler pages deploy
 
 # Локальный HTTP API (поиск по всей базе, JSON для агентов)
 python "C:\BLENDER ai\WIKI\scripts\wiki_api.py" --port 8099
@@ -89,11 +89,15 @@ fix_frontmatter → fix_lang_frontmatter → mark_stubs → check_missing
 - [x] E9. Инженерный харденинг: кэш БД в API, ETag/304, потоки, контракт API, тесты,
       оркестратор, инвариант зеркал, чистка 5 осиротевших переводов, документация
       (ARCHITECTURE / SCHEMA / API / adr / CONTRIBUTING)
-- [x] E10. Astro + Cloudflare Workers: 916 статических страниц, SEO-гейты (2 независимых),
+- [x] E10. Astro + Cloudflare: 916 статических страниц, SEO-гейты (2 независимых),
       llms.txt v2 + markdown-близнецы, preflight деплоя, общий пайплайн
 - [x] E11. Данные: явный `lang:` (вместо догадки при сборке), снят битый YAML из
       frontmatter 538 файлов, устранено 163 коллизии URL, честная классификация
       indexable/duplicate/shadow
+- [x] E12. Публикация и долг: поддомен `bender-skills.refertur.net`, Cloudflare Pages
+      вместо Workers, Shiki, теги у всех 182 оригиналов, структурные пробелы 80 → 0,
+      `validate.py --strict` в конвейере, CI на GitHub Actions, 6 скриптов переведены
+      на рекурсивный обход (19 файлов `references/v1/**` были не видны гейтам)
 
 ## Текущее состояние
 997 записей БД · 182 оригинала · 916 опубликованных страниц · 203 индексируемые ·

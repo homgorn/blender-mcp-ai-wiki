@@ -1,3 +1,8 @@
+---
+id: operators_panels
+category: blender_api
+tags: [api, blender, performance]
+---
 # BLENDER API DEEP: OPERATORS, PANELS & PROFILING
 
 **Advanced Blender Python API patterns for production add-ons and automation**

@@ -3,6 +3,7 @@ id: case_05_procedural_city
 lang: ru
 category: cases
 status: full
+tags: [case, geometry-nodes, modeling, pipeline, render, vegetation]
 ---
 # CASE 05: PROCEDURAL CITY
 
@@ -131,29 +132,9 @@ Output: EXR + MP4 (60fps)"
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Prompts:** P03, P06, P07, P13, P14, P15, P29, P30, P37
-- **Workflows:** [WF 05: Procedural Assets](../workflows/wf_05_procedural_assets.md), [WF 08: Batch](../workflows/wf_08_batch_processing.md)
-- **Prompts Used:** P03, P06, P07, P13, P14, P15, P29, P30, P37
+- **Прочие в категории «Кейсы»:** [CASE 03: PRODUCT VISUALIZATION](case_03_product_viz.md), [CASE 07: STYLIZED BARREL (HAND-PAINT)](case_07_stylized_barrel.md), [CASE 08: SCI-FI CORRIDOR MODULAR](case_08_sci_fi_corridor.md), [CASE 13: HARD-SURFACE SCI-FI GUN](case_13_hard_surface_gun.md), [CASE 02: GAME PROPS PIPELINE](case_02_game_props.md)
+- **По темам:** [P22: PARTICLE SYSTEMS](../prompts/22_particles.md), [WF 05: PROCEDURAL ASSETS](../workflows/wf_05_procedural_assets.md), [CASE 12: LOWPOLY FOREST PACK](case_12_lowpoly_forest_pack.md)
+- **Теги:** #case, #geometry-nodes, #modeling, #pipeline, #render, #vegetation
 
----
-
-## 💡 PRO TIPS
-
-| Tip | Why |
-|-----|-----|
-| Collection Instancing в GN | Один Draw Call на тип здания |
-| Distance Culling в GN | Не рендерить за камерой |
-| Billboard Impostors > 500м | Огромная экономия VRAM |
-| Seed = Frame для анимации | Детерминированный трафик |
-| Weight Paint для путей | Реалистичная трава без путей |
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/cases/case_05_procedural_city.md` |
-| Russian | `multilang/ru/cases/case_05_procedural_city.md` |

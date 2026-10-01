@@ -31,8 +31,8 @@ WIKI/multilang  163×5   │                        WIKI/db/wiki_database.json�
                                                        │
                                         ┌──────────────┴───────────────┐
                                         ▼                              ▼
-                                 Pagefind (поиск)          Cloudflare Workers
-                                                            (static assets, edge)
+                                 Pagefind (поиск)          Cloudflare Pages
+                                                          (статика, edge, CNAME)
 ```
 
 Два независимых конвейера:
@@ -117,11 +117,12 @@ npm run preflight    домен, конфиг, лимиты Workers
 |-----|-----------|
 | `PUBLIC_SITE_URL` не задан | `run_all.py` и `preflight.mjs` останавливают деплой |
 | Порт занят (API) | понятное сообщение, код 2 |
-| `dist/` не собран | `preflight` требует артефакты до `wrangler deploy` |
+| `dist/` не собран | `preflight` требует артефакты до `wrangler pages deploy` |
 | Шаблонный перевод в sitemap | `verify-consistency` валит сборку |
 | Битая внутренняя ссылка | `verify-seo` валит сборку |
 | Осиротевший перевод | `validate.py` §11 валит сборку |
-| `Content-Type` для `.md` | Workers назначает по расширению; `text/markdown` подтверждён замером |
+| `Content-Type` для `.md` | Pages назначает по расширению; `text/markdown` подтверждён замером |
+| CNAME не создан в зоне Timeweb | сайт задеплоен, но имя не резолвится; статус — «pending DNS», а не «готово» |
 
 ## 7. Чего сознательно нет
 

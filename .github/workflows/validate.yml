@@ -1,0 +1,107 @@
+name: validate
+
+# The gates are the contract: the content pipeline and the site both refuse to
+# build when something is wrong. This runs them on every push so a regression
+# is visible in review, not after publication.
+#
+# Nothing here deploys. Deployment is a deliberate, credentialed step.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  content:
+    name: content pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # The content pipeline is stdlib-only; PyYAML is the single optional
+      # dependency and build_database.py falls back to a minimal parser without
+      # it, so the job deliberately does not install requirements.
+      - name: full pipeline
+        env:
+          # The site build bakes the origin into canonical/hreflang/sitemap.
+          # Using the real host here means CI catches a config that would ship
+          # a wrong canonical; localhost would defeat the check.
+          PUBLIC_SITE_URL: https://bender-skills.refertur.net
+        run: python WIKI/scripts/run_all.py
+
+      - name: upload quality report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-report
+          path: WIKI/quality_report.md
+          if-no-files-found: ignore
+
+  site:
+    name: astro site
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12'
+
+      - uses: actions/cache@v4
+        with:
+          path: web/node_modules
+          key: node-${{ runner.os }}-${{ hashFiles('web/package-lock.json') }}
+          restore-keys: node-${{ runner.os }}-
+
+      - name: install
+        working-directory: web
+        run: npm ci
+
+      - name: build, index and verify
+        working-directory: web
+        env:
+          PUBLIC_SITE_URL: https://bender-skills.refertur.net
+        run: npm run all
+
+      - name: preflight
+        working-directory: web
+        env:
+          PUBLIC_SITE_URL: https://bender-skills.refertur.net
+        run: npm run preflight
+
+      - name: upload site
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: web/dist
+          retention-days: 7
+
+  deploy-preview:
+    name: deploy preview (unauthenticated)
+    runs-on: ubuntu-latest
+    needs: [content, site]
+    if: github.event_name == 'pull_request'
+    steps:
+      # Cloudflare offers a temporary preview account for PRs, so a reviewer can
+      # open the site without anyone sharing credentials. Never used for the
+      # real domain.
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ''
+          accountId: ''
+          command: pages deploy dist --project-name=bender-skills-preview --branch=preview --commit-dirty=true

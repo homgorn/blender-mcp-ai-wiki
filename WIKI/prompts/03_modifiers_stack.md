@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [clothing, modeling, prompt]
 ---
 # P03: MODIFIERS STACK
 
@@ -182,16 +183,7 @@ for mod in list(obj.modifiers):
 
 ## 🔗 СВЯЗИ
 
-- **Кейсы:** [Case 05: Procedural City](../cases/case_05_procedural_city.md)
-- **Воркфлоу:** [WF 05: Procedural Assets](../workflows/wf_05_procedural_assets.md)
-- **Промпты:** [P01 Primitives](./01_geometry_basics.md), [P02 Boolean](./02_boolean_operations.md)
-- **Следующий:** [P04: Mesh Editing (BMesh)](./04_mesh_editing_bmesh.md)
+- **Прочие в категории «Промпты»:** [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P07: INSTANCING & ARRAYS](07_instancing_arrays.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P23: GEOMETRY NODES BASICS](23_geometry_nodes_basics.md)
+- **По темам:** [P25: PROCEDURAL BUILDING GENERATOR](25_procedural_building.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md)
+- **Теги:** #clothing, #modeling, #modifiers, #non, #non-destructive, #procedural, #prompt, #stack
 
----
-
-## 🌍 MULTILANG
-
-| Язык | Файл |
-|------|------|
-| English | `multilang/en/prompts/03_modifiers_stack.md` |
-| Русский | `multilang/ru/prompts/03_modifiers_stack.md` |

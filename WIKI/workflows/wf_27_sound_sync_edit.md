@@ -3,6 +3,7 @@ id: wf_27_sound_sync_edit
 lang: ru
 category: workflows
 status: stub
+tags: [audio, workflow]
 ---
 # WF 27: SOUND-SYNC EDIT
 
@@ -27,3 +28,10 @@ EN: "Run SOUND-SYNC EDIT steps 1-5 with checks"
 ```
 
 ## 🔗 Setup 01, Setup 08, INDEX
+
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Воркфлоу»:** [WF 01: TEXT-TO-SCENE](wf_01_text_to_scene.md), [WF 02: IMAGE-TO-3D](wf_02_image_to_3d.md), [WF 03: TEXTURE PIPELINE](wf_03_texture_pipeline.md), [WF 04: CHARACTER ANIMATION](wf_04_character_animation.md), [WF 05: PROCEDURAL ASSETS](wf_05_procedural_assets.md)
+- **По темам:** [WF 06: ARCHVIZ WORKFLOW](wf_06_archviz_workflow.md), [WF 07: GAME ASSET PIPELINE](wf_07_game_asset_pipeline.md), [WF 08: BATCH PROCESSING](wf_08_batch_processing.md)
+- **Теги:** #audio, #workflow
+

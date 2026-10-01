@@ -3,6 +3,7 @@ id: setup_41_hdri_lighting_lab
 lang: ru
 category: setups
 status: stub
+tags: [lighting, setup]
 ---
 # SETUP 41: HDRI LIGHTING LAB
 
@@ -33,5 +34,9 @@ RU: "HDRI ladder: rotation 0/90/180/270, strength 0.5/1/2, portals on, ренд�
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
+
+- **Прочие в категории «Сетапы»:** [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md), [SETUP 05: RENDER FARM (FLAMENCO)](setup_05_render_farm.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [P13: LIGHTING & HDRI](../prompts/13_lighting_hdri.md), [P14: CAMERA & COMPOSITION](../prompts/14_camera_composition.md), [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md)
+- **Теги:** #lighting, #setup
+

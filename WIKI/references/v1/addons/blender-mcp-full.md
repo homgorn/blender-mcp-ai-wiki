@@ -1,3 +1,7 @@
+---
+lang: en
+tags: [blender, mcp, reference]
+---
 # BLENDER-MCP - FULL DOCUMENTATION
 
 ## Overview

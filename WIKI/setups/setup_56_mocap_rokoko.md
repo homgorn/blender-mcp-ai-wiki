@@ -2,7 +2,8 @@
 id: setup_56_mocap_rokoko
 lang: ru
 category: setups
-status: full
+status: stub
+tags: [mocap, setup]
 ---
 # SETUP 56: MOCAP ROKOKO / MOVE AI
 
@@ -33,20 +34,9 @@ RU: "Rokoko FBX → Rigify retarget, foot lock, clean spikes, loop" / EN: "Rokok
 - Пути с пробелами/кириллицей → только ASCII
 - Права на запись → запускать от админа один раз
 
-## 🔗 Связи / Links
-Setup 01 blender-mcp, Setup 08 Asset Pipeline, WF-01, INDEX
+## 🔗 СВЯЗИ
 
----
-
-## FULL GUIDE
-
-### Пайплайн
-1. Rokoko Studio → export FBX (60fps).
-2. Blender: import → retarget на Rigify (см. P44).
-3. Foot lock на контактных кадрах, despike, bake.
-4. Loop: первый = последний+1.
-
-### Проверка
-- [ ] Стопы не скользят
-- [ ] Нет спайков в Graph Editor
+- **Прочие в категории «Сетапы»:** [SETUP 57: FACE MOCAP ARKIT](setup_57_face_mocap_arkit.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md), [SETUP 03: DREAM TEXTURES (STABLE DIFFUSION IN BLENDER)](setup_03_dream_textures.md), [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md)
+- **По темам:** [P26: MCP BASICS (BLENDER-MCP COMMANDS)](../prompts/26_mcp_basics.md), [P44: MOCAP RETARGETING](../prompts/44_mocap_retarget.md), [SETUP 05: RENDER FARM (FLAMENCO)](setup_05_render_farm.md)
+- **Теги:** #mocap, #setup
 

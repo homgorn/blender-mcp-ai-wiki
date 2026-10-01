@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [animation, prompt]
 ---
 # P16: KEYFRAME ANIMATION BASICS
 
@@ -85,6 +86,8 @@ animate_property("Cube", "location", {1: (0,0,0), 50: (5,0,3), 100: (10,0,0)}, '
 ---
 
 ## 🔗 СВЯЗИ
-- **Кейсы:** [Case 06: Animation Loop](../cases/case_06_animation_loop.md)
-- **Воркфлоу:** [WF 04: Character Animation](../workflows/wf_04_character_animation.md)
-- **Следующий:** [P17: Rigify Setup](./17_rigify_setup.md)
+
+- **Прочие в категории «Промпты»:** [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md), [P20: SHAPE KEYS & MORPHING](20_shape_keys.md), [P33: CAMERA PATH ANIMATION](33_camera_path.md)
+- **По темам:** [P34: CORRECTIVE SHAPE KEYS](34_corrective_shapes.md), [P43: CAMERA SWITCHING & MARKERS](43_camera_switching.md), [CASE 04: CHARACTER RIG & ANIMATION](../cases/case_04_character_rig.md)
+- **Теги:** #animation, #dope, #dope-sheet, #graph, #graph-editor, #interpolation, #keyframes, #prompt
+

@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [pipeline, prompt, usd, web]
 ---
 # P39: EXPORT PRESETS (GLB/FBX/USD)
 
@@ -73,5 +74,8 @@ def export_preset(objects, fmt='GLB', target='Godot', outdir="//exports/"):
 ---
 
 ## 🔗 СВЯЗИ
-- **Сетяпы:** [Setup 08](../setups/setup_08_asset_pipeline.md), [Setup 13 Unity](../setups/setup_13_unity_roundtrip.md)
-- **Следующий:** [P40: Version Control](./40_version_control.md)
+
+- **Прочие в категории «Промпты»:** [P22: PARTICLE SYSTEMS](22_particles.md), [P27: POLY HAVEN ASSET PIPELINE](27_polyhaven_pipeline.md), [P36: ASSET LICENSING (PIZZA/SKETCHFAB/HAVEN)](36_asset_licensing.md), [P38: HIGH→LOW BAKE PIPELINE](38_bake_pipeline.md), [P44: MOCAP RETARGETING](44_mocap_retarget.md)
+- **По темам:** [CASE 07: STYLIZED BARREL (HAND-PAINT)](../cases/case_07_stylized_barrel.md), [INTEGRATIONS: COMFYUI, UNREAL, USD, TOUCHDESIGNER](../integrations/comfyui_unreal_usd.md), [P46: UDIM WORKFLOW](46_udim_workflow.md)
+- **Теги:** #export, #fbx, #gltf, #godot, #pipeline, #prompt, #unity, #unreal, #usd, #web
+

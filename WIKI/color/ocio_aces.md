@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [color]
 ---
 # COLOR MANAGEMENT: OCIO / ACES
 

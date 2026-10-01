@@ -1,5 +1,6 @@
 ---
 lang: en
+tags: [blender, eevee, realtime]
 ---
 # EEVEE NEXT (BLENDER 4.2+)
 

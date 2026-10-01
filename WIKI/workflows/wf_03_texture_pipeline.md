@@ -3,6 +3,7 @@ id: wf_03_texture_pipeline
 lang: ru
 category: workflows
 status: full
+tags: [pipeline, texturing, workflow]
 ---
 # WF 03: TEXTURE PIPELINE
 
@@ -221,33 +222,9 @@ Shader Editor → Add → Group → Select .sbsar"
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Poly Haven:** https://polyhaven.com/
-- **Dream Textures:** https://github.com/carson-katri/dream-textures
-- **Substance Designer:** https://www.adobe.com/products/substance3d-designer.html
-- **Setup 03:** [Dream Textures](../setups/setup_03_dream_textures.md)
-- **Setup 08:** [Asset Pipeline](../setups/setup_08_asset_pipeline.md)
-- **Next:** [WF 04: Character Animation](../workflows/wf_04_character_animation.md)
-
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/workflows/wf_03_texture_pipeline.md` |
-| Russian | `multilang/ru/workflows/wf_03_texture_pipeline.md` |
-
----
-
-## FULL ADDENDUM: color-space gate
-
-| Карта | Color Space | Формат |
-|-------|-------------|--------|
-| BaseColor/Emission | sRGB | PNG 16-bit |
-| Rough/Metal/Height/AO | Non-Color | PNG 16-bit / EXR |
-| Normal | Non-Color | EXR 32-bit |
-
-Проверка перед экспортом: каждая Image Texture нода имеет правильный colorspace, иначе рендер врёт.
+- **Прочие в категории «Воркфлоу»:** [WF 17: STOP-MOTION FELT LOOK](wf_17_stop_motion_felt.md), [WF 23: VIRTUAL PRODUCTION LED](wf_23_virtual_production_led.md), [WF 24: PHOTOGRAMMETRY CLEANUP](wf_24_photogrammetry_cleanup.md), [WF 01: TEXT-TO-SCENE](wf_01_text_to_scene.md), [WF 02: IMAGE-TO-3D](wf_02_image_to_3d.md)
+- **По темам:** [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md), [P46: UDIM WORKFLOW](../prompts/46_udim_workflow.md), [WF 05: PROCEDURAL ASSETS](wf_05_procedural_assets.md)
+- **Теги:** #pipeline, #texturing, #workflow
 

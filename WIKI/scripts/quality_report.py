@@ -17,23 +17,38 @@ for _s in ("stdout", "stderr"):
 
 WIKI = Path(r"C:\BLENDER ai\WIKI")
 
-# accepted markers per required section; the corpus has RU and EN heading dialects
+# Accepted markers per required section. Two things matter here and both were
+# got wrong before:
+#   1. Case-insensitivity. The bulk-authored files use `## 🎯 Цель / Goal` and
+#      `## 🔗 Связи / Links`, so a case-sensitive compare against ЦЕЛЬ/СВЯЗИ
+#      reported 67 goals and 47 links as missing while they were present.
+#      A gate that cries wolf gets ignored.
+#   2. MULTILANG is NOT a substitute. It is a language-navigation table, not the
+#      cross-reference section; counting it hid 49 files that had no links.
+# Keep this table identical to validate.py and complete_sections.py.
 REQUIRED = {
     "prompts":   {"goal": ["ЦЕЛЬ", "GOAL"], "prompt": ["ПРОМПТ", "PROMPT"],
-                  "mcp": ["MCP"], "links": ["СВЯЗИ", "LINKS", "MULTILANG"]},
-    "setups":    {"goal": ["ЦЕЛЬ", "GOAL", "ЗАДАЧА"], "links": ["СВЯЗИ", "LINKS", "MULTILANG"]},
-    "workflows": {"goal": ["ЦЕЛЬ", "GOAL"], "links": ["СВЯЗИ", "LINKS", "MULTILANG"]},
-    "cases":     {"goal": ["ЦЕЛЬ", "GOAL", "Задача", "Brief"], "links": ["СВЯЗИ", "LINKS", "MULTILANG"]},
+                  "mcp": ["MCP", "КОМАНДЫ", "COMMANDS"], "links": ["СВЯЗИ", "LINKS"]},
+    "setups":    {"goal": ["ЦЕЛЬ", "GOAL", "ЗАДАЧА"], "links": ["СВЯЗИ", "LINKS"]},
+    "workflows": {"goal": ["ЦЕЛЬ", "GOAL"], "links": ["СВЯЗИ", "LINKS"]},
+    "cases":     {"goal": ["ЦЕЛЬ", "GOAL", "ЗАДАЧА", "BRIEF"], "links": ["СВЯЗИ", "LINKS"]},
 }
+
+
+def missing_sections(text, groups):
+    upper = text.upper()
+    return [name for name, marks in groups.items()
+            if not any(mk.upper() in upper for mk in marks)]
 RU_EN = {"goal": "ЦЕЛЬ/GOAL", "prompt": "ПРОМПТ/PROMPT", "mcp": "MCP", "links": "СВЯЗИ/LINKS"}
 
 
 def scan():
     rows = []
     for cat, groups in REQUIRED.items():
-        for f in sorted((WIKI / cat).glob("*.md")):
+        # Recursive: references/v1/** was invisible to a flat glob.
+        for f in sorted((WIKI / cat).rglob("*.md")):
             t = f.read_text(encoding="utf-8")
-            miss = [n for n, marks in groups.items() if not any(mk in t for mk in marks)]
+            miss = missing_sections(t, groups)
             if miss:
                 status = "stub" if "status: stub" in t else ("full" if "status: full" in t else "—")
                 rows.append((cat, f.name, status, miss))

@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [animation, modeling, prompt, render]
 ---
 # P43: CAMERA SWITCHING & MARKERS
 
@@ -70,5 +71,8 @@ def camera_from_view(cam_name):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P14 Camera](./14_camera_composition.md), [P33 Camera Path](./33_camera_path.md)
-- **Следующий:** [P44: Mocap Retarget](./44_mocap_retarget.md)
+
+- **Прочие в категории «Промпты»:** [P14: CAMERA & COMPOSITION](14_camera_composition.md), [P18: DRIVERS & CONSTRAINTS](18_drivers_constraints.md), [P19: NLA EDITOR WORKFLOW](19_nla_workflow.md), [P22: PARTICLE SYSTEMS](22_particles.md), [P33: CAMERA PATH ANIMATION](33_camera_path.md)
+- **По темам:** [CASE 05: PROCEDURAL CITY](../cases/case_05_procedural_city.md), [CASE 13: HARD-SURFACE SCI-FI GUN](../cases/case_13_hard_surface_gun.md), [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md)
+- **Теги:** #animation, #bindings, #camera, #markers, #modeling, #multi, #multi-cam, #prompt, #render, #sequencer
+

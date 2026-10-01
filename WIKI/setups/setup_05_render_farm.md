@@ -3,6 +3,7 @@ id: setup_05_render_farm
 lang: ru
 category: setups
 status: full
+tags: [render, render-farm, setup]
 ---
 # SETUP 05: RENDER FARM (FLAMENCO)
 
@@ -309,19 +310,9 @@ frame_chunks: 50
 
 ---
 
-## 🔗 LINKS
+## 🔗 СВЯЗИ
 
-- **Flamenco Repo:** https://github.com/blender/flamenco
-- **Docs:** https://flamenco.io/docs/
-- **Releases:** https://github.com/blender/flamenco/releases
-- **Setup 04:** [Headless Render](../setups/setup_04_headless_render.md)
-- **Next:** [Setup 06: Custom MCP Tools](../setups/setup_06_custom_mcp_tools.md)
+- **Прочие в категории «Сетапы»:** [SETUP 04: HEADLESS RENDER (CLI / CI/CD)](setup_04_headless_render.md), [SETUP 53: FLAMENCO FARM CLUSTER](setup_53_flamenco_farm.md), [SETUP 54: CLOUD RENDER AWS/GCP](setup_54_cloud_render_aws.md), [SETUP 01: BLENDER-MCP BASIC](setup_01_blender_mcp_basic.md), [SETUP 02: GENESISCORE LOCAL (OLLAMA)](setup_02_genesiscore_local.md)
+- **По темам:** [P29: BATCH PROCESSING & CLI](../prompts/29_batch_cli.md), [P47: ALEMBIC CACHE PIPELINE](../prompts/47_alembic_cache.md), [P49: RENDER FARM SUBMIT](../prompts/49_farm_submit.md), [CASE 03: PRODUCT VISUALIZATION](../cases/case_03_product_viz.md)
+- **Теги:** #render, #render-farm, #setup
 
----
-
-## 🌍 MULTILANG
-
-| Language | File |
-|----------|------|
-| English | `multilang/en/setups/setup_05_render_farm.md` |
-| Russian | `multilang/ru/setups/setup_05_render_farm.md` |

@@ -1,5 +1,6 @@
 ---
 lang: ru
+tags: [product, prompt]
 ---
 # P50: PORTFOLIO TURNTABLE & QA
 
@@ -83,5 +84,8 @@ def turntable_rig(target_name, radius=3.0, height=1.2, frames=120, lens=85):
 ---
 
 ## 🔗 СВЯЗИ
-- **Промпты:** [P14 Camera](./14_camera_composition.md), [P39 Export](./39_export_presets.md)
-- **Кейсы:** [Case 03 Product Viz](../cases/case_03_product_viz.md)
+
+- **Прочие в категории «Промпты»:** [P01: PRIMITIVE CREATION BASICS](01_geometry_basics.md), [P02: BOOLEAN OPERATIONS](02_boolean_operations.md), [P03: MODIFIERS STACK](03_modifiers_stack.md), [P04: MESH EDITING (BMESH)](04_mesh_editing_bmesh.md), [P05: UV UNWRAPPING STRATEGIES](05_uv_unwrapping.md)
+- **По темам:** [CASE 10: SNEAKER PRODUCT HERO](../cases/case_10_sneaker_product.md), [CASE 14: FOOD RENDER (RAMEN)](../cases/case_14_food_r visualisation.md), [CASE 15: CAR STUDIO CINEMATIC](../cases/case_15_car_studio_cinematic.md)
+- **Теги:** #checklist, #portfolio, #presentation, #product, #prompt, #qa, #turntable
+
