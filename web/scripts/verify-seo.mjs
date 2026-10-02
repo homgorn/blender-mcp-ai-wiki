@@ -514,6 +514,45 @@ console.log('== 4b2. Icons and webmanifest ==');
   else ok(`favicon.ico: ${ico.readUInt16LE(4)} image(s)`);
 }
 
+/* --------------------------------------------------- no inline script handlers */
+console.log('== 4e. No inline event handlers ==');
+// The site serves `script-src 'self' 'wasm-unsafe-eval'` — no 'unsafe-inline'.
+// An `onclick="..."` attribute is therefore refused by the site's own CSP, and the
+// button it was attached to looked perfectly normal and did nothing. It shipped
+// because every gate here checks markup for presence, not for whether the
+// browser will execute it.
+//
+// This is the check that turns that class of bug from invisible into a build
+// failure. `javascript:` hrefs are the other way to smuggle a script past the
+// same policy.
+{
+  const htmlFiles = [];
+  const collect = (d) => {
+    for (const n of readdirSync(d, { withFileTypes: true })) {
+      const p = join(d, n.name);
+      if (n.isDirectory()) collect(p);
+      else if (n.name.endsWith('.html')) htmlFiles.push(p);
+    }
+  };
+  collect(DIST);
+  const offenders = [];
+  for (const f of htmlFiles) {
+    const t = readFileSync(f, 'utf8');
+    for (const m of t.matchAll(/\son[a-z]+\s*=\s*["']/gi)) {
+      offenders.push(`${f}: ${m[0].trim()}`);
+    }
+    if (/href\s*=\s*["']\s*javascript:/i.test(t)) {
+      offenders.push(`${f}: javascript: href`);
+    }
+  }
+  if (offenders.length) {
+    for (const o of offenders.slice(0, 5)) fail(`inline handler blocked by our own CSP: ${o}`);
+    fail(`${offenders.length} inline handler(s) — the CSP refuses to execute them`);
+  } else {
+    ok('no inline event handlers; CSP can stay without unsafe-inline');
+  }
+}
+
 console.log('== 5. llms.txt / robots.txt / rss.xml ==');
 {
   const llms = read('llms.txt');

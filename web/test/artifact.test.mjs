@@ -29,7 +29,7 @@ const REAL = new Set(['human', 'ai']);
 let db, htmls, published, shadows, categories, langs;
 
 before(() => {
-  assert.ok(existsSync(DIST), 'dist/ is missing — run `npm run build:full` first');
+  assert.ok(existsSync(DIST), 'dist/ is missing â€” run `npm run build:full` first');
   db = JSON.parse(readFileSync(DB, 'utf8'));
 
   const origLang = new Map();
@@ -67,6 +67,25 @@ before(() => {
   walk(DIST);
 });
 
+/**
+ * The origin the site was built for, read from the artifact on demand.
+ *
+ * It used to be written out twice as `blender-mcp-wiki.refertur.net`, so the suite
+ * failed the moment PUBLIC_SITE_URL changed â€” and pinning a domain is the wrong
+ * invariant anyway: what matters is that every page agrees with the origin it was
+ * built for, not which origin that is.
+ *
+ * A function rather than a constant: `htmls` is filled inside before(), which
+ * runs after this module body is evaluated, so a top-level const computed here
+ * would always see an empty list.
+ */
+const origin = () => {
+  const any = htmls.find((f) => existsSync(f));
+  if (!any) return '';
+  const m = /<link rel="canonical" href="([^"]+)"/.exec(readFileSync(any, 'utf8'));
+  return m ? new URL(m[1]).origin : '';
+};
+
 /* ------------------------------------------------------------- published set */
 
 test('every published entry has exactly one HTML page', () => {
@@ -88,7 +107,7 @@ test('shadow mirrors are not published', () => {
   // A shadow shares its original's URL, so its page is the original's. What it
   // must not do is appear as a *separate* file.
   const byUrl = new Map(published.map((p) => [p.url, p]));
-  assert.equal(shadows, 163, `shadow count changed: ${shadows} (was 163 — check the rule, not the test)`);
+  assert.equal(shadows, 163, `shadow count changed: ${shadows} (was 163 â€” check the rule, not the test)`);
   assert.equal(byUrl.size, published.length);
 });
 
@@ -137,7 +156,7 @@ test('an untranslated mirror has neither a page nor a twin', () => {
     if (existsSync(join(DIST, `${url}.md`))) leaked.push(`${url}.md`);
   }
   assert.deepEqual(leaked.slice(0, 10), []);
-  assert.ok(templates > 0, 'no untranslated mirrors in the database — the check proves nothing');
+  assert.ok(templates > 0, 'no untranslated mirrors in the database â€” the check proves nothing');
 });
 
 test('every language with a page claims it honestly', () => {
@@ -150,7 +169,7 @@ test('every language with a page claims it honestly', () => {
     const file = join(DIST, l, 'index.html');
     if (!existsSync(file)) continue;
     const html = readFileSync(file, 'utf8');
-    const claimed = Number(/(\d+)\s*(?:стат|article|art[ií]culo)/i.exec(html)?.[1] ?? NaN);
+    const claimed = Number(/(\d+)\s*(?:ÑÑ‚Ð°Ñ‚|article|art[iÃ­]culo)/i.exec(html)?.[1] ?? NaN);
     if (Number.isFinite(claimed) && claimed !== n) {
       assert.equal(claimed, n, `/${l} claims ${claimed} articles but publishes ${n}`);
     }
@@ -196,13 +215,13 @@ test('every internal href resolves, relative ones included', () => {
     }
   }
   assert.deepEqual(broken, []);
-  assert.ok(checked > 1000, `only ${checked} hrefs inspected — the check may be degenerate`);
+  assert.ok(checked > 1000, `only ${checked} hrefs inspected â€” the check may be degenerate`);
 });
 
 test('no link points at a .md path other than the page own twin', () => {
   // Bodies are written with markdown links, so the renderer must have rewritten
   // them to site URLs. The one `.md` href a page may legitimately carry is a
-  // link to its own markdown version — that is the llms.txt v2 contract, offered
+  // link to its own markdown version â€” that is the llms.txt v2 contract, offered
   // to the reader as well as declared in <head>. Anything else ending in .md is
   // an unrewritten body link, which is the defect (2 227 of them once).
   const survivors = [];
@@ -210,7 +229,7 @@ test('no link points at a .md path other than the page own twin', () => {
     const t = readFileSync(f, 'utf8');
     const pageUrl = ('/' + relative(DIST, f).replace(/\\/g, '/'))
       .replace(/index\.html$/, '').replace(/\.html$/, '');
-    const own = new Set([`${pageUrl}.md`, `https://blender-skills.refertur.net${pageUrl}.md`]);
+    const own = new Set([`${pageUrl}.md`, `${origin()}${pageUrl}.md`]);
     for (const a of t.matchAll(/<a [^>]*href="([^"]+\.md)"/g)) {
       if (!own.has(a[1])) survivors.push(`${relative(DIST, f)} -> ${a[1]}`);
     }
@@ -221,12 +240,12 @@ test('no link points at a .md path other than the page own twin', () => {
 
 test('every article page offers its own markdown twin as a link', () => {
   // Scoped to article pages. Category pages and the 404 have no twin, so
-  // requiring one of them to link to a .md would be a wrong requirement — the
+  // requiring one of them to link to a .md would be a wrong requirement â€” the
   // first version of this test failed on exactly those 82.
   const missing = [];
   for (const p of published) {
     const t = readFileSync(join(DIST, `${p.url}.html`), 'utf8');
-    if (!t.includes(`href="https://blender-skills.refertur.net${p.url}.md"`)) missing.push(p.url);
+    if (!t.includes(`href="${origin()}${p.url}.md"`)) missing.push(p.url);
     if (!/<link rel="alternate" type="text\/markdown"/.test(t)) missing.push(`${p.url} (no head alternate)`);
   }
   assert.deepEqual(missing.slice(0, 10), []);
@@ -234,8 +253,8 @@ test('every article page offers its own markdown twin as a link', () => {
 });
 
 test('every page declares the same canonical origin', () => {
-  // The invariant is about what the page *declares* — canonical, og:url, the
-  // JSON-LD @id — not about every URL that appears in the text. The corpus
+  // The invariant is about what the page *declares* â€” canonical, og:url, the
+  // JSON-LD @id â€” not about every URL that appears in the text. The corpus
   // legitimately documents local endpoints (Ollama on :11434, ComfyUI on
   // :8188, MCP servers on :8080); an earlier version of this test flagged those
   // 41 mentions and would have pushed someone to "fix" correct documentation.
@@ -272,7 +291,7 @@ test('a category page with no articles is noindex', () => {
       assert.match(robots, /noindex/, `${lang}/${cat} is empty but indexable`);
     }
   }
-  assert.ok(empty.length > 0, 'no empty category pages found — the check is not exercising anything');
+  assert.ok(empty.length > 0, 'no empty category pages found â€” the check is not exercising anything');
 });
 
 test('the sitemap contains no noindex URL', () => {

@@ -38,7 +38,21 @@
 /** Qualities that constitute a real translation. */
 export const REAL_TRANSLATIONS = new Set(['human', 'ai']);
 
-/** Accept either a database entry or a built Entry. */
+/**
+ * Accept either a database entry or a built Entry.
+ *
+ * Typed loosely on purpose: the two shapes disagree on field names, and the
+ * callers are three different consumers (Astro's data layer, the Astro config,
+ * and the gates). Without a template parameter here, `publishedEntries` returns
+ * `any[]` and every consumer loses its element type — which is what made
+ * `npm run check` report implicit-any in thirteen places in the tests rather
+ * than pointing at this line.
+ *
+ * @template T
+ * @param {T} e
+ * @returns {{isTranslation: boolean, translation: string|undefined,
+ *            lang: string|undefined, category: string|undefined, origId: string}}
+ */
 function norm(e) {
   const m = (e && e.meta) || e || {};
   return {
@@ -51,14 +65,26 @@ function norm(e) {
   };
 }
 
-/** A template mirror is the original text with a language header, not a translation. */
+/**
+ * A template mirror is the original text with a language header, not a translation.
+ *
+ * @template T
+ * @param {T} e
+ * @returns {boolean}
+ */
 export function isTemplateMirror(e) {
   const m = norm(e);
   if (!m.isTranslation) return false;
   return !REAL_TRANSLATIONS.has(m.translation || 'template');
 }
 
-/** origId -> language of the non-translation entry. */
+/**
+ * origId -> language of the non-translation entry.
+ *
+ * @template T
+ * @param {readonly T[]} list
+ * @returns {Map<string, string>}
+ */
 export function computeOrigLang(list) {
   const m = new Map();
   for (const e of list) {
@@ -68,14 +94,28 @@ export function computeOrigLang(list) {
   return m;
 }
 
-/** A translation in the same language as its original: same URL, not published. */
+/**
+ * A translation in the same language as its original: same URL, not published.
+ *
+ * @template T
+ * @param {T} e
+ * @param {Map<string, string>} origLangByOrig
+ * @returns {boolean}
+ */
 export function isShadowMirror(e, origLangByOrig) {
   const m = norm(e);
   if (!m.isTranslation) return false;
   return origLangByOrig.get(m.origId) === m.lang;
 }
 
-/** A real translation in a language the original does not already cover. */
+/**
+ * A real translation in a language the original does not already cover.
+ *
+ * @template T
+ * @param {T} e
+ * @param {Map<string, string>} origLangByOrig
+ * @returns {boolean}
+ */
 export function isRealTranslation(e, origLangByOrig) {
   const m = norm(e);
   if (!m.isTranslation) return false;
@@ -83,7 +123,13 @@ export function isRealTranslation(e, origLangByOrig) {
   return origLangByOrig.get(m.origId) !== m.lang;
 }
 
-/** The published set. */
+/**
+ * The published set.
+ *
+ * @template T
+ * @param {readonly T[]} list
+ * @returns {T[]}
+ */
 export function publishedEntries(list) {
   const orig = computeOrigLang(list);
   return list.filter((e) => {
@@ -94,7 +140,13 @@ export function publishedEntries(list) {
   });
 }
 
-/** /{lang}/{category} pairs that have no published article. */
+/**
+ * /{lang}/{category} pairs that have no published article.
+ *
+ * @template T
+ * @param {readonly T[]} list
+ * @returns {Set<string>}
+ */
 export function emptyCategoryPairs(list) {
   const orig = computeOrigLang(list);
   const filled = new Set();

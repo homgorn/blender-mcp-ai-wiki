@@ -47,8 +47,9 @@ const urlOf = (e: { category: string; origId: string }) => `/${lang}/${e.categor
       <pagefind-modal></pagefind-modal>
 
       <button
+        id="pf-open"
+        type="button"
         style="padding:10px 18px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer;font-size:15px"
-        onclick="document.querySelector('pagefind-modal').showModal()"
       >
         Открыть поиск по базе
       </button>
@@ -60,6 +61,28 @@ const urlOf = (e: { category: string; origId: string }) => `/${lang}/${e.categor
           <a href={abs('/rss.xml')}>RSS</a>.
         </p>
       </noscript>
+
+      {/*
+        The opener is wired from a module, not from an inline `onclick`.
+
+        The site serves `script-src 'self' 'wasm-unsafe-eval'` — no
+        `'unsafe-inline'` — so the inline handler this button used to carry was
+        refused by the site's own CSP. The button looked fine and did nothing,
+        and `<pagefind-modal-trigger>` does not render a usable shadow button in
+        this build, so there was no working path to the modal at all.
+
+        An Astro `<script>` is bundled and served from 'self', which the policy
+        allows. Widening the policy to 'unsafe-inline' would have been the
+        one-line fix and the wrong one: it trades CSP protection for the whole
+        site to restore one button.
+      */}
+      <script>
+        const btn = document.getElementById('pf-open');
+        const modal = document.querySelector('pagefind-modal');
+        btn?.addEventListener('click', () => {
+          (modal as unknown as { showModal?: () => void })?.showModal?.();
+        });
+      </script>
     </section>
 
     <section class="section">

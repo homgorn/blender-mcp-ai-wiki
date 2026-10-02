@@ -27,7 +27,7 @@ const WEB = join(HERE, '..');
 const DIST = join(WEB, 'dist');
 const DB = join(WEB, '..', 'WIKI', 'db', 'wiki_database.json');
 
-const SITE = (process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://blender-skills.refertur.net').replace(/\/+$/, '');
+const SITE = (process.env.PUBLIC_SITE_URL || process.env.SITE_URL || 'https://blender-mcp-wiki.refertur.net').replace(/\/+$/, '');
 const LANGS = ['ru', 'en', 'es', 'de', 'zh'];
 const LOCALE = { ru: 'ru-RU', en: 'en-US', es: 'es-ES', de: 'de-DE', zh: 'zh-CN' };
 const NATIVE = { ru: 'Русский', en: 'English', es: 'Español', de: 'Deutsch', zh: '中文' };

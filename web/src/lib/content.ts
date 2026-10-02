@@ -143,7 +143,13 @@ function build(raw: RawEntry): Entry {
     difficulty: m.difficulty || 0,
     tags: Array.isArray(m.tags) ? m.tags : [],
     mcpTools: Array.isArray(m.mcp_tools) ? m.mcp_tools : [],
-    status: (m.status as 'full' | 'stub') | undefined,
+    // A conditional, not a cast. `(m.status as 'full' | 'stub') | undefined`
+    // parses as `(m.status as 'full') | 'stub' | undefined` — bitwise OR — so
+    // `status` came out as the *number* 0, never equal to the string 'full', and
+    // the status chip was suppressed on every article page. TypeScript flagged it
+    // the moment `npm run check` was made runnable; Node ran it forever without
+    // complaint, because stripping types does not check them.
+    status: m.status === 'full' ? 'full' : m.status === 'stub' ? 'stub' : undefined,
     translation,
     isTranslation: Boolean(m.is_translation),
     wordCount: m.word_count || 0,

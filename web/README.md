@@ -1,7 +1,7 @@
 # Blender AI Wiki — web
 
 Статический сайт базы знаний. Astro 7 → Cloudflare Pages, домен
-`blender-skills.refertur.net`. Без рантайм-сервера, без БД, без внешних
+`blender-mcp-wiki.refertur.net`. Без рантайм-сервера, без БД, без внешних
 зависимостей на этапе выполнения.
 
 ## Что здесь лежит
@@ -53,20 +53,20 @@ sitemap и robots.txt. Сборка с `localhost` проходит гейты, 
 
 ```powershell
 npx wrangler login       # один раз, интерактивно
-$env:PUBLIC_SITE_URL="https://blender-skills.refertur.net"
+$env:PUBLIC_SITE_URL="https://blender-mcp-wiki.refertur.net"
 npm run deploy           # build + verify + preflight + wrangler pages deploy
 ```
 
-Деплой создаёт проект Pages `blender-skills` и загружает в него `dist/`. Он **не**
+Деплой создаёт проект Pages `blender-mcp-wiki` и загружает в него `dist/`. Он **не**
 делает так, чтобы имя резолвилось: apex-зону `refertur.net` обслуживает Timeweb
 (не регистратор), и кастомный домен заработает только после CNAME
 
 ```
-blender-skills  CNAME  blender-skills.pages.dev
+blender-mcp-wiki  CNAME  blender-mcp-wiki.pages.dev
 ```
 
 Cloudflare примет домен и покажет `pending` до появления записи. Проверять надо
-`Resolve-DnsName blender-skills.refertur.net`, а не статус в панели.
+`Resolve-DnsName blender-mcp-wiki.refertur.net`, а не статус в панели.
 
 ## Правило дедупликации (обязательно к соблюдению)
 

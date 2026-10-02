@@ -36,6 +36,12 @@ CORE = [
     ("tag articles",      [str(S / "tag_articles.py")], False),
     ("mark stubs",        [str(S / "mark_stubs.py")], False),
     ("parity check",      [str(S / "check_missing.py")], True),
+    # A gate, not a report. It was written as one and then never wired in, which
+    # is the same shape of mistake as shipping a check nobody runs: a thin article
+    # marked `status: full`, a `bool(bpy.ops...)` that can never fail, a placeholder
+    # standing in for content. All three shipped. `--warn` off means it fails the
+    # build.
+    ("content quality",   [str(S / "content_quality.py")], True),
     ("build database",    [str(S / "build_database.py")], True),
     ("build graph",       [str(S / "build_graph.py")], True),
 ]

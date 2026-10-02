@@ -76,15 +76,15 @@ robots, llms.txt и RSS.
 Сборка без `https://`-origin невозможна для деплоя: `run_all.py` и
 `web/preflight.mjs` её останавливают, `verify-seo.mjs` падает на `localhost`.
 
-> Origin по умолчанию — `https://blender-skills.refertur.net`, это и есть рабочий
+> Origin по умолчанию — `https://blender-mcp-wiki.refertur.net`, это и есть рабочий
 > домен, а не плейсхолдер. Он задан в `web/astro.config.mjs` (единый источник) и
 > дублируется в `PUBLIC_SITE_URL` для сборки. Менять нужно в обоих местах, либо
 > только в переменной окружения для локального прогона.
 >
-> Деплой идёт в Cloudflare Pages, имя проекта `blender-skills`, поэтому целевой адрес
-> Pages — `blender-skills.pages.dev`. Apex-зону `refertur.net` обслуживает **Timeweb**,
+> Деплой идёт в Cloudflare Pages, имя проекта `blender-mcp-wiki`, поэтому целевой адрес
+> Pages — `blender-mcp-wiki.pages.dev`. Apex-зону `refertur.net` обслуживает **Timeweb**,
 > а не регистратор, поэтому кастомный домен заработает только после CNAME
-> `blender-skills → blender-skills.pages.dev` в панели Timeweb. Cloudflare покажет
+> `blender-mcp-wiki → blender-mcp-wiki.pages.dev` в панели Timeweb. Cloudflare покажет
 > домен как `pending` раньше, чем запись появится, — это не «задеплоено».
 
 ## 5. Что измерять после публикации

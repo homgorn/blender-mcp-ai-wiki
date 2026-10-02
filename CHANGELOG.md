@@ -62,7 +62,7 @@
 - Статус-бейдж («полная»/«черновик») не рендерится на страницах статей: в БД и в
   разметке значение есть, причина не найдена. Косметика.
 
-## [2026-10-01] - 3.1.0 Поддомен blender-skills, Pages вместо Workers, Shiki, теги, CI
+## [2026-10-01] - 3.1.0 Поддомен blender-mcp-wiki, Pages вместо Workers, Shiki, теги, CI
 
 ### Changed
 - **Хостинг пересмотрен: Cloudflare Pages, не Workers.** Первая версия выбрала
@@ -74,8 +74,8 @@
   Pages касается **только on-demand рендеринга**; статический вывод адаптера не
   требует вообще, так что ограничение на нас не распространяется. Первое прочтение
   этой заметки как «Pages больше не вариант» было слишком широким (ADR 0005).
-- **Домен зафиксирован:** `blender-skills.refertur.net`, проект Pages
-  `blender-skills` → `blender-skills.pages.dev`. `PUBLIC_SITE_URL` больше не
+- **Домен зафиксирован:** `blender-mcp-wiki.refertur.net`, проект Pages
+  `blender-mcp-wiki` → `blender-mcp-wiki.pages.dev`. `PUBLIC_SITE_URL` больше не
   плейсхолдер, значение по умолчанию в конфиге — рабочий адрес.
 - `wrangler.jsonc` переведён на `pages_build_output_dir`, убраны `html_handling`
   и `not_found_handling` (у Pages другой набор семантик), `preflight.mjs` проверяет
@@ -129,7 +129,7 @@
 
 ### Known
 - **DNS остаётся на владельце.** Деплой не делает так, чтобы имя резолвилось:
-  нужен CNAME `blender-skills → blender-skills.pages.dev` в зоне Timeweb. Cloudflare
+  нужен CNAME `blender-mcp-wiki → blender-mcp-wiki.pages.dev` в зоне Timeweb. Cloudflare
   покажет `pending` раньше, чем запись появится; статус до проверки `dig` —
   «pending DNS», а не «готово».
 - 63 файла остаются `status: stub` — это глубина текста, а не структуры; её

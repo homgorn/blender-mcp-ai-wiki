@@ -159,7 +159,10 @@ const isSearch = path === searchHref;
     {Array.from(new Set(
       alternates
         .map((a) => a.href.match(/\/([a-z]{2})(?:\/|$)/)?.[1])
-        .filter((l): l is string => Boolean(l) && l !== lang),
+        // Narrowed to Lang: a regex match is `string`, and indexing LANG_META
+        // with a plain string is what TypeScript refuses — correctly, since the
+        // record only has five keys.
+        .filter((l): l is Lang => Boolean(l) && l in LANG_META && l !== lang),
     )).map((l) => (
       <meta property="og:locale:alternate" content={LANG_META[l].ogLocale} />
     ))}
