@@ -15,6 +15,10 @@
   --radius: 10px;
   --radius-sm: 6px;
   --max: 1160px;
+  /* Gutter of the content column. The mobile menu panel is positioned against
+     the header, which is full-bleed, so it reads this to stay flush with the
+     content instead of guessing at the same number. */
+  --wrap-pad: 20px;
   --font: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     'Noto Sans', sans-serif;
   --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
@@ -72,7 +76,7 @@ a:hover { text-decoration: underline; }
 }
 .skip-link:focus { left: 8px; top: 8px; }
 
-.wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--wrap-pad); }
 
 /* ---------------------------------------------------------------- header */
 .site-head {
@@ -89,16 +93,219 @@ a:hover { text-decoration: underline; }
   gap: 16px;
   height: 60px;
 }
-.brand { font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
 .brand:hover { text-decoration: none; color: var(--accent); }
 .brand .dim { color: var(--text-faint); font-weight: 400; }
 
-.nav { display: flex; gap: 14px; margin-left: auto; align-items: center; flex-wrap: wrap; }
-.nav a { color: var(--text-dim); font-size: 14px; }
+/* The brand absorbs the free space, so the menu and the search control sit at
+   the right edge at every width and neither needs `margin-left:auto` — two of
+   those in one flex row means one of them silently does nothing. */
+.head-in > .brand { margin-right: auto; min-width: 0; }
+/* Under 640px the native language name would push the buttons off-screen, so
+   it goes; the `lang` attribute and the footer's language column still say
+   which language this is. */
+@media (max-width: 639px) {
+  .head-in { gap: 10px; }
+  .head-in > .brand { font-size: 15px; }
+  .head-in > .brand .dim { display: none; }
+}
+
+/* Search is one control at every width. Below 640px the label is clipped to a
+   1px box rather than removed: the icon is decorative, the word is the
+   accessible name, and `display:none` would take both away. */
+.head-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  min-height: 44px;
+  min-width: 44px;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.head-search:hover { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+/* The current page is marked in --text, not --accent: accent-on-panel clears
+   AA at 6.8:1, but only just, and this is navigation. */
+.head-search[aria-current='page'] { border-color: var(--accent); color: var(--text); }
+.head-search-ico {
+  position: relative;
+  flex: none;
+  width: 13px;
+  height: 13px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+.head-search-ico::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  bottom: -3px;
+  width: 6px;
+  height: 2px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+@media (max-width: 639px) {
+  .head-search { padding: 0 13px; }
+  .head-search-txt {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Desktop menu. `min-height` is the WCAG 2.2 target size and the reason a
+   44px-tall link can sit in a 60px header without stretching it. */
+.nav { display: flex; gap: 14px; align-items: center; }
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--text-dim);
+  font-size: 14px;
+}
 .nav a:hover { color: var(--text); }
+.nav a[aria-current='page'] { color: var(--accent); font-weight: 600; }
+
+/* ------------------------------------------------ mobile menu (<details>) */
+/* One element, two presentations, no JavaScript. Below 900px the inline nav is
+   display:none and this disclosure is the menu; at 900px and above it is the
+   reverse. Because exactly one is rendered at any width, a screen reader never
+   meets the same link twice. */
+.navmenu { display: none; position: relative; }
+@media (max-width: 899px) {
+  .nav { display: none; }
+  .navmenu { display: block; }
+}
+
+.navmenu-sum {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 14px;
+  cursor: pointer;
+  list-style: none;               /* drop the disclosure triangle */
+  -webkit-tap-highlight-color: transparent;
+}
+.navmenu-sum::-webkit-details-marker { display: none; }
+.navmenu-sum:hover { border-color: var(--accent); color: var(--accent); }
+.navmenu[open] > .navmenu-sum { border-color: var(--accent); color: var(--accent); }
+
+.navmenu-burger {
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+}
+.navmenu-burger::before,
+.navmenu-burger::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+}
+.navmenu-burger::before { top: -5px; }
+.navmenu-burger::after { top: 5px; }
+
+/* Anchored to the disclosure button, which is `position: relative` and therefore
+   the containing block: `right: 0` lines the panel up with the button's right
+   edge, and that edge is the content column's edge. --wrap-pad only caps the
+   width, so on a 360px screen the panel can never be wider than the column. */
+.navmenu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 30;
+  width: min(340px, calc(100vw - 2 * var(--wrap-pad)));
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 14px 34px rgb(0 0 0 / 38%);
+}
+
+.navmenu-group + .navmenu-group {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line-soft);
+}
+.navmenu-h {
+  display: block;
+  padding: 8px 10px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+.navmenu-panel ul { list-style: none; margin: 0; padding: 0; }
+.navmenu-panel a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.navmenu-panel a:hover { background: var(--panel-2); color: var(--text); text-decoration: none; }
+.navmenu-panel a[aria-current='page'] {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent);
+  color: var(--text);
+  font-weight: 600;
+}
+.navmenu-ico { flex: none; width: 18px; text-align: center; }
+.navmenu-label { flex: 1; min-width: 0; }
+.navmenu-n {
+  flex: none;
+  color: var(--text-dim);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.navmenu-flag {
+  flex: none;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
 
 .lang-switch { display: flex; gap: 4px; align-items: center; }
 .lang-switch a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 3px 8px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--line);
@@ -107,6 +314,9 @@ a:hover { text-decoration: underline; }
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+/* `page` is what this layout emits. `true` is kept because LangSwitch.astro,
+   rendered inside the category pages, still emits it. */
+.lang-switch a[aria-current='page'],
 .lang-switch a[aria-current='true'] {
   background: var(--accent);
   border-color: var(--accent);
@@ -197,6 +407,21 @@ a:hover { text-decoration: underline; }
   line-height: 1.55;
 }
 .prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+/*
+ * Long URLs break. Prose links to repositories and download paths are real
+ * content and have no spaces to break on, so an unbreakable one gave a list item
+ * a 512px scrollWidth inside a 368px column and pushed the whole page sideways.
+ * `anywhere` rather than `break-word`: it also affects min-content width, which
+ * is what a grid track is sized from — `break-word` leaves min-content intact
+ * and the overflow comes back.
+ */
+.prose a,
+.prose li,
+.prose p,
+.prose td,
+.prose th {
+  overflow-wrap: anywhere;
+}
 .prose table {
   width: 100%;
   border-collapse: collapse;
@@ -237,7 +462,12 @@ a:hover { text-decoration: underline; }
 .badge.full { border-color: color-mix(in srgb, var(--accent-2) 50%, var(--line)); color: var(--accent-2); }
 
 .layout { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 48px; padding: 24px 0 64px; }
-@media (max-width: 900px) { .layout { grid-template-columns: 1fr; gap: 0; } .side { display: none; } }
+/* minmax(0, 1fr), not the bare 1fr. A bare 1fr is minmax(auto, 1fr), and `auto`
+   as a minimum means the track refuses to shrink below its content's min-content
+   width — so one wide code block or table gave the track 568-673px and the whole
+   page scrolled sideways on a 390px screen. 222 articles were affected. The
+   desktop rule above already got this right; the mobile override did not. */
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); gap: 0; } .side { display: none; } }
 
 .side { position: sticky; top: 84px; align-self: start; font-size: 13px; }
 .side h4 {
@@ -258,14 +488,89 @@ a:hover { text-decoration: underline; }
 .crumbs a:hover { color: var(--accent); }
 
 /* ---------------------------------------------------------------- footer */
+/* --text-dim, not --text-faint: on the light theme --text-faint on --bg measures
+   3.3:1, under AA for the 13px text this footer carries. It is navigation, so
+   it has to clear AA in both themes. */
 .site-foot {
   border-top: 1px solid var(--line-soft);
-  padding: 30px 0 46px;
-  color: var(--text-faint);
-  font-size: 13px;
+  padding: 34px 0 48px;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  /* Category and file names are machine-generated; a long one must wrap rather
+     than push the page into a horizontal scrollbar at 360px. */
+  overflow-wrap: anywhere;
 }
-.site-foot .cols { display: flex; gap: 32px; flex-wrap: wrap; justify-content: space-between; }
-.site-foot a { color: var(--text-dim); }
+.foot-grid {
+  display: grid;
+  gap: 30px 32px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  align-items: start;
+}
+.foot-h {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+.foot-list { list-style: none; margin: 0; padding: 0; }
+.foot-list li + li { margin-top: 1px; }
+.foot-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* 32px clears WCAG 2.2 AA (24px) with room to spare on a pointer device. On a
+     touch width it goes to the 44px everyone actually expects under a thumb —
+     24 links at 44px is a tall footer, which is the cheaper trade. */
+  min-height: 32px;
+  padding: 4px 8px;
+  color: var(--text-dim);
+  font-size: 13.5px;
+}
+@media (max-width: 899px) {
+  .foot-link { min-height: 44px; }
+}
+.foot-link:hover { color: var(--accent); text-decoration: none; }
+/* Current item: --text on a faint accent tint plus a 2px accent bar. Accent on
+   the plain background is 6.8:1 in dark but only 4.7:1 in light, and the tint
+   eats into both — so the bar and the weight carry the state and the text stays
+   at full contrast. */
+.foot-link[aria-current='page'] {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  box-shadow: inset 2px 0 0 var(--accent);
+  color: var(--text);
+  font-weight: 600;
+}
+.foot-label { min-width: 0; }
+.foot-n {
+  margin-left: auto;
+  flex: none;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.foot-flag {
+  flex: none;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+.foot-note { margin: 8px 0 0; font-size: 11.5px; color: var(--text-dim); }
+.foot-about { margin: 0 0 12px; max-width: 38ch; }
+.foot-stats {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  margin: 0 0 10px;
+  padding: 0;
+}
+.foot-stats b { color: var(--text); font-variant-numeric: tabular-nums; }
+.foot-ver { margin: 0; font-size: 12px; }
+.foot-extra { margin: 6px 0 0; font-size: 12px; }
 
 /* --------------------------------------------------------------- helpers */
 .section { padding: 34px 0; }

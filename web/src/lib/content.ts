@@ -431,11 +431,38 @@ export function searchEntries(lang: Lang, q: string, limit = 20): Entry[] {
     .map((x) => x.e);
 }
 
+/** Published article count per language, computed from the published set. */
+export const publishedByLang: Record<string, number> = {};
+for (const l of LANGS) publishedByLang[l] = 0;
+for (const e of entries) {
+  if (isIndexable(e)) publishedByLang[e.lang] = (publishedByLang[e.lang] ?? 0) + 1;
+}
+
+/**
+ * Languages that carry substantially the whole corpus.
+ *
+ * `stats.languages` used to be LANGS.length — five declared languages — and the
+ * homepage printed it. That number was the "5 languages" claim, and it was
+ * false: only two languages hold the corpus and the other three hold seven
+ * articles each. A count of declared languages is not a count of content, and
+ * printing it tells every visitor and every crawler something untrue.
+ *
+ * A language counts as full when it holds at least a third of the largest
+ * language's articles. ru 160 and en 41 qualify; es/de/zh at 7 do not.
+ */
+const maxLang = Math.max(1, ...Object.values(publishedByLang));
+export const fullLanguages: string[] = LANGS.filter((l) => publishedByLang[l] >= maxLang / 3);
+export const partialLanguages: string[] = LANGS.filter((l) => publishedByLang[l] > 0
+  && publishedByLang[l] < maxLang / 3);
+
 /** Site-wide stats for the footer / structured data. */
 export const stats = {
   total: entries.length,
   originals: originals.length,
   languages: LANGS.length,
+  fullLanguages: fullLanguages.length,
+  partialLanguages: partialLanguages.length,
+  publishedByLang,
   categories: new Set(originals.map((e) => e.category)).size,
   humanTranslations: entries.filter((e) => e.translation === 'human').length,
   codeBlocks: entries.reduce((s, e) => s + e.codeBlocks, 0),

@@ -8,7 +8,7 @@
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { LANGS, LANG_META, SITE_NAME, SITE_NAME_RU } from '../lib/site';
-import { byLang, isIndexable, stats } from '../lib/content';
+import { byLang, isIndexable, stats, fullLanguages, partialLanguages } from '../lib/content';
 import { abs, websiteJsonLd } from '../lib/seo';
 
 const alts = LANGS.map((l) => ({ hreflang: LANG_META[l].locale, href: abs(`/${l}`) }));
@@ -17,7 +17,7 @@ const counts = Object.fromEntries(LANGS.map((l) => [l, byLang(l).filter(isIndexa
 
 <BaseLayout
   title="Blender AI Wiki"
-  description="Открытая база знаний по Blender, MCP и AI-агентам: промпты и bpy-скрипты, сетапы, воркфлоу и кейсы. 5 языков, поиск, markdown-версии для ИИ-агентов."
+  description="Открытая база знаний по Blender, MCP и AI-агентам: промпты и bpy-скрипты, сетапы, воркфлоу и кейсы. Русский и английский, поиск, markdown-версии для ИИ-агентов."
   path="/"
   lang="ru"
   alternates={alts}
@@ -27,13 +27,16 @@ const counts = Object.fromEntries(LANGS.map((l) => [l, byLang(l).filter(isIndexa
     <div class="hero">
       <h1>{SITE_NAME}</h1>
       <p>
-        {SITE_NAME_RU}. {stats.originals} статей, {stats.codeBlocks} блоков кода,
-        5 языков. Каждая статья доступна в HTML и в чистом markdown по тому же URL.
+        {SITE_NAME_RU}. {stats.originals} статей, {stats.codeBlocks} блоков кода.
+        Полный корпус на {stats.fullLanguages} языках
+        ({fullLanguages.join(', ')}), ещё {stats.partialLanguages} языка
+        ({partialLanguages.map((l) => `${l} — ${stats.publishedByLang[l]}`).join(', ')}).
+        Каждая статья доступна в HTML и в чистом markdown по тому же URL.
       </p>
       <div class="stats">
         <div class="stat"><b>{stats.originals}</b><span>статей</span></div>
         <div class="stat"><b>{stats.humanTranslations}</b><span>полных переводов</span></div>
-        <div class="stat"><b>{stats.languages}</b><span>языков</span></div>
+        <div class="stat"><b>{stats.fullLanguages}</b><span>языка с полным корпусом</span></div>
       </div>
     </div>
 

@@ -11,7 +11,7 @@ import {
   entries, entryUrl, entryMdUrl, hreflangCluster, isIndexable, related, seoDescription,
   translationsOf, type Entry,
 } from '../../../lib/content';
-import { abs, articleJsonLd, faqFrom, faqJsonLd } from '../../../lib/seo';
+import { abs, articleJsonLd } from '../../../lib/seo';
 
 export function getStaticPaths() {
   return entries.map((e) => ({
@@ -36,8 +36,10 @@ const alts = hreflangCluster(entry).map((c) => ({
 }));
 
 const rel = related(entry, 6);
-const faq = indexable ? faqFrom(entry) : [];
-const ld = [articleJsonLd(entry), faqJsonLd(faq)];
+// One JSON-LD graph: the article plus its breadcrumb trail. No FAQPage — the
+// questions it used to emit were the article titles, which is not what a
+// FAQPage claims. See the note at the bottom of lib/seo.ts.
+const ld = [articleJsonLd(entry)];
 
 const anchor = (text: string) =>
   text

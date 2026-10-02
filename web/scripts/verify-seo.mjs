@@ -6,7 +6,8 @@
  * Everything here maps to a documented requirement:
  *   - title / description / canonical / robots           -> crawlability
  *   - hreflang cluster, reciprocal + x-default           -> Google multi-language
- *   - JSON-LD Article + BreadcrumbList                   -> rich results
+ *   - JSON-LD TechArticle + BreadcrumbList, no FAQPage   -> rich results
+ *   - per-article og:image, favicons, webmanifest        -> links that look alike
  *   - .md twin + rel=alternate                           -> llms.txt v2
  *   - llms.txt / llms-full.txt / robots.txt / rss.xml    -> agent entry points
  *   - no broken internal links                           -> crawl budget
@@ -29,6 +30,21 @@ const ok = (m) => console.log(`  [OK] ${m}`);
 
 const slugify = (s) => s.toLowerCase().replace(/\.md$/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 const read = (p) => readFileSync(join(DIST, p), 'utf8');
+
+/**
+ * What the SERP actually shows: the attribute value with entities resolved.
+ *
+ * `MCP ADVANCED: STREAMING & TOOL COMPOSITION` is 41 characters of text and 45
+ * characters of markup — `&` is written `&amp;`. Measuring the raw attribute
+ * reported two pages as 63-64 character titles when their decoded titles were 59
+ * and 60, which sent me looking for a truncation bug that did not exist.
+ */
+const visible = (s = '') => s
+  .replace(/&(#\d+|#x[0-9a-f]+|[a-z]+);/gi, (_, e) => {
+    const named = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ', ndash: '–', mdash: '—', hellip: '…' };
+    if (e[0] === '#') return String.fromCodePoint(parseInt(e[1] === 'x' ? e.slice(2) : e.slice(1), e[1] === 'x' ? 16 : 10));
+    return named[e.toLowerCase()] ?? ` ${e} `;
+  });
 
 /* --------------------------------------------------------- ground truth */
 const db = JSON.parse(readFileSync(DB, 'utf8'));
@@ -69,7 +85,7 @@ const shadowUrls = new Set(shadows.map((e) => e.url));
 
 /* ----------------------------------------------------- file existence */
 console.log('== 1. Build output present ==');
-for (const f of ['index.html', 'llms.txt', 'llms-full.txt', 'robots.txt', 'rss.xml', 'sitemap-index.xml', '404.html', '_headers', 'og-default.png']) {
+for (const f of ['index.html', 'llms.txt', 'llms-full.txt', 'robots.txt', 'rss.xml', 'sitemap-index.xml', '404.html', '_headers', 'og-default.png', 'site.webmanifest', 'favicon.svg', 'favicon.ico', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png']) {
   if (existsSync(join(DIST, f))) ok(`dist/${f}`);
   else fail(`dist/${f} missing`);
 }
@@ -95,17 +111,22 @@ for (const e of indexable) {
   const html = readFileSync(file, 'utf8');
   const problems = [];
 
-  const title = /<title>([^<]*)<\/title>/.exec(html)?.[1] ?? '';
+  const title = visible(/<title>([^<]*)<\/title>/.exec(html)?.[1] ?? '');
   if (!title) problems.push('no <title>');
-  else if (title.length > 70) problems.push(`title ${title.length} chars (>70)`);
+  // MAX_TITLE in src/lib/seo.ts. Google renders about 60 characters of title;
+  // past that the tail is replaced by its own ellipsis in the SERP.
+  else if (title.length > 60) problems.push(`title ${title.length} chars (>60)`);
 
-  const desc = /<meta name="description" content="([^"]*)"/.exec(html)?.[1] ?? '';
+  const desc = visible(/<meta name="description" content="([^"]*)"/.exec(html)?.[1] ?? '');
   // Script-aware floor: 50 Latin characters is a sentence, 50 CJK characters is
   // a paragraph. Judging both by 50 falsely fails every Chinese page.
   const descMin = /[぀-ヿ㐀-䶿一-鿿]/.test(e.title) ? 30 : 50;
+  // MAX_DESCRIPTION in src/lib/seo.ts: Google cuts the snippet at ~155-160
+  // characters on desktop, ~120 on mobile. 95 of 222 descriptions were longer
+  // than that and were truncated by the SERP anyway.
   if (!desc) problems.push('no meta description');
   else if (desc.length < descMin) problems.push(`description only ${desc.length} chars (<${descMin})`);
-  else if (desc.length > 320) problems.push(`description ${desc.length} chars (>320)`);
+  else if (desc.length > 155) problems.push(`description ${desc.length} chars (>155)`);
 
   if (!/<link rel="canonical" href="[^"]+"/.test(html)) problems.push('no canonical');
   if (!/<meta property="og:title"/.test(html)) problems.push('no og:title');
@@ -116,9 +137,10 @@ for (const e of indexable) {
   if (!/<meta name="robots" content="index/.test(html)) problems.push('indexable page is not "index"');
 
   // JSON-LD: collect the union of types across every ld+json block on the page.
-  // A page emits Article+BreadcrumbList in one block and FAQPage in another, so
-  // checking each block separately produces false failures.
+  // A page emits its whole graph in one block, but the check reads the union
+  // anyway so that splitting it later cannot produce a false failure.
   const ldTypes = new Set();
+  const ldNodes = [];
   let ldCount = 0;
   for (const m of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
     ldCount++;
@@ -128,14 +150,62 @@ for (const e of indexable) {
         const t = n['@type'];
         if (Array.isArray(t)) t.forEach((x) => ldTypes.add(x));
         else if (t) ldTypes.add(t);
+        ldNodes.push(n);
       }
     } catch {
       problems.push('JSON-LD is not valid JSON');
     }
   }
   if (ldCount === 0) problems.push('no JSON-LD at all');
-  if (!ldTypes.has('Article')) problems.push('JSON-LD without Article');
+  // TechArticle is a schema.org subtype of Article and Google's article rich
+  // result accepts any of them, so either type satisfies the requirement.
+  if (!ldTypes.has('Article') && !ldTypes.has('TechArticle')) {
+    problems.push('JSON-LD without Article/TechArticle');
+  }
   if (!ldTypes.has('BreadcrumbList')) problems.push('JSON-LD without BreadcrumbList');
+
+  // FAQPage was removed from the site: the questions it emitted were the article
+  // titles, so it described a Q&A page that does not exist. Its return needs a
+  // visible Q&A on the page first, which this check cannot see — so treat it as
+  // a failure and make someone argue for it.
+  if (ldTypes.has('FAQPage') || ldTypes.has('Question') || ldTypes.has('Answer')) {
+    problems.push('FAQ markup present without a visible Q&A on the page');
+  }
+
+  // Every breadcrumb step needs a label AND a target; a step with only `name`
+  // is not a trail, it is a list of words.
+  const crumbs = ldNodes.find((n) => n['@type'] === 'BreadcrumbList');
+  if (crumbs) {
+    const steps = crumbs.itemListElement ?? [];
+    if (steps.length < 2) problems.push(`BreadcrumbList has only ${steps.length} step(s)`);
+    for (const st of steps) {
+      if (!st.name || !st.item) problems.push(`breadcrumb step ${st.position} missing name or item`);
+    }
+  }
+
+  // Per-article social card. 222 articles sharing one image made every Telegram
+  // and Slack link look identical, so each article now carries its own.
+  const ogImage = /<meta property="og:image" content="([^"]+)"/.exec(html)?.[1] ?? '';
+  if (!/^https?:\/\//.test(ogImage)) problems.push(`og:image is not absolute: ${ogImage || 'missing'}`);
+  if (/\/og-default\.png$/.test(ogImage)) problems.push('og:image still points at the site-wide default card');
+  for (const prop of ['og:image:width', 'og:image:height', 'og:image:alt', 'og:locale']) {
+    if (!new RegExp(`<meta property="${prop}"`).test(html)) problems.push(`no ${prop}`);
+  }
+  if (/<meta property="og:type" content="website"/.test(html)) {
+    problems.push('og:type is website on an article page');
+  }
+  if (!/<meta name="twitter:image:alt"/.test(html)) problems.push('no twitter:image:alt');
+  {
+    const local = ogImage.replace(/^https?:\/\/[^/]+/, '');
+    const png = join(DIST, local);
+    if (local && !existsSync(png)) problems.push(`og image file missing: ${local}`);
+    else if (local) {
+      const buf = readFileSync(png);
+      const w = buf.readUInt32BE(16);
+      const h = buf.readUInt32BE(20);
+      if (w !== 1200 || h !== 630) problems.push(`og image is ${w}x${h}, want 1200x630`);
+    }
+  }
 
   // hreflang: own lang + x-default
   if (!/hreflang="x-default"/.test(html)) problems.push('no hreflang x-default');
@@ -381,6 +451,67 @@ console.log('== 4b. Open Graph image ==');
     if (w < 1200 || h < 630) fail(`OG image is ${w}x${h}; recommended 1200x630`);
     else ok(`og-default.png ${w}x${h}, ${Math.round(buf.length / 1024)} KB`);
   }
+
+  // Per-article cards. Counting the directory is the cheap half; the article
+  // loop above already proved that every indexable page's og:image resolves to
+  // one of these at exactly 1200x630.
+  const cards = existsSync(join(DIST, 'og'))
+    ? readdirSync(join(DIST, 'og')).filter((f) => f.endsWith('.png'))
+    : [];
+  if (cards.length < indexable.length) {
+    fail(`only ${cards.length} per-article cards for ${indexable.length} indexable articles`);
+  } else {
+    ok(`${cards.length} per-article OG cards (${Math.round(cards.reduce(
+      (a, f) => a + statSync(join(DIST, 'og', f)).size, 0) / 1024 / 1024)} MB)`);
+  }
+}
+
+console.log('== 4b2. Icons and webmanifest ==');
+{
+  const home = read('index.html');
+  for (const [what, re] of [
+    ['svg icon', /<link rel="icon" type="image\/svg\+xml"[^>]+href="[^"]*favicon\.svg"/],
+    ['ico fallback', /<link rel="icon"[^>]+href="[^"]*favicon\.ico"/],
+    ['apple-touch-icon', /<link rel="apple-touch-icon"[^>]+href="[^"]*apple-touch-icon\.png"/],
+    ['manifest', /<link rel="manifest"[^>]+href="[^"]*site\.webmanifest"/],
+    ['generator', /<meta name="generator" content="[^"]+"/],
+    ['theme-color', /<meta name="theme-color" content="#[0-9a-f]{6}"/i],
+  ]) {
+    if (re.test(home)) ok(`index.html declares ${what}`);
+    else fail(`index.html does not declare ${what}`);
+  }
+
+  let mf;
+  try {
+    mf = JSON.parse(read('site.webmanifest'));
+  } catch (e) {
+    mf = null;
+    fail(`site.webmanifest is not valid JSON: ${e.message}`);
+  }
+  if (mf) {
+    for (const k of ['name', 'short_name', 'start_url', 'display', 'background_color', 'theme_color', 'icons']) {
+      if (!mf[k]) fail(`site.webmanifest: missing ${k}`);
+    }
+    // Every icon the manifest advertises has to be a file that is served.
+    let bad = 0;
+    for (const ic of mf.icons ?? []) {
+      const p = ic.src.replace(/^https?:\/\/[^/]+/, '');
+      if (!existsSync(join(DIST, p))) { fail(`manifest icon missing on disk: ${ic.src}`); bad++; }
+    }
+    if (!bad) ok(`site.webmanifest: ${mf.icons.length} icons, all present`);
+  }
+
+  // Declared pixel size must be the real one: a 180 tag on a 512 file is a lie
+  // that only shows up as a blurry icon on someone's home screen.
+  for (const [f, want] of [['icon-192.png', 192], ['icon-512.png', 512], ['apple-touch-icon.png', 180]]) {
+    const buf = readFileSync(join(DIST, f));
+    const w = buf.readUInt32BE(16), h = buf.readUInt32BE(20);
+    if (w !== want || h !== want) fail(`${f} is ${w}x${h}, expected ${want}x${want}`);
+    else ok(`${f} ${w}x${h}`);
+  }
+  const ico = readFileSync(join(DIST, 'favicon.ico'));
+  if (ico.readUInt16LE(0) !== 0 || ico.readUInt16LE(2) !== 1) fail('favicon.ico is not an ICO');
+  else ok(`favicon.ico: ${ico.readUInt16LE(4)} image(s)`);
 }
 
 console.log('== 5. llms.txt / robots.txt / rss.xml ==');

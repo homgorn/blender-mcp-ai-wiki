@@ -140,7 +140,18 @@ const toc = [...entry.body.matchAll(/^(#{2,3})\s+(.+)$/gm)].map((m) => ({
 }));
 ---
 
-<Fragment set:html={finalHtml} />
+{/*
+  The wrapper carries `className`, and until it existed the whole `.prose`
+  stylesheet — max-width 78ch, h2/h3 rules, blockquote styling and, most
+  visibly, `pre { overflow-x: auto }` — applied to nothing. `class` was
+  destructured with a default of 'prose' and then never used, so all 222
+  articles rendered unstyled code blocks that pushed the page to a 1240px
+  scrollWidth on a 390px screen.
+
+  The element is a `div` rather than a bare Fragment because a Fragment cannot
+  take a class: there is no node to hang the styling on.
+*/}
+<div class={className} set:html={finalHtml} />
 
 <style>
   [data-pagefind-body] a[rel~='nofollow']::after {

@@ -19,8 +19,14 @@
  * across 916 pages, because every page then carried a copy of the same rules.
  */
 import '../styles/global.css';
-import { LANG_META, LANGS, SITE_NAME, type Lang } from '../lib/site';
+import { CATEGORIES, CATEGORY_META, LANG_META, LANGS, SITE_NAME, type Lang } from '../lib/site';
 import { abs, buildSeo } from '../lib/seo';
+import { byCategory, byLang, categoryCounts, isIndexable, originals, stats } from '../lib/content';
+// The version shown in the footer is read from package.json rather than copied
+// into site.ts, because a version that lives in two places is a version that is
+// wrong in one of them. Nothing here reaches the browser: the frontmatter runs
+// at build time only.
+import pkg from '../../package.json';
 
 interface Props {
   title: string;
@@ -44,26 +50,55 @@ const {
   jsonLd, alternates = [], mdTwin, entry,
 } = Astro.props;
 
-const BRAND = 'Blender AI Wiki';
-// buildSeo owns canonical + robots + hreflang derivation. The layout used to
-// compute `url` itself and emit a self-referencing canonical on every page,
-// including the template mirrors that must consolidate onto the original.
+// buildSeo owns canonical + robots + hreflang derivation, and now also the
+// title/description budgets and the OG card path. The layout used to compute
+// `url` itself and emit a self-referencing canonical on every page, including
+// the template mirrors that must consolidate onto the original, and it kept its
+// own copy of the title truncation rule with a different limit (62 vs 60).
 const seo = buildSeo({ title, description, path, lang, noindex, image, type, entry: entry as never });
 const url = seo.url;
-// Google truncates around 60-70 chars. Cap the whole thing and let the article
-// name absorb the cut, so the brand stays visible.
-const MAX_TITLE = 62;
-const fullTitle = (() => {
-  if (path === '/') return `${title} — ${BRAND}`;
-  const suffix = ` · ${BRAND}`;
-  const room = MAX_TITLE - suffix.length;
-  if (title.length <= room) return `${title}${suffix}`;
-  const cut = title.slice(0, room - 1).replace(/\s+\S*$/, '');
-  return `${cut}…${suffix}`;
-})();
 const ogImage = seo.image;
 const robots = seo.robots;
 const ld = (jsonLd ?? []).filter(Boolean);
+
+/* ------------------------------------------------------------- navigation */
+
+/**
+ * Every section on the site, derived from the published set rather than kept by
+ * hand. `404.astro`, the search page and the category pages derive the same
+ * union; a hand-written list is a list that silently drops the section somebody
+ * added last month — which is how `/references` ended up published, in the
+ * sitemap, and unreachable from the menu.
+ */
+const allCategories = [...new Set(originals.map((e) => e.category))];
+const coreCats: readonly string[] = CATEGORIES;
+/** The five core sections in the curated order, then the thematic ones A-Z. */
+const navCategories = [
+  ...coreCats.filter((c) => allCategories.includes(c)),
+  ...allCategories.filter((c) => !coreCats.includes(c)).sort(),
+];
+
+/**
+ * Published articles per language and per category in the *current* language.
+ * Both come from `content.ts`, i.e. from the same set the pages themselves
+ * render, so a count in the menu cannot disagree with the page it links to.
+ */
+const articlesIn = (l: Lang) => byLang(l).filter(isIndexable).length;
+const langArticles: Record<Lang, number> = Object.fromEntries(
+  LANGS.map((l) => [l, articlesIn(l)]),
+) as Record<Lang, number>;
+const hereCounts = categoryCounts(lang);
+
+/** Below this many published articles a language is a stub, and says so. */
+const THIN_LANG = 10;
+
+const catHref = (c: string) => `/${lang}/${c}`;
+const catMeta = (c: string) => CATEGORY_META[c] ?? { ru: c, en: c, icon: '', blurbRu: '', blurbEn: '' };
+const searchHref = `/${lang}/search`;
+
+/** Which link is the page you are already on. `path` is root-relative. */
+const isCat = (c: string) => path === catHref(c) || path.startsWith(`${catHref(c)}/`);
+const isSearch = path === searchHref;
 ---
 
 <!doctype html>
@@ -71,10 +106,22 @@ const ld = (jsonLd ?? []).filter(Boolean);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{fullTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
     <link rel="canonical" href={seo.canonical} />
     <meta name="robots" content={robots} />
+    {/* Matches background_color in site.webmanifest, so the installed PWA and the
+        browser chrome match instead of flashing white. */}
+    <meta name="theme-color" content="#0b0f14" />
+
+    {/* Icons. The SVG is the one a browser tab uses; the PNGs exist for Android,
+        the apple-touch-icon for iOS home screens, and the .ico for the fallback
+        path. All five are generated from the same geometry by WIKI/scripts/make_og.py. */}
+    <link rel="icon" type="image/svg+xml" href={abs('/favicon.svg')} />
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="apple-touch-icon" sizes="180x180" href={abs('/apple-touch-icon.png')} />
+    <link rel="manifest" href={abs('/site.webmanifest')} />
 
     {/* hreflang: the page must list every language version of ITSELF, including
         its own, plus x-default. Entry pages pass the per-article cluster; home
@@ -90,22 +137,38 @@ const ld = (jsonLd ?? []).filter(Boolean);
     <link rel="sitemap" type="application/xml" href={abs('/sitemap-index.xml')} />
     <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href={abs('/rss.xml')} />
 
-    <meta property="og:type" content={type} />
+    <meta property="og:type" content={seo.ogType} />
     <meta property="og:site_name" content={SITE_NAME} />
-    <meta property="og:title" content={fullTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
     <meta property="og:url" content={url} />
+    {/* Entry pages carry their own 1200x630 card; listings share og-default.png. */}
     <meta property="og:image" content={ogImage} />
-    {/* Open Graph uses underscore locales (ru_RU); hreflang uses BCP-47 hyphens (ru-RU). */}
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={seo.imageAlt} />
+    <meta property="og:image:type" content="image/png" />
+    {seo.publishedTime && <meta property="article:published_time" content={seo.publishedTime} />}
+    {seo.modifiedTime && <meta property="article:modified_time" content={seo.modifiedTime} />}
+    {/* Open Graph uses underscore locales (ru_RU); hreflang uses BCP-47 hyphens (ru-RU).
+        og:locale:alternate must list only locales where THIS page exists, so it is
+        derived from `alternates` — the same list hreflang uses. Iterating LANGS
+        instead declared a version of the page in every language on the site,
+        including the 628 that do not exist. */}
     <meta property="og:locale" content={LANG_META[lang].ogLocale} />
-    {LANGS.filter((l) => l !== lang).map((l) => (
+    {Array.from(new Set(
+      alternates
+        .map((a) => a.href.match(/\/([a-z]{2})(?:\/|$)/)?.[1])
+        .filter((l): l is string => Boolean(l) && l !== lang),
+    )).map((l) => (
       <meta property="og:locale:alternate" content={LANG_META[l].ogLocale} />
     ))}
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={fullTitle} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={seo.title} />
+    <meta name="twitter:description" content={seo.description} />
     <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={seo.imageAlt} />
 
     {ld.map((node) => (
       <script type="application/ld+json" set:html={JSON.stringify(node)} />
@@ -120,14 +183,127 @@ const ld = (jsonLd ?? []).filter(Boolean);
         <a class="brand" href={`/${lang}`}>
           {SITE_NAME} <span class="dim">/ {LANG_META[lang].native}</span>
         </a>
-        <nav class="nav" aria-label="Main">
-          {Object.entries({
-            prompts: 'Промпты', setups: 'Сетапы', workflows: 'Воркфлоу', cases: 'Кейсы',
-          }).map(([c, ru]) => <a href={`/${lang}/${c}`}>{ru}</a>)}
-          <a href={`/${lang}/search`}>Поиск</a>
-          <span class="lang-switch">
+        {/* Search is its own control at every width rather than one more item in
+            the nav list: "find something" must never cost a second tap, and it
+            needs a 44x44 target on a phone. The label is dropped below 640px
+            but stays in the accessibility tree — the icon is decorative. */}
+        <a
+          class="head-search"
+          href={searchHref}
+          title={`Поиск по базе на языке ${LANG_META[lang].native}`}
+          aria-current={isSearch ? 'page' : undefined}
+        >
+          <span class="head-search-ico" aria-hidden="true"></span>
+          <span class="head-search-txt">Поиск</span>
+        </a>
+
+        {/* Mobile menu: a <details> disclosure, so it opens from the markup
+            alone and the whole site stays navigable with JavaScript disabled —
+            no onclick, no checkbox hack, no hydrated island. Below 900px this
+            is the presentation; above it, `.nav` carries the same links inline
+            and this element is display:none. Exactly one of the two is ever in
+            the accessibility tree, so no link is announced twice. */}
+        <details class="navmenu">
+          <summary class="navmenu-sum">
+            <span class="navmenu-burger" aria-hidden="true"></span>
+            Меню
+          </summary>
+          {/* Group labels are <span>, not headings: this panel sits at the top of
+              every article, and four <h2>s injected above the real outline of
+              222 pages would be a worse trade than losing heading semantics on
+              three label rows. The <ul>s already carry the grouping. */}
+          <nav class="navmenu-panel" aria-label="Меню сайта">
+            <div class="navmenu-group">
+              <span class="navmenu-h">Разделы</span>
+              <ul>
+                {navCategories.map((c) => (
+                  <li>
+                    <a
+                      href={catHref(c)}
+                      aria-current={isCat(c) ? 'page' : undefined}
+                      title={`${catMeta(c).ru} — ${hereCounts[c] ?? 0} статей на языке ${LANG_META[lang].native}`}
+                    >
+                      <span class="navmenu-ico" aria-hidden="true">{catMeta(c).icon}</span>
+                      <span class="navmenu-label">{catMeta(c).ru}</span>
+                      <span class="navmenu-n">{hereCounts[c] ?? 0}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="navmenu-group">
+              <span class="navmenu-h">Поиск</span>
+              <ul>
+                <li>
+                  <a href={searchHref} aria-current={isSearch ? 'page' : undefined} title={`Поиск по ${articlesIn(lang)} статьям на языке ${LANG_META[lang].native}`}>
+                    <span class="navmenu-label">Поиск по базе</span>
+                    <span class="navmenu-n">{articlesIn(lang)}</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="navmenu-group">
+              <span class="navmenu-h">Язык</span>
+              <ul>
+                {LANGS.map((l) => (
+                  <li>
+                    <a
+                      href={`/${l}`}
+                      lang={l}
+                      hreflang={LANG_META[l].locale}
+                      aria-current={l === lang ? 'page' : undefined}
+                      title={langArticles[l] < THIN_LANG
+                        ? `${LANG_META[l].native} — ${langArticles[l]} статей, перевод частичный`
+                        : `${LANG_META[l].native} — ${langArticles[l]} статей`}
+                    >
+                      <span class="navmenu-label">{LANG_META[l].native}</span>
+                      <span class="navmenu-n">{langArticles[l]}</span>
+                      {langArticles[l] < THIN_LANG && <span class="navmenu-flag">мало</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="navmenu-group">
+              <span class="navmenu-h">Открытые данные</span>
+              <ul>
+                <li><a href="/llms.txt" title="Карта сайта для языковых моделей"><span class="navmenu-label">llms.txt</span></a></li>
+                <li><a href="/llms-full.txt" title="Весь корпус одним файлом — для RAG"><span class="navmenu-label">llms-full.txt</span></a></li>
+                <li><a href="/rss.xml" title="RSS 2.0 — обновления базы"><span class="navmenu-label">RSS</span></a></li>
+                <li><a href="/sitemap-index.xml" title="Индексируемые страницы с hreflang-группами"><span class="navmenu-label">sitemap-index.xml</span></a></li>
+              </ul>
+            </div>
+          </nav>
+        </details>
+
+        {/* Desktop menu: the same sections inline, no disclosure needed. Kept in
+            the markup at every width and hidden below 900px rather than moved,
+            because a menu that only exists above a breakpoint is a menu that
+            does not exist on the machine the reader is holding. */}
+        <nav class="nav" aria-label="Основное меню">
+          {coreCats.filter((c) => allCategories.includes(c)).map((c) => (
+            <a
+              href={catHref(c)}
+              aria-current={isCat(c) ? 'page' : undefined}
+              title={`${catMeta(c).ru} — ${hereCounts[c] ?? 0} статей на языке ${LANG_META[lang].native}`}
+            >
+              {catMeta(c).ru}
+            </a>
+          ))}
+          <span class="lang-switch" role="group" aria-label="Язык / Language">
             {LANGS.map((l) => (
-              <a href={url} lang={l} hreflang={LANG_META[l].locale} aria-current={l === lang ? 'true' : 'false'}>
+              <a
+                href={url}
+                lang={l}
+                hreflang={LANG_META[l].locale}
+                title={langArticles[l] < THIN_LANG
+                  ? `${LANG_META[l].native} — эта же страница, ${langArticles[l]} статей, перевод частичный`
+                  : `${LANG_META[l].native} — эта же страница, ${langArticles[l]} статей`}
+                aria-current={l === lang ? 'page' : undefined}
+              >
                 {l}
               </a>
             ))}
@@ -141,17 +317,98 @@ const ld = (jsonLd ?? []).filter(Boolean);
     </main>
 
     <footer class="site-foot">
-      <div class="wrap cols">
-        <div>
-          <p><strong>{SITE_NAME}</strong> — база знаний по Blender, MCP и AI-агентам.</p>
-          <p class="muted">Открытые данные: <a href="/llms.txt">llms.txt</a> · <a href="/llms-full.txt">llms-full.txt</a> · <a href="/rss.xml">RSS</a></p>
-        </div>
-        <div>
-          <p class="muted">
-            © {new Date().getFullYear()} · <a href="/">Языки</a> ·
-            <a href="/sitemap-index.xml">Sitemap</a> · <a href="/rss.xml">RSS</a>
+      <div class="wrap foot-grid">
+        <nav class="foot-col" aria-label="Материалы">
+          <h2 class="foot-h">Материалы</h2>
+          <ul class="foot-list">
+            {navCategories.map((c) => {
+              const n = hereCounts[c] ?? 0;
+              const has = byCategory(lang, c).filter(isIndexable).length > 0;
+              return (
+                <li>
+                  <a
+                    class="foot-link"
+                    href={catHref(c)}
+                    aria-current={isCat(c) ? 'page' : undefined}
+                    title={has
+                      ? `${catMeta(c).ru} — ${n} статей на языке ${LANG_META[lang].native}`
+                      : `${catMeta(c).ru} — на языке ${LANG_META[lang].native} пока нет статей; есть на ${LANGS.filter((l) => byCategory(l, c).filter(isIndexable).length > 0).map((l) => LANG_META[l].native).join(', ')}`}
+                  >
+                    <span class="foot-label">{catMeta(c).icon} {catMeta(c).ru}</span>
+                    <span class="foot-n">{n}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        <nav class="foot-col" aria-label="Языки">
+          <h2 class="foot-h">Языки</h2>
+          <ul class="foot-list">
+            {LANGS.map((l) => (
+              <li>
+                <a
+                  class="foot-link"
+                  href={`/${l}`}
+                  lang={l}
+                  hreflang={LANG_META[l].locale}
+                  aria-current={l === lang ? 'page' : undefined}
+                  title={langArticles[l] < THIN_LANG
+                    ? `${LANG_META[l].native} — ${langArticles[l]} статей, перевод частичный`
+                    : `${LANG_META[l].native} — ${langArticles[l]} статей`}
+                >
+                  <span class="foot-label">{LANG_META[l].native}</span>
+                  <span class="foot-n">{langArticles[l]}</span>
+                  {langArticles[l] < THIN_LANG && <span class="foot-flag">мало</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="foot-note">«мало» — меньше {THIN_LANG} опубликованных статей.</p>
+        </nav>
+
+        <nav class="foot-col" aria-label="Инструменты и открытые данные">
+          <h2 class="foot-h">Инструменты</h2>
+          <ul class="foot-list">
+            <li>
+              <a
+                class="foot-link"
+                href={searchHref}
+                aria-current={isSearch ? 'page' : undefined}
+                title={`Поиск по ${articlesIn(lang)} статьям на языке ${LANG_META[lang].native}`}
+              >
+                <span class="foot-label">Поиск по базе</span>
+                <span class="foot-n">{articlesIn(lang)}</span>
+              </a>
+            </li>
+            <li><a class="foot-link" href="/rss.xml" title="RSS 2.0 — обновления базы"><span class="foot-label">RSS</span></a></li>
+            <li><a class="foot-link" href="/llms.txt" title="Карта сайта для языковых моделей"><span class="foot-label">llms.txt</span></a></li>
+            <li><a class="foot-link" href="/llms-full.txt" title="Весь корпус одним файлом — для офлайн-индексации и RAG"><span class="foot-label">llms-full.txt</span></a></li>
+            <li><a class="foot-link" href="/sitemap-index.xml" title="Индексируемые страницы с hreflang-группами"><span class="foot-label">sitemap-index.xml</span></a></li>
+          </ul>
+        </nav>
+
+        <nav class="foot-col" aria-label="О проекте">
+          <h2 class="foot-h">О проекте</h2>
+          <p class="foot-about">
+            {SITE_NAME} — открытая база знаний по Blender, MCP и AI-агентам.
+            Каждая статья опубликована как HTML и как markdown по тому же URL.
           </p>
-        </div>
+          {/* Every number below is read from the published set at build time. A
+              hand-typed "500+ статей" is a claim; this is a measurement. */}
+          <ul class="foot-stats">
+            <li><b>{stats.total}</b> страниц</li>
+            <li><b>{stats.originals}</b> оригиналов</li>
+            <li><b>{stats.languages}</b> языков</li>
+            <li><b>{stats.categories}</b> разделов</li>
+            <li><b>{stats.codeBlocks}</b> блоков кода</li>
+          </ul>
+          <p class="foot-ver">Версия {pkg.version} · © {new Date().getFullYear()}</p>
+          <p class="foot-extra">
+            <a class="foot-link" href="/" title="Страница выбора языка">Все языки</a>
+          </p>
+        </nav>
       </div>
     </footer>
   </body>

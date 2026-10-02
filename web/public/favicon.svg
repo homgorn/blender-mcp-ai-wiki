@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Blender AI Wiki — favicon.
+
+  Same geometry as public/icon-512.png, which WIKI/scripts/make_og.py rasterises
+  (ICON_NODES / ICON_EDGES / ICON_LINE / ICON_NODE_R / ICON_RADIUS there are the
+  same numbers on a 512 grid). A dark rounded square with three connected nodes:
+  the site is a linked corpus, not a blog, and the motif is what the default OG
+  card already uses. Vector so it stays sharp in a tab at any DPR.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Blender AI Wiki">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#1c2838"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" ry="112" fill="url(#bg)"/>
+  <g stroke="#3466a2" stroke-width="34" stroke-linecap="round" fill="none">
+    <line x1="123" y1="338" x2="256" y2="154"/>
+    <line x1="256" y1="154" x2="389" y2="338"/>
+  </g>
+  <circle cx="256" cy="154" r="62" fill="#7ee0c0"/>
+  <circle cx="123" cy="338" r="62" fill="#4c9df0"/>
+  <circle cx="389" cy="338" r="62" fill="#4c9df0"/>
+</svg>
