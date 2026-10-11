@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Fix known broken links + missing frontmatter. Idempotent. Excludes generated dirs."""
+import os
 from pathlib import Path
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 SKIP = {"db", "site", "export_obsidian", "export_notion"}
 
 def files():

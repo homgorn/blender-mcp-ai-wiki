@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Check misc/ dupes: every misc stem must have a counterpart in proper category."""
+import os
 from pathlib import Path
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 ml = WIKI/"multilang"
 proper = set()
 for lang in ["en","ru","es","de","zh"]:

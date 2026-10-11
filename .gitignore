@@ -30,3 +30,7 @@ desktop.ini
 # Local env
 .env
 .env.local
+
+# Recovery snapshots. Kept on disk, not in history: each one is a multi-MB
+# archive and git already holds the same tree.
+.snapshots/

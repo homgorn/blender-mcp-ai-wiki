@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Human translations chunk B2: wf_02 -> es/de/zh."""
+import os
 from pathlib import Path
-W = Path(r"C:\BLENDER ai\WIKI") / "multilang"
+
+# The one script that still carried a literal C:\BLENDER ai. It is the reason a
+# CI runner on Linux failed at the first step: PurePosixPath treats that string as
+# a relative name, so every path built from it resolved under the working
+# directory instead of the repository. WIKI/scripts is the same layout in every
+# checkout, so the script's own location is the reliable root. The env override
+# keeps an unusual working arrangement working.
+W = Path(os.environ.get("BLENDER_WIKI_ROOT") or Path(__file__).resolve().parent.parent) / "multilang"
 
 ARCH = """```
 INPUT IMAGE

@@ -1,9 +1,9 @@
 {
   "name": "blender-ai-wiki-web",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "private": true,
   "type": "module",
-  "description": "Blender AI Wiki â€” static Astro site on Cloudflare Pages. SEO + AI/LLM optimized.",
+  "description": "Knowledge base for driving Blender from scripts and MCP servers. Astro static site on Cloudflare Pages.",
   "engines": {
     "node": ">=22.12.0"
   },

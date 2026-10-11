@@ -22,6 +22,7 @@ Run:  python scripts/repair_goal_sections.py [--dry]
 """
 import re
 import sys
+import os
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -31,7 +32,8 @@ for _s in ("stdout", "stderr"):
     except Exception:
         pass
 
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DRY = "--dry" in sys.argv
 import complete_sections as cs  # noqa: E402  (needs sys.path above)
 

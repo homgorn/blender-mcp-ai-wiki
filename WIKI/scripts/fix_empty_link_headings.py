@@ -23,6 +23,7 @@ Run:  python scripts/fix_empty_link_headings.py [--dry]
 """
 import re
 import sys
+import os
 from pathlib import Path
 
 for _s in ("stdout", "stderr"):
@@ -31,7 +32,8 @@ for _s in ("stdout", "stderr"):
     except Exception:
         pass
 
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DRY = "--dry" in sys.argv
 
 # A `##` links-ish heading and its body, up to the next heading or EOF.

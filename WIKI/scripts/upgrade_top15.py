@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Upgrade next top-15 stub files to full level (append FULL GUIDE sections). Idempotent."""
+import os
 from pathlib import Path
-W = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+W = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 UP = {
  "setups/setup_09_blenderbot_ai.md": """\n---\n\n## FULL GUIDE\n\n### Архитектура\n```\nBlender N-panel → HTTP localhost → LLM API → code → Text Editor → Run\n```\n\n### Шаги\n1. API-ключ провайдера (OpenRouter/DeepSeek) в настройках аддона.\n2. Промпт с контекстом сцены: `get_scene_info` → вставить в запрос.\n3. Сгенерированный код ВСЕГДА проверять: dry-run на копии сцены.\n4. Частые задачи: примитивы+модификаторы, расстановка, рендер-пресеты.\n\n### MCP промпт\n```\n"Сгенерируй bpy-скрипт: [задача]. Контекст сцены: [get_scene_info]. Только безопасные ops, без os/sys."\n```\n\n### Проверка\n- [ ] Скрипт выполняется без ошибок на пустой сцене\n- [ ] Нет `os.system`, `subprocess`, записи вне `//`\n""",
  "setups/setup_11_touchdesigner.md": """\n---\n\n## FULL GUIDE\n\n### Протоколы\n| Протокол | Задержка | Назначение |\n|----------|----------|------------|\n| OSC | 1–5ms | Параметры, триггеры |\n| NDI | 1–2 кадра | Видео поток |\n| Spout | 0–1 кадр | GPU-текстуры (Windows) |\n| Shared Memory | ~0 | Текстуры/геометрия |\n\n### Шаги\n1. Blender: OSC-аддон, порт 7000, отправка трансформов выбранных объектов.\n2. TouchDesigner: OSC In CHOP → связать с параметрами COMP.\n3. Видео: NDI Out (Blender) → NDI In (TD) или Spout пара.\n4. Синхронизация кадров: frame counter + drift correction (порог 2 кадра).\n\n### Проверка\n- [ ] Параметры двигаются без залипаний\n- [ ] Видео без тиринга, задержка измерена\n""",

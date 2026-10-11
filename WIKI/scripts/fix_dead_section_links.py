@@ -12,13 +12,15 @@ The site gate now resolves relative hrefs, so this class of error fails the
 build instead of shipping.
 """
 import io
+import os
 import re
 import sys
 from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 FIX = {"(../lighting/)": "(../prompts/)", "(../materials/)": "(../prompts/)"}
 
 changed = 0

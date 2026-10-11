@@ -581,10 +581,14 @@ Delivery Specs:
 ## 🔗 LINKS
 
 - **ACES Central:** https://acescentral.com/
-- **OCIO Configs:** https://github.com/AcademySoftwareFoundation/OpenColorIO-Configs
+- **OCIO Configs (archivado):** https://github.com/AcademySoftwareFoundation/OpenColorIO-Configs
 - **ACES 1.3 Spec:** https://acescentral.com/wp-content/uploads/2022/06/ACES-1.3-Developer-Guide.pdf
 - **Blender OCIO:** https://docs.blender.org/manual/en/latest/render/color_management.html
 - **ACES GitHub:** https://github.com/ampas/aces-dev
+
+> [!NOTE]
+> - Repositorio OpenColorIO-Configs archivado; configuraciones OCIO actuales: https://github.com/AcademySoftwareFoundation/OpenColorIO/tree/main/configs
+> - Documentación Blender Color Management: https://docs.blender.org/manual/en/latest/render/color_management/
 
 ---
 

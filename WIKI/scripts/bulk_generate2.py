@@ -3,7 +3,8 @@
 """Bulk generator for 50+ setups/workflows/cases - RU/EN bilingual, clustered, cross-linked."""
 import os
 from pathlib import Path
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 
 SETUPS = [
 (15,"comfyui_sdxl","BLENDER + COMFYUI SDXL","AI Texturing","⭐⭐","25-40 min",

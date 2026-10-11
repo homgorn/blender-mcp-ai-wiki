@@ -59,7 +59,8 @@ for _s in ("stdout", "stderr"):
 
 import bpy  # noqa: E402  — provided by Blender
 
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 CATS = ["prompts", "setups", "workflows", "cases", "references"]
 
 # Paths whose absence under --factory-startup is expected, not a defect.

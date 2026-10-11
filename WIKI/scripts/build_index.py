@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Regenerate WIKI/INDEX.md + CHANGELOG entry from real directory scan + DB stats."""
-import json
+import json, os
 from pathlib import Path
 from datetime import date
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DB = WIKI/"db"/"wiki_database.json"
 
 def list_md(d):

@@ -24,6 +24,7 @@ Run:  python scripts/tag_articles.py [--dry]
 """
 import re
 import sys
+import os
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -33,7 +34,8 @@ for _s in ("stdout", "stderr"):
     except Exception:
         pass
 
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DRY = "--dry" in sys.argv
 
 # Directory -> baseline tag. Facts about the file, not guesses about content.

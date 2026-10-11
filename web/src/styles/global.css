@@ -8,8 +8,8 @@
   --line-soft: #1c2635;
   --text: #e6edf6;
   --text-dim: #9fb0c4;
-  --text-faint: #6b7d94;
-  --accent: #4c9df0;
+  --text-faint: #7a8db5;
+  --accent: #2d7fd4;
   --accent-2: #7ee0c0;
   --warn: #f0b45c;
   --radius: 10px;
@@ -35,7 +35,7 @@
     --line-soft: #e6ecf4;
     --text: #101820;
     --text-dim: #4a5b70;
-    --text-faint: #7b8ba1;
+    --text-faint: #5a6b85;
     --accent: #1c6fd0;
     --accent-2: #10796b;
   }
@@ -314,10 +314,7 @@ a:hover { text-decoration: underline; }
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-/* `page` is what this layout emits. `true` is kept because LangSwitch.astro,
-   rendered inside the category pages, still emits it. */
-.lang-switch a[aria-current='page'],
-.lang-switch a[aria-current='true'] {
+.lang-switch a[aria-current='page'] {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
@@ -586,7 +583,6 @@ a:hover { text-decoration: underline; }
   color: var(--text-dim);
   margin: 20px 0;
 }
-.pager { display: flex; gap: 10px; margin: 26px 0; font-size: 14px; }
 .btn {
   display: inline-block;
   border: 1px solid var(--line);

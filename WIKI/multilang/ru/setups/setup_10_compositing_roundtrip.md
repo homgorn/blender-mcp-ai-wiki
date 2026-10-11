@@ -340,8 +340,11 @@ nuke.root()['OCIO_viewTransform'].setValue('ACES 1.3 SDR-video')
 - **OpenEXR Spec:** https://www.openexr.com/
 - **Nuke Python API:** https://docs.foundry.com/nuke/13.0/pythondevguide/
 - **AE Scripting:** https://extendscript.docsforadobe.dev/
-- **OCIO Configs:** https://github.com/AcademySoftwareFoundation/OpenColorIO-Configs
+- **OCIO Configs (архив):** https://github.com/AcademySoftwareFoundation/OpenColorIO-Configs
 - **ACES Central:** https://acescentral.com/
+
+> [!NOTE]
+> Репозиторий OpenColorIO-Configs архивирован; актуальные конфиги OCIO: https://github.com/AcademySoftwareFoundation/OpenColorIO/tree/main/configs
 
 ---
 

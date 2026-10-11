@@ -48,7 +48,8 @@ tags: [docs, setup]
 Notion и Obsidian старые версии статей вместе с новыми.
 
 ```powershell
-cd "C:\BLENDER ai"
+# Перейдите в каталог проекта
+cd "<путь-к-проекту>"
 python "WIKI\scripts\validate.py" --strict
 python "WIKI\scripts\test_wiki.py"
 ```
@@ -61,7 +62,7 @@ JSON, поэтому дробить обязательно.
 
 ```powershell
 # Проверено по исходнику WIKI/scripts/export_all.py
-cd "C:\BLENDER ai\WIKI"
+cd "<путь-к-проекту>\WIKI"
 python scripts\export_all.py --chunk 0 --chunks 4
 python scripts\export_all.py --chunk 1 --chunks 4
 python scripts\export_all.py --chunk 2 --chunks 4
@@ -185,7 +186,7 @@ Invoke-RestMethod -Method Post -Uri "https://api.notion.com/v1/pages" `
 
 ```bash
 # Полный цикл: пересобрать базу → разложить на 4 части → проверить
-cd "C:\BLENDER ai"
+cd "<путь-к-проекту>"
 python "WIKI\scripts\validate.py" --strict
 python "WIKI\scripts\build_database.py"
 python "WIKI\scripts\export_all.py" --chunk 0 --chunks 4

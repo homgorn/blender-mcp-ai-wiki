@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Generate full prompts P16-P20 (animation cluster)."""
+import os
 from pathlib import Path
-W = Path(r"C:\BLENDER ai\WIKI\prompts")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+W = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent) / "prompts"
 
 P16 = """# P16: KEYFRAME ANIMATION BASICS
 

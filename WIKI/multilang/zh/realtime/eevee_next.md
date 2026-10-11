@@ -382,10 +382,13 @@ def setup_instancing(collection_name, count=1000):
 
 ## 🔗 LINKS
 
-- **EEVEE Next Announcement:** https://developer.blender.org/T112345
-- **Vulkan Backend:** https://developer.blender.org/T112346
+- **EEVEE Next Announcement:** https://developer.blender.org/ (在 Projects → EEVEE Next 中搜索)
+- **Vulkan Backend:** https://developer.blender.org/ (在 Projects → Vulkan 中搜索)
 - **Vulkan Validation Layers:** https://vulkan.lunarg.com/doc/view/latest/windows/layer_configuration.html
 - **Blender GPU Requirements:** https://www.blender.org/download/requirements/
+
+> [!NOTE]
+> 已移除指向具体任务的链接（T112345, T112346）——公共 Blender 跟踪器中不存在这些工单。请在 developer.blender.org 上使用关键词「EEVEE Next」和「Vulkan」搜索。
 
 ---
 

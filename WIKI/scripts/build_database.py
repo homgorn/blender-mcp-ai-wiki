@@ -18,7 +18,8 @@ try:
 except ImportError:          # ADR 0004: the pipeline must run on a bare Python
     yaml = None
 
-WIKI_ROOT = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI_ROOT = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DB_PATH = WIKI_ROOT / "db" / "wiki_database.json"
 INDEX_PATH = WIKI_ROOT / "db" / "search_index.json"
 EXPORT_PATH = WIKI_ROOT / "db" / "wiki_export.json"
@@ -186,7 +187,6 @@ def extract_metadata(content: str, filepath: Path) -> Dict:
         "links": [],
         "code_blocks": 0,
         "word_count": 0,
-        "created": datetime.now().isoformat(),
         "updated": datetime.fromtimestamp(filepath.stat().st_mtime).isoformat(),
     }
     
@@ -194,6 +194,10 @@ def extract_metadata(content: str, filepath: Path) -> Dict:
     fm = extract_frontmatter(content, str(filepath))
     if fm:
         meta.update(fm)
+    
+    # created: prefer frontmatter value, else fall back to file mtime (reproducible)
+    if "created" not in meta:
+        meta["created"] = datetime.fromtimestamp(filepath.stat().st_mtime).isoformat()
     
     # ID из имени файла (для multilang — уникальный суффикс языка)
     stem = filepath.stem
@@ -350,10 +354,12 @@ def build_database():
         if not cat_path.exists():
             continue
             
-        for md_file in cat_path.rglob("*.md"):
-            if md_file.name.startswith('.'):
-                continue
-                
+        # Deterministic order: sort files by relative path
+        md_files = sorted(
+            (f for f in cat_path.rglob("*.md") if not f.name.startswith('.')),
+            key=lambda f: f.relative_to(WIKI_ROOT).as_posix()
+        )
+        for md_file in md_files:
             try:
                 content = md_file.read_text(encoding='utf-8')
                 meta = extract_metadata(content, md_file)
@@ -373,11 +379,15 @@ def build_database():
             except Exception as e:
                 print(f"  ⚠️ Error processing {md_file}: {e}")
     
-    # Добавить multilang файлы (все 5 языков)
+    # Добавить multilang файлы (все 5 языков) — deterministic order
     for lang in ['en', 'ru', 'es', 'de', 'zh']:
         lang_path = WIKI_ROOT / "multilang" / lang
         if lang_path.exists():
-            for md_file in lang_path.rglob("*.md"):
+            md_files = sorted(
+                lang_path.rglob("*.md"),
+                key=lambda f: f.relative_to(WIKI_ROOT).as_posix()
+            )
+            for md_file in md_files:
                 try:
                     content = md_file.read_text(encoding='utf-8')
                     meta = extract_metadata(content, md_file)
@@ -492,13 +502,13 @@ def build_search_index(entries: List[Dict]) -> Dict:
         for word in unique_words:
             index["terms"].setdefault(word, []).append(entry_id)
     
-    # Дедупликация списков
+    # Дедупликация списков — deterministic sort for reproducibility
     for key in index:
         if isinstance(index[key], dict):
             for subkey in index[key]:
                 val = index[key][subkey]
                 if isinstance(val, list):
-                    index[key][subkey] = list(set(val))
+                    index[key][subkey] = sorted(set(val))
     
     print("[INDEX] Search index: {} terms, {} tags, {} tools".format(len(index['terms']), len(index['tags']), len(index['tools'])))
     return index

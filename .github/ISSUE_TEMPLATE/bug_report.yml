@@ -1,0 +1,62 @@
+name: Bug report
+description: Something in the corpus, the pipeline or the site is wrong
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. For anything about API accuracy, say which Blender
+        version you ran it on — that is usually the whole answer.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: where
+    attributes:
+      label: Where
+      description: File path or site URL. For the pipeline, the step name.
+      placeholder: WIKI/setups/setup_29_autorignpro.md
+    validations:
+      required: true
+
+  - type: input
+    id: blender-version
+    attributes:
+      label: Blender version
+      description: Output of `blender --version`, if it is relevant.
+      placeholder: Blender 5.2.1 LTS
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: The command or the steps. If code in an article does not run, paste the snippet and the traceback.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: proof
+    attributes:
+      label: Proof it is wrong
+      description: >
+        For a factual claim about an API or a URL: what you checked, and where.
+        A link to documentation, or the traceback. This is what makes the report
+        actionable rather than a hunch.
+      render: markdown
+
+  - type: checkboxes
+    id: checked
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched existing issues for this.
+          required: true
+        - label: I read the article's `[!NOTE]` markers and the version discussion in SDD/adr/0006.

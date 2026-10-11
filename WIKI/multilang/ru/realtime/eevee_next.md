@@ -355,10 +355,13 @@ def setup_instancing(collection_name, count=1000):
 
 ## 🔗 LINKS
 
-- **EEVEE Next Announcement:** https://developer.blender.org/T112345
-- **Vulkan Backend:** https://developer.blender.org/T112346
+- **EEVEE Next Announcement:** https://developer.blender.org/ (ищите в Projects → EEVEE Next)
+- **Vulkan Backend:** https://developer.blender.org/ (ищите в Projects → Vulkan)
 - **Vulkan Validation Layers:** https://vulkan.lunarg.com/doc/view/latest/windows/layer_configuration.html
 - **Blender GPU Requirements:** https://www.blender.org/download/requirements/
+
+> [!NOTE]
+> Ссылки на конкретные задачи (T112345, T112346) убраны — такие тикеты не существуют в публичном трекере Blender. Используйте поиск на developer.blender.org по ключевым словам «EEVEE Next» и «Vulkan».
 
 ---
 

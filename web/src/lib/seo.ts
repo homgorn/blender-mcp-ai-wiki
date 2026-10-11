@@ -5,7 +5,7 @@
  *  - crawlers  -> canonical, hreflang cluster, robots directives, JSON-LD
  *  - LLM agents -> JSON-LD, plus the .md twin linked via rel="alternate"
  */
-import { SITE_URL, SITE_NAME, TWITTER_HANDLE, LANG_META, type Lang } from './site';
+import { SITE_URL, SITE_NAME, LANG_META, type Lang } from './site';
 import { entryUrl, hreflangCluster, isIndexable, seoDescription, slugify, stats } from './content';
 import type { Entry } from './content';
 
@@ -77,8 +77,17 @@ export function clampTitle(title: string, brand?: string, sep = ' · '): string 
   // The root page passes the brand itself as its headline. Appending the brand to
   // it produced "Blender AI Wiki — Blender AI Wiki", which is the kind of title
   // that wastes the one line Google gives the most important page on the site.
+  // Check for brand at start OR end (with either separator) since category pages
+  // pass titles like "Prompts — Blender AI Wiki".
   const hasBrand = Boolean(
-    brand && (title === brand || title.startsWith(`${brand} `) || title.startsWith(`${brand} —`)),
+    brand &&
+    (title === brand ||
+      title.startsWith(`${brand} `) ||
+      title.startsWith(`${brand} —`) ||
+      title.startsWith(`${brand} ·`) ||
+      title.endsWith(` ${brand}`) ||
+      title.endsWith(` — ${brand}`) ||
+      title.endsWith(` · ${brand}`)),
   );
   const suffix = brand && !hasBrand ? `${sep}${brand}` : '';
   if (title.length + suffix.length <= MAX_TITLE) return `${title}${suffix}`;

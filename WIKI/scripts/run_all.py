@@ -22,7 +22,9 @@ for _s in ("stdout", "stderr"):
     except Exception:
         pass
 
-S = Path(r"C:\BLENDER ai\WIKI\scripts")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
+ROOT = WIKI.parent                           # repo root
 PY = sys.executable
 
 # (label, argv, is_gate)  gates decide the exit code
@@ -88,7 +90,7 @@ def main():
     t0 = time.time()
     print("== pipeline ==")
     failed = []
-    site = S.parent.parent / "web"   # the Astro project
+    site = ROOT / "web"   # the Astro project
     for label, argv, gate in CORE:
         ok, out = run(label, argv)
         if not ok and gate:

@@ -17,7 +17,7 @@ const { lang, hrefFor } = Astro.props;
       hreflang={LANG_META[l].locale}
       lang={l}
       title={LANG_META[l].native}
-      aria-current={l === lang ? 'true' : 'false'}
+      aria-current={l === lang ? 'page' : undefined}
     >
       {l}
     </a>

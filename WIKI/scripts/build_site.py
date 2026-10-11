@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Build static site data: copy db JSON to site/data + sitemap + langs manifest."""
-import json, shutil
+import json, os, shutil
 from pathlib import Path
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 SITE = WIKI/"site"; DATA = SITE/"data"
 DATA.mkdir(parents=True, exist_ok=True)
 for f in ["wiki_database.json","search_index.json","wiki_export.json","graph.json"]:

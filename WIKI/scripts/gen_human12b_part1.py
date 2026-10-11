@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Human translations chunk B: wf_02 + P09 -> es/de/zh. Code identical except translated comments."""
+import os
 from pathlib import Path
-W = Path(r"C:\BLENDER ai\WIKI") / "multilang"
+S = Path(__file__).resolve().parent          # WIKI/scripts
+W = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent) / "multilang"
 
 P09_CODE = {
 "es": '''```python

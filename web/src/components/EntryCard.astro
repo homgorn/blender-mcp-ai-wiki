@@ -1,6 +1,6 @@
 ---
 import { entryUrl, isIndexable, type Entry } from '../lib/content';
-import { CATEGORY_META } from '../lib/site';
+import { CATEGORY_META, getCategoryName } from '../lib/site';
 
 interface Props {
   entry: Entry;
@@ -10,12 +10,13 @@ interface Props {
 
 const { entry, showDesc = true } = Astro.props;
 const cat = CATEGORY_META[entry.category];
+const catName = cat ? getCategoryName(entry.category, entry.lang) : entry.category;
 ---
 
 <a class="card" href={entryUrl(entry)} data-pagefind-ignore>
   <h3>{entry.title}</h3>
   <div class="meta">
-    <span>{cat?.icon ?? '📄'} {cat?.ru ?? entry.category}</span>
+    <span>{cat?.icon ?? '📄'} {catName}</span>
     {entry.difficulty > 0 && <span>⭐{'★'.repeat(entry.difficulty)}</span>}
     {entry.status && (
       <span class={entry.status === 'full' ? 'badge full' : 'badge warn'}>

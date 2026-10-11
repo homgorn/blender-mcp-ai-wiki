@@ -4,8 +4,10 @@
 import json
 import math
 import hashlib
+import os
 from pathlib import Path
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DB = WIKI/"db"/"wiki_database.json"
 OUT = WIKI/"db"/"graph.json"
 db = json.loads(DB.read_text(encoding="utf-8"))

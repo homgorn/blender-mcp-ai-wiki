@@ -1,0 +1,13 @@
+# Dependencies for the content pipeline and OG image generator
+# Install in CI: pip install -r WIKI/scripts/requirements.txt
+
+# PyYAML: used by build_database.py for frontmatter parsing (fallback parser exists but is limited)
+PyYAML>=6.0
+
+# Pillow: required by make_og.py for per-article OG cards (Cyrillic/CJK fonts need real TTF rendering)
+# The stdlib fallback only draws ASCII with a 5x7 bitmap font
+Pillow>=10.0
+
+# fontTools: required by make_og.py to verify font cmap coverage before rendering
+# Without it, Pillow silently draws .notdef boxes for missing glyphs
+fontTools>=4.50

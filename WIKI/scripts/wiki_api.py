@@ -14,12 +14,13 @@ Design notes
 * ETag + If-None-Match -> 304, so the browser stops refetching 2.6 MB chunks.
 * GET never mutates state: /api/export is POST-only.
 """
-import argparse, hashlib, json, re, subprocess, sys, time, threading, mimetypes
+import argparse, hashlib, json, os, re, subprocess, sys, time, threading, mimetypes
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DB = WIKI / "db" / "wiki_database.json"
 IDX = WIKI / "db" / "search_index.json"
 GRAPH = WIKI / "db" / "graph.json"

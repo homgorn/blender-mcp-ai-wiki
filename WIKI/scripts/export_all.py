@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Export wiki DB to CSV + Obsidian vault + Notion JSON. Usage: python export_all.py [--chunk N/M]"""
-import argparse, csv, json
+import argparse, csv, json, os
 from pathlib import Path
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DB = WIKI/"db"/"wiki_database.json"
 
 def main():

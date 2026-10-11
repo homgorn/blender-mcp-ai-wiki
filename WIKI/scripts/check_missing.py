@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""Check multilang parity: every en stem must have a counterpart in ru/es/de/zh."""
+import os
 from pathlib import Path
-b = Path(r"C:\BLENDER ai\WIKI\multilang")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
+b = WIKI/"multilang"
 base = {p.relative_to(b/"en").as_posix(): p for p in (b/"en").rglob("*.md")}
 for lang in ["ru","es","de","zh"]:
     cur = {p.relative_to(b/lang).as_posix() for p in (b/lang).rglob("*.md")}

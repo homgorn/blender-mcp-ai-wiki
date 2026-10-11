@@ -30,6 +30,7 @@ import io
 import json
 import re
 import sys
+import os
 from collections import defaultdict
 from pathlib import Path
 
@@ -39,7 +40,8 @@ for _s in ("stdout", "stderr"):
     except Exception:
         pass
 
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 WARN = "--warn" in sys.argv
 AS_JSON = "--json" in sys.argv
 CATS = ["prompts", "setups", "workflows", "cases", "references"]

@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import EntryCard from '../../../components/EntryCard.astro';
 import LangSwitch from '../../../components/LangSwitch.astro';
-import { CATEGORY_META, LANG_META, LANGS, SITE_NAME, type Lang } from '../../../lib/site';
+import { CATEGORY_META, LANG_META, LANGS, SITE_NAME, type Lang, getCategoryName, getCategoryBlurb } from '../../../lib/site';
 import { byCategory, categoryHasContent, entries, isIndexable } from '../../../lib/content';
 import { abs, collectionJsonLd, websiteJsonLd } from '../../../lib/seo';
 
@@ -20,17 +20,17 @@ interface Props { lang: Lang; category: string }
 const { lang, category } = Astro.props as Props;
 
 const items = byCategory(lang, category).filter(isIndexable);
-const meta = CATEGORY_META[category] ?? {
-  ru: category, en: category, icon: '📄', blurbRu: '', blurbEn: '',
-};
 // A language may legitimately have no content in a category (references are
 // English). Point the reader at the languages that do instead of a dead end.
 const otherLangs = LANGS.filter((l) => byCategory(l, category).filter(isIndexable).length > 0);
-const title = `${meta.ru} — ${SITE_NAME}`;
-const desc = meta.blurbRu || meta.blurbEn || `Статьи категории ${category}`;
+const catName = getCategoryName(category, lang);
+const catBlurb = getCategoryBlurb(category, lang);
+const meta = CATEGORY_META[category] ?? { icon: '📄' };
+const title = `${catName} — ${SITE_NAME}`;
+const desc = catBlurb || `Статьи категории ${category}`;
 const path = `/${lang}/${category}`;
 const alts = LANGS.map((l) => ({ hreflang: LANG_META[l].locale, href: abs(`/${l}/${category}`) }));
-const ld = [collectionJsonLd(meta.ru, desc, path, lang, items), websiteJsonLd(lang)];
+const ld = [collectionJsonLd(catName, desc, path, lang, items), websiteJsonLd(lang)];
 // An empty category page is useful to a reader but is thin content: it must not
 // ask to be indexed, and must stay out of the sitemap. See categoryHasContent.
 const empty = items.length === 0;
@@ -47,8 +47,8 @@ const empty = items.length === 0;
 >
   <div class="wrap">
     <div class="hero" style="border:0;padding-bottom:18px">
-      <h1>{meta.icon} {meta.ru}</h1>
-      <p>{desc}</p>
+      <h1>{meta.icon} {catName}</h1>
+      <p>{catBlurb || desc}</p>
       <div class="badges">
         <span class="badge">{items.length} статей</span>
         <LangSwitch lang={lang} hrefFor={(l) => `/${l}/${category}`} />
@@ -57,8 +57,12 @@ const empty = items.length === 0;
 
     {empty ? (
       <p class="notice">
-        В этой категории пока нет статей на языке {LANG_META[lang].native}.
-        {otherLangs.length > 0 && <span>Доступно на: {otherLangs.join(', ')} — см. переключатель языка выше.</span>}
+        {lang === 'ru' ? 'В этой категории пока нет статей на языке' : 
+         lang === 'en' ? 'No articles in this category for' :
+         lang === 'es' ? 'No hay artículos en esta categoría para' :
+         lang === 'de' ? 'Keine Artikel in dieser Kategorie für' :
+         '此分类暂无'} {LANG_META[lang].native}.
+        {otherLangs.length > 0 && <span> {lang === 'ru' ? 'Доступно на:' : lang === 'en' ? 'Available in:' : lang === 'es' ? 'Disponible en:' : lang === 'de' ? 'Verfügbar in:' : '可用语言:'} {otherLangs.join(', ')} — см. переключатель языка выше.</span>}
       </p>
     ) : (
       <section class="section">

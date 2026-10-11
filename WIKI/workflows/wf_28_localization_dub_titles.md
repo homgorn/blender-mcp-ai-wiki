@@ -19,7 +19,7 @@ tags: [localization, motion, workflow]
 
 Два свойства, которые делают такую систему пригодной к повторному использованию: титры живут **как данные** (текст + таймкод в таблице), а не как нарисованные объекты в сцене; и проверка safe area — это код, а не «посмотрел глазами».
 
-## 📋 ЧТО ПОНАДОБИТЯ
+## 📋 ЧТО ПОНАДОБИТСЯ
 
 | Компонент | Версия / состояние | Зачем |
 |---|---|---|
@@ -69,7 +69,7 @@ def parse_srt(path):
                 buf.append(line)
     return cues
 
-cues = parse_srt(r"C:\BLENDER ai\subs\ru.srt")
+cues = parse_srt(r"<путь-к-проекту>\subs\ru.srt")
 print(f"реплик: {len(cues)}")
 for (a, b, txt) in cues[:3]:
     print(f"{a:>7} .. {b:<7} | {txt[:40]!r}")
@@ -84,7 +84,7 @@ import json, os
 
 # translations.json: { "en": [[start_ms, end_ms, "text"], ...], ... }
 # Ключ времени — не индекс: сдвиг на одну строку в переводе не должен ломать синхронизацию.
-path = r"C:\BLENDER ai\subs\translations.json"
+path = r"<путь-к-проекту>\subs\translations.json"
 if os.path.exists(path):
     with open(path, encoding="utf-8") as fh:
         TRANSLATIONS = json.load(fh)

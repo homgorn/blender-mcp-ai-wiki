@@ -605,11 +605,16 @@ jobs:
 
 ## 🔗 LINKS
 
-- **Blender Performance:** https://developer.blender.org/docs/handbook/performance/
+- **Blender Performance:** https://docs.blender.org/manual/en/latest/advanced/performance/
 - **Python Profiling:** https://docs.python.org/3/library/profile.html
-- **NumPy Performance:** https://numpy.org/doc/stable/user/performance.html
-- **Vulkan Compute:** https://github.com/GPUOpen-LibrariesAndSDKs/VulkanSamples
+- **NumPy Performance:** https://numpy.org/doc/stable/user/basics.performance.html
+- **Vulkan Compute (归档):** https://github.com/GPUOpen-LibrariesAndSDKs/VulkanSamples
 - **Blender Benchmark:** https://opendata.blender.org/
+
+> [!NOTE]
+> - Blender Performance Handbook 已迁移至官方文档: https://docs.blender.org/manual/en/latest/advanced/performance/
+> - GPUOpen VulkanSamples 仓库已归档; 当前 Vulkan 示例: https://github.com/khronosgroup/vulkan-samples
+> - NumPy Performance Guide 已更新: https://numpy.org/doc/stable/user/basics.performance.html
 
 ---
 

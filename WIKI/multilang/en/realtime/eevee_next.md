@@ -355,10 +355,13 @@ def setup_instancing(collection_name, count=1000):
 
 ## 🔗 LINKS
 
-- **EEVEE Next Announcement:** https://developer.blender.org/T112345
-- **Vulkan Backend:** https://developer.blender.org/T112346
+- **EEVEE Next Announcement:** https://developer.blender.org/ (search in Projects → EEVEE Next)
+- **Vulkan Backend:** https://developer.blender.org/ (search in Projects → Vulkan)
 - **Vulkan Validation Layers:** https://vulkan.lunarg.com/doc/view/latest/windows/layer_configuration.html
 - **Blender GPU Requirements:** https://www.blender.org/download/requirements/
+
+> [!NOTE]
+> Links to specific tasks (T112345, T112346) removed — these tickets don't exist in the public Blender tracker. Use search on developer.blender.org with keywords "EEVEE Next" and "Vulkan".
 
 ---
 

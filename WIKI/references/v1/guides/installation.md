@@ -34,22 +34,25 @@ uvx --version
 
 ### Option A: MSI Installer (Recommended)
 ```powershell
-# Download already in C:\BLENDER ai\blender-4.2.3-windows-x64.msi
-msiexec /i "C:\BLENDER ai\blender-4.2.3-windows-x64.msi" /quiet /norestart
+# Download Blender installer for your version
+# msiexec /i "путь\к\blender-<версия>-windows-x64.msi" /quiet /norestart
 ```
 
 ### Option B: Portable ZIP
 ```powershell
-# Extract to C:\BLENDER ai\Blender
-# Run: C:\BLENDER ai\Blender\blender.exe
+# Extract to a folder of your choice
+# Run: <путь-к-папке>\blender.exe
 ```
 
 ### Verify
 ```powershell
 # Find Blender path
 where blender
-# Or check: C:\Program Files\Blender Foundation\Blender 4.2\blender.exe
+# Or check typical install location
 ```
+
+> [!NOTE]
+> Версию Blender (например 4.2) выбирайте под свои задачи. Конкретный путь к инсталлятору зависит от того, куда вы его скачали.
 
 ---
 
@@ -68,10 +71,10 @@ uvx blender-mcp addon-paths
 ## Step 4: Install GenesisCore Addon
 
 ```powershell
-# Already downloaded: C:\BLENDER ai\addons\GenesisCore-main.zip
+# Download GenesisCore zip from GitHub
 # In Blender:
 # 1. Edit → Preferences → Add-ons → Install from ZIP
-# 2. Select: C:\BLENDER ai\addons\GenesisCore-main.zip
+# 2. Select downloaded zip file
 # 3. Enable: Search "GenesisCore" → Check box
 ```
 
@@ -192,41 +195,44 @@ Prompt: "Search Poly Haven for an HDRI and set as world environment"
 ## Directory Structure (Final)
 
 ```
-C:\BLENDER ai\
-├── blender-4.2.3-windows-x64.msi
-├── blender-4.2.3-windows-x64.zip
+<ваш-проект>/
+├── blender-<версия>-windows-x64.msi
+├── blender-<версия>-windows-x64.zip
 ├── CHANGELOG.md
 ├── INDEX.md
-├── addons\
+├── addons/
 │   ├── GenesisCore-main.zip
 │   ├── blender-mcp-full.md
 │   ├── blender-mcp.md
 │   ├── dream-textures-full.md
 │   ├── dream-textures.md
 │   └── genesiscore.md
-├── mcp\
+├── mcp/
 │   ├── architecture.md
 │   ├── clients.md
 │   ├── server-api.md
 │   └── setup-guide.md
-├── guides\
+├── guides/
 │   ├── installation.md
 │   ├── prompting.md
 │   ├── troubleshooting.md
 │   └── workflows.md
-├── api\
+├── api/
 │   ├── blender-api.md
 │   ├── materials.md
 │   ├── mesh-operations.md
 │   └── scripting-patterns.md
-├── workflows\
+├── workflows/
 │   ├── animation.md
 │   ├── scene-building.md
 │   ├── text-to-3d.md
 │   └── texture-generation.md
-└── references\
+└── references/
     └── (additional docs)
 ```
+
+> [!NOTE]
+> Структура каталогов приведена как пример. Используйте любую удобную папку для проекта и версии Blender.
 
 ---
 

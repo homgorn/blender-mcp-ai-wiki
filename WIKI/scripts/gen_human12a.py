@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Human translations chunk A: setup_02 + P02 -> es/de/zh. Code blocks identical, prose translated."""
+import os
 from pathlib import Path
-W = Path(r"C:\BLENDER ai\WIKI") / "multilang"
+S = Path(__file__).resolve().parent          # WIKI/scripts
+W = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent) / "multilang"
 
 SETUP02 = {
 "es": """---

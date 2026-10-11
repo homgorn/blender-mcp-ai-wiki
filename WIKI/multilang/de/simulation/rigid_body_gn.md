@@ -494,7 +494,10 @@ Requirements:
 - **GN Simulation Docs:** https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/simulation/
 - **XPBD Paper:** https://matthias-research.github.io/pages/publications/XPBD.pdf
 - **Blender Physics:** https://docs.blender.org/manual/en/latest/physics/
-- **XPBD in GN:** https://developer.blender.org/T112345
+- **XPBD in GN:** https://developer.blender.org/ (in Projects → Physics/Simulation suchen)
+
+> [!NOTE]
+> Link zu Task T112345 entfernt — dieses Ticket existiert nicht im öffentlichen Blender-Tracker. Nutzen Sie die Suche auf developer.blender.org mit den Begriffen "XPBD" und "Geometry Nodes".
 
 ---
 

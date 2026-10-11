@@ -7,8 +7,10 @@ Idempotent: rewrites frontmatter block only.
 """
 import re
 import sys
+import os
 from pathlib import Path
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 sys.path.insert(0, str(WIKI / "scripts"))
 from wiki_const import HUMAN_MIRRORS as HUMAN
 FULL_MARKERS = ["FULL GUIDE", "FULL ADDENDUM", "FULL PROCESS"]

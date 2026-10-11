@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Full project validation: encoding, structure, DB, API, links. Exit 0=OK, 1=FAIL."""
-import json, re, sys
+import json, os, re, sys
 from pathlib import Path
 # A validator that crashes on a legacy console is not a validator: Windows consoles
 # are often cp1251/cp1252, and the output contains Cyrillic + emoji.
@@ -10,7 +10,8 @@ for _s in ("stdout", "stderr"):
         getattr(sys, _s).reconfigure(encoding="utf-8", errors="replace")
     except Exception:
         pass
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 fails = []
 def ok(msg): print(f"  [OK] {msg}")
 def fail(msg):
@@ -40,9 +41,10 @@ if max(nums, default=0) < 16: fail("prompts coverage < P16")
 else: ok("prompts chunk progress")
 
 print("== 4. Root duplication check ==")
+ROOT = WIKI.parent
 root_dupes = []
 for d in ["addons","api","guides","mcp","workflows"]:
-    if (Path(r"C:\BLENDER ai")/d).exists(): root_dupes.append(d)
+    if (ROOT/d).exists(): root_dupes.append(d)
 if root_dupes: fail(f"root dupes not merged: {root_dupes}")
 else: ok("no root dupes")
 

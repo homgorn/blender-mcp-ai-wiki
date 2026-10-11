@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 """Rebuild crossref tag_index.md + tool_index.md from DB stats."""
 import json
+import os
 from pathlib import Path
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DB = WIKI/"db"/"wiki_database.json"
 db = json.loads(DB.read_text(encoding="utf-8"))
 stats = db.get("statistics", {})

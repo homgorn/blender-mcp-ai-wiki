@@ -19,7 +19,7 @@
  * across 916 pages, because every page then carried a copy of the same rules.
  */
 import '../styles/global.css';
-import { CATEGORIES, CATEGORY_META, LANG_META, LANGS, SITE_NAME, type Lang } from '../lib/site';
+import { CATEGORIES, CATEGORY_META, LANG_META, LANGS, SITE_NAME, type Lang, getCategoryName } from '../lib/site';
 import { abs, buildSeo } from '../lib/seo';
 import { byCategory, byLang, categoryCounts, isIndexable, originals, stats } from '../lib/content';
 // The version shown in the footer is read from package.json rather than copied
@@ -91,6 +91,9 @@ const hereCounts = categoryCounts(lang);
 
 /** Below this many published articles a language is a stub, and says so. */
 const THIN_LANG = 10;
+
+/** Categories that have at least one article in the current language. */
+const catsWithContent = navCategories.filter((c) => byCategory(lang, c).filter(isIndexable).length > 0);
 
 const catHref = (c: string) => `/${lang}/${c}`;
 const catMeta = (c: string) => CATEGORY_META[c] ?? { ru: c, en: c, icon: '', blurbRu: '', blurbEn: '' };
@@ -180,7 +183,7 @@ const isSearch = path === searchHref;
     <slot name="head" />
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main">{lang === 'ru' ? 'Перейти к содержимому' : lang === 'en' ? 'Skip to content' : lang === 'es' ? 'Saltar al contenido' : lang === 'de' ? 'Zum Inhalt springen' : '跳至内容'}</a>
     <header class="site-head">
       <div class="wrap head-in">
         <a class="brand" href={`/${lang}`}>
@@ -219,15 +222,15 @@ const isSearch = path === searchHref;
             <div class="navmenu-group">
               <span class="navmenu-h">Разделы</span>
               <ul>
-                {navCategories.map((c) => (
+                {catsWithContent.map((c) => (
                   <li>
                     <a
                       href={catHref(c)}
                       aria-current={isCat(c) ? 'page' : undefined}
-                      title={`${catMeta(c).ru} — ${hereCounts[c] ?? 0} статей на языке ${LANG_META[lang].native}`}
+                      title={`${getCategoryName(c, lang)} — ${hereCounts[c] ?? 0} статей на языке ${LANG_META[lang].native}`}
                     >
                       <span class="navmenu-ico" aria-hidden="true">{catMeta(c).icon}</span>
-                      <span class="navmenu-label">{catMeta(c).ru}</span>
+                      <span class="navmenu-label">{getCategoryName(c, lang)}</span>
                       <span class="navmenu-n">{hereCounts[c] ?? 0}</span>
                     </a>
                   </li>
@@ -287,13 +290,13 @@ const isSearch = path === searchHref;
             because a menu that only exists above a breakpoint is a menu that
             does not exist on the machine the reader is holding. */}
         <nav class="nav" aria-label="Основное меню">
-          {coreCats.filter((c) => allCategories.includes(c)).map((c) => (
+          {coreCats.filter((c) => catsWithContent.includes(c)).map((c) => (
             <a
               href={catHref(c)}
               aria-current={isCat(c) ? 'page' : undefined}
-              title={`${catMeta(c).ru} — ${hereCounts[c] ?? 0} статей на языке ${LANG_META[lang].native}`}
+              title={`${getCategoryName(c, lang)} — ${hereCounts[c] ?? 0} статей на языке ${LANG_META[lang].native}`}
             >
-              {catMeta(c).ru}
+              {getCategoryName(c, lang)}
             </a>
           ))}
           <span class="lang-switch" role="group" aria-label="Язык / Language">
@@ -324,20 +327,17 @@ const isSearch = path === searchHref;
         <nav class="foot-col" aria-label="Материалы">
           <h2 class="foot-h">Материалы</h2>
           <ul class="foot-list">
-            {navCategories.map((c) => {
+            {catsWithContent.map((c) => {
               const n = hereCounts[c] ?? 0;
-              const has = byCategory(lang, c).filter(isIndexable).length > 0;
               return (
                 <li>
                   <a
                     class="foot-link"
                     href={catHref(c)}
                     aria-current={isCat(c) ? 'page' : undefined}
-                    title={has
-                      ? `${catMeta(c).ru} — ${n} статей на языке ${LANG_META[lang].native}`
-                      : `${catMeta(c).ru} — на языке ${LANG_META[lang].native} пока нет статей; есть на ${LANGS.filter((l) => byCategory(l, c).filter(isIndexable).length > 0).map((l) => LANG_META[l].native).join(', ')}`}
+                    title={`${getCategoryName(c, lang)} — ${n} статей на языке ${LANG_META[lang].native}`}
                   >
-                    <span class="foot-label">{catMeta(c).icon} {catMeta(c).ru}</span>
+                    <span class="foot-label">{catMeta(c).icon} {getCategoryName(c, lang)}</span>
                     <span class="foot-n">{n}</span>
                   </a>
                 </li>

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { LANG_META, LANGS, SITE_NAME, CATEGORY_META } from '../../lib/site';
-import { entries, isIndexable, popular, originals, searchEntries, slugify } from '../../lib/content';
+import { entries, isIndexable, popular, originals, slugify } from '../../lib/content';
 import { abs } from '../../lib/seo';
 
 export function getStaticPaths() {
@@ -9,10 +9,6 @@ export function getStaticPaths() {
 }
 
 const { lang } = Astro.props as { lang: 'ru' | 'en' | 'es' | 'de' | 'zh' };
-// An empty query returns [] by design, so "Популярное" was an empty <ul> on all
-// five search pages. popular() is what this actually wants; searchEntries is
-// still imported and used by the client-side handler below.
-const results = searchEntries(lang, '', 12);
 const suggested = popular(lang, 12);
 const cats = [...new Set(originals.map((e) => e.category))];
 // entryUrl, not a local slugify copy: the copy omitted the `.md` strip and the

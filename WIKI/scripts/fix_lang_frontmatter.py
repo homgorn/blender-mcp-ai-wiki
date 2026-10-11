@@ -25,6 +25,7 @@ Run:  python scripts/fix_lang_frontmatter.py            # apply
 """
 import re
 import sys
+import os
 from pathlib import Path
 
 for _s in ("stdout", "stderr"):
@@ -33,7 +34,8 @@ for _s in ("stdout", "stderr"):
     except Exception:
         pass
 
-WIKI = Path(r"C:\BLENDER ai\WIKI")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+WIKI = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent)   # WIKI
 DRY = "--dry" in sys.argv
 CATS = ["prompts", "setups", "workflows", "cases", "references",
         "mcp", "mcp_advanced", "integrations", "simulation", "realtime", "usd",

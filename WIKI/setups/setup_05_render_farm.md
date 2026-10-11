@@ -125,7 +125,7 @@ cd flamenco-worker
 ### 2. Конфигурация Worker (flamenco-worker.yaml)
 ```yaml
 worker:
-  manager_url: "http://MANAGER_IP:8080"
+  manager_url: "http://<АДРЕС-МЕНЕДЖЕРА>:8080"
   worker_name: "worker-gpu-01"  # уникальное имя
   platform: "linux"  # linux/windows/macos
   
@@ -191,7 +191,7 @@ sudo exportfs -ra
 # На Workers (Client)
 sudo apt install nfs-common
 sudo mkdir -p /mnt/flamenco-storage
-echo "MANAGER_IP:/mnt/flamenco-storage /mnt/flamenco-storage nfs defaults 0 0" >> /etc/fstab
+echo "<АДРЕС-МЕНЕДЖЕРА>:/mnt/flamenco-storage /mnt/flamenco-storage nfs defaults 0 0" >> /etc/fstab
 sudo mount -a
 ```
 
@@ -206,14 +206,14 @@ sudo apt install samba
 #   guest ok = yes
 
 # На Windows Worker
-net use Z: \\MANAGER_IP\flamenco /persistent:yes
+net use Z: \\<АДРЕС-МЕНЕДЖЕРА>\flamenco /persistent:yes
 ```
 
 ---
 
 ## 🚀 ИСПОЛЬЗОВАНИЕ
 
-### 1. Web UI (http://MANAGER_IP:8080)
+### 1. Web UI (http://<АДРЕС-МЕНЕДЖЕРА>:8080)
 ```
 1. Login (admin / пароль из конфига)
 2. Jobs → Submit Job
@@ -229,7 +229,7 @@ pip install flamenco-client
 
 # Submit job
 flamenco-cli job submit \
-  --manager http://MANAGER:8080 \
+  --manager http://<АДРЕС-МЕНЕДЖЕРА>:8080 \
   --blend-file scene.blend \
   --frame-start 1 --frame-end 250 \
   --output //renders/anim_#### \
@@ -240,7 +240,7 @@ flamenco-cli job submit \
 ```python
 from flamenco_client import FlamencoClient
 
-client = FlamencoClient("http://MANAGER:8080", token="YOUR_JWT")
+client = FlamencoClient("http://<АДРЕС-МЕНЕДЖЕРА>:8080", token="YOUR_JWT")
 
 job = client.submit_job(
     blend_file="scene.blend",
@@ -272,7 +272,7 @@ while True:
 scrape_configs:
   - job_name: 'flamenco'
     static_configs:
-      - targets: ['MANAGER_IP:8080', 'WORKER1:8081', 'WORKER2:8081']
+      - targets: ['<АДРЕС-МЕНЕДЖЕРА>:8080', 'WORKER1:8081', 'WORKER2:8081']
 ```
 
 ### Ключевые метрики

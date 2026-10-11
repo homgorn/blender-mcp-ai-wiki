@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Generate full prompts P21-P30 (physics/GN/MCP/optimization)."""
+import os
 from pathlib import Path
-W = Path(r"C:\BLENDER ai\WIKI\prompts")
+S = Path(__file__).resolve().parent          # WIKI/scripts
+W = Path(os.environ.get("BLENDER_WIKI_ROOT") or S.parent) / "prompts"
 F = {}
 
 F["21_physics_simulation.md"] = """# P21: PHYSICS SIMULATION

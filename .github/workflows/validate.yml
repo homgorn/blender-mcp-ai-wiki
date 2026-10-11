@@ -29,9 +29,11 @@ jobs:
         with:
           python-version: '3.12'
 
-      # The content pipeline is stdlib-only; PyYAML is the single optional
-      # dependency and build_database.py falls back to a minimal parser without
-      # it, so the job deliberately does not install requirements.
+      # Install Python dependencies for the pipeline (PyYAML for frontmatter,
+      # Pillow + fontTools for OG image generation). See WIKI/scripts/requirements.txt
+      - name: install python deps
+        run: pip install -r WIKI/scripts/requirements.txt
+
       - name: full pipeline
         env:
           # The site build bakes the origin into canonical/hreflang/sitemap.
@@ -83,6 +85,10 @@ jobs:
           PUBLIC_SITE_URL: https://blender-mcp-wiki.refertur.net
         run: npm run preflight
 
+      - name: npm check
+        working-directory: web
+        run: npm run check
+
       - name: upload site
         uses: actions/upload-artifact@v4
         with:
@@ -91,10 +97,10 @@ jobs:
           retention-days: 7
 
   deploy-preview:
-    name: deploy preview (unauthenticated)
+    name: deploy preview
     runs-on: ubuntu-latest
     needs: [content, site]
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && secrets.CF_API_TOKEN != '' && secrets.CF_ACCOUNT_ID != ''
     steps:
       # Cloudflare offers a temporary preview account for PRs, so a reviewer can
       # open the site without anyone sharing credentials. Never used for the
@@ -105,6 +111,6 @@ jobs:
           path: dist
       - uses: cloudflare/wrangler-action@v3
         with:
-          apiToken: ''
-          accountId: ''
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
           command: pages deploy dist --project-name=blender-mcp-wiki-preview --branch=preview --commit-dirty=true

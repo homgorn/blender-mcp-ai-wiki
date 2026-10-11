@@ -510,7 +510,11 @@ stage.GetRootLayer().Save()
 - **MaterialX:** https://www.materialx.org/
 - **USD Python API:** https://openusd.org/release/api.html
 - **USD in Blender:** https://docs.blender.org/manual/en/latest/addons/import_export/scene_usd.html
-- **Hydra Delegates:** https://github.com/Kitware/hydra
+- **Hydra Delegates:** https://github.com/kitware/hydra
+
+> [!NOTE]
+> - USD Python API: если ссылка не работает, используйте поиск на openusd.org → Documentation → API
+> - Kitware Hydra репозиторий может быть в нижнем регистре: github.com/kitware/hydra
 
 ---
 
