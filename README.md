@@ -6,7 +6,11 @@
 
 [Live site](https://blender-mcp-wiki.refertur.net) · [MIT License](LICENSE) · [Changelog](CHANGELOG.md)
 
-[English](README.md) · [Русский](README.ru.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [中文](README.zh.md) · [日本語](README.ja.md)
+[English](README.md) · [Русский](README.ru.md)
+
+Other translations are not written yet. A README link to a file that does not
+exist is the same defect as a 404 in an article, so the list stops here rather
+than promising five locales.
 
 </div>
 

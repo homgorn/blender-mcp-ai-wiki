@@ -6,7 +6,11 @@
 
 [Сайт](https://blender-mcp-wiki.refertur.net) · [MIT](LICENSE) · [Changelog](CHANGELOG.md)
 
-[English](README.md) · [Русский](README.ru.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [中文](README.zh.md) · [日本語](README.ja.md)
+[English](README.md) · [Русский](README.ru.md)
+
+Остальные переводы ещё не написаны. Ссылка в README на несуществующий файл —
+тот же дефект, что и 404 в статье, поэтому список обрывается здесь, а не
+обещает пять локалей.
 
 </div>
 
