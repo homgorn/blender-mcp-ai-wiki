@@ -64,7 +64,13 @@ renderer.link = function ({ href, title, tokens }) {
   const attrs = [
     `href="${resolved ?? raw}"`,
     title ? ` title="${title}"` : '',
-    ext ? ' rel="noopener noreferrer nofollow"' : '',
+    // `nofollow` was here on every outbound source link. It told search engines not
+// to pass authority to docs.blender.org, the GitHub repositories and the API
+// references the articles exist to cite — the opposite of what a reference
+// corpus should signal. `noopener` stays: it is a real protection, and
+// `noreferrer` is kept because several linked sites treat a blank referrer as
+// traffic worth more than the referrer itself.
+ext ? ' rel="noopener noreferrer"' : '',
   ].join('');
   return `<a ${attrs}>${text}</a>`;
 };

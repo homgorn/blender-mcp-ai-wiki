@@ -314,8 +314,13 @@ export function collectionJsonLd(name: string, description: string, path: string
     isPartOf: { '@id': `${SITE_URL}/#website` },
     mainEntity: {
       '@type': 'ItemList',
+      // Every item, not a capped prefix. The previous `items.slice(0, 50)` sat
+      // next to `numberOfItems: items.length`, so a 60-article category declared
+      // 60 and listed 50 — a structured-data claim that does not match the markup
+      // on the same page, which is the kind of thing a validator flags and a
+      // reader never sees. The largest list here is 60.
       numberOfItems: items.length,
-      itemListElement: items.slice(0, 50).map((e, i) => ({
+      itemListElement: items.map((e, i) => ({
         '@type': 'ListItem',
         position: i + 1,
         url: abs(entryUrl(e)),
