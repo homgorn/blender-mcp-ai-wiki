@@ -100,7 +100,13 @@ jobs:
     name: deploy preview
     runs-on: ubuntu-latest
     needs: [content, site]
-    if: github.event_name == 'pull_request' && secrets.CF_API_TOKEN != '' && secrets.CF_ACCOUNT_ID != ''
+    # The `secrets` context is not available in job-level `if:` expressions -
+    # GitHub rejects the whole workflow at parse time when it appears there,
+    # which is why every push since this line was added has failed in 0s.
+    # Gating is done through a repository variable instead: set CF_PREVIEW_ENABLED
+    # to `true` in Settings > Secrets and variables > Actions > Variables, only
+    # when a preview deploy is wanted on PRs.
+    if: github.event_name == 'pull_request' && vars.CF_PREVIEW_ENABLED == 'true'
     steps:
       # Cloudflare offers a temporary preview account for PRs, so a reviewer can
       # open the site without anyone sharing credentials. Never used for the
