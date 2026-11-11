@@ -1,0 +1,11 @@
+2026-11-12T00:24Z  q="blender mcp server github"                      engine=websearch  results=0  searched=3 times
+2026-11-12T00:24Z  q="blender mcp github stars ahujasid"              engine=websearch  results=0
+2026-11-12T00:25Z  q="Blender MCP server AI agents integration 2026"  engine=websearch  results=0
+2026-11-12T00:25Z  api=https://api.github.com/search/repositories?q=blender+mcp&sort=stars&per_page=20  status=200  results=1280 total, top 20 logged
+2026-11-12T00:27Z  api=https://api.github.com/repos/ahujasid/mcp-for-blender       status=200  34022 stars, 3100 forks, pushed 2026-11-04
+2026-11-12T00:28Z  fetch=https://llmstxt.org/                                       status=200  llms.txt v2 spec retrieved
+2026-11-12T00:29Z  fetch=https://schema.org/TechArticle                              status=200  type confirmed, used-by count 10K-100K domains
+2026-11-12T00:30Z  fetch=https://developers.google.com/search/docs/fundamentals/creating-helpful-content  status=200  E-E-A-T guidance retrieved
+2026-11-12T00:31Z  fetch=https://developers.google.com/search/docs/appearance/ai-generated-content-guidance  status=404  page removed/moved
+
+Note: websearch returned zero results in all attempts (environment search integration). All competition data comes from GitHub's own API, which is a primary source. Google demand and antivirus/push channels are unmeasured — see 03-GAPS.md.
