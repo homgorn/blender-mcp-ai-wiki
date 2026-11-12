@@ -7,7 +7,7 @@ Do not edit generated files by hand; edit the Markdown and rebuild.
 ## The one command
 
 ```powershell
-$env:PUBLIC_SITE_URL="https://blender-mcp-wiki.refertur.net"
+$env:PUBLIC_SITE_URL="https://blender-mcp-wiki.r00m.ru"
 python WIKI/scripts/run_all.py
 ```
 

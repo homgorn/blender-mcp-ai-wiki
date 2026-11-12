@@ -1,7 +1,7 @@
 // Cloudflare Pages — static site with a custom subdomain.
 //
 // Why Pages and not Workers static assets: the target is a *custom hostname*
-// (blender-mcp-wiki.refertur.net) whose apex zone is served by Timeweb, not by
+// (blender-mcp-wiki.r00m.ru) whose apex zone is served by Timeweb, not by
 // Cloudflare. Pages has first-class custom-domain attachment and verification
 // for exactly this case. Astro still builds `output: 'static'`, so no adapter
 // is involved and the "Pages support removed from @astrojs/cloudflare" note

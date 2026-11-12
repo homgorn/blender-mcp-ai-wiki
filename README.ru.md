@@ -4,7 +4,7 @@
 
 **База знаний по управлению Blender из скриптов и через MCP — промпты, сетапы, воркфлоу и разобранные кейсы. Опубликована как статический сайт и как машиночитаемый JSON.**
 
-[Сайт](https://blender-mcp-wiki.refertur.net) · [MIT](LICENSE) · [Changelog](CHANGELOG.md)
+[Сайт](https://blender-mcp-wiki.r00m.ru) · [MIT](LICENSE) · [Changelog](CHANGELOG.md)
 
 [English](README.md) · [Русский](README.ru.md)
 
@@ -28,7 +28,7 @@
 
 | Поверхность | Для кого | Где |
 |---|---|---|
-| Статический сайт | люди | [`blender-mcp-wiki.refertur.net`](https://blender-mcp-wiki.refertur.net) |
+| Статический сайт | люди | [`blender-mcp-wiki.r00m.ru`](https://blender-mcp-wiki.r00m.ru) |
 | `.md`-близнец каждой статьи | кто скриптует | тот же URL + `.md` |
 | `llms.txt` / `llms-full.txt` | ассистенты и индексы | `/llms.txt` |
 | `wiki_database.json` | вашим инструментам | `WIKI/db/`, пересобирается |
@@ -66,7 +66,7 @@ SDD/                  спека, архитектура, контракт API, 
 
 ```powershell
 # Всё: починить, собрать базу, собрать сайт, прогнать все гейты
-$env:PUBLIC_SITE_URL="https://blender-mcp-wiki.refertur.net"
+$env:PUBLIC_SITE_URL="https://blender-mcp-wiki.r00m.ru"
 python WIKI/scripts/run_all.py
 ```
 

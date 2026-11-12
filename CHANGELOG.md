@@ -74,7 +74,7 @@
   Pages касается **только on-demand рендеринга**; статический вывод адаптера не
   требует вообще, так что ограничение на нас не распространяется. Первое прочтение
   этой заметки как «Pages больше не вариант» было слишком широким (ADR 0005).
-- **Домен зафиксирован:** `blender-mcp-wiki.refertur.net`, проект Pages
+- **Домен зафиксирован:** `blender-mcp-wiki.r00m.ru`, проект Pages
   `blender-mcp-wiki` → `blender-mcp-wiki.pages.dev`. `PUBLIC_SITE_URL` больше не
   плейсхолдер, значение по умолчанию в конфиге — рабочий адрес.
 - `wrangler.jsonc` переведён на `pages_build_output_dir`, убраны `html_handling`

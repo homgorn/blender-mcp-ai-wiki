@@ -94,7 +94,7 @@ fix_frontmatter → fix_lang_frontmatter → mark_stubs → check_missing
 - [x] E11. Данные: явный `lang:` (вместо догадки при сборке), снят битый YAML из
       frontmatter 538 файлов, устранено 163 коллизии URL, честная классификация
       indexable/duplicate/shadow
-- [x] E12. Публикация и долг: поддомен `blender-mcp-wiki.refertur.net`, Cloudflare Pages
+- [x] E12. Публикация и долг: поддомен `blender-mcp-wiki.r00m.ru`, Cloudflare Pages
       вместо Workers, Shiki, теги у всех 182 оригиналов, структурные пробелы 80 → 0,
       `validate.py --strict` в конвейере, CI на GitHub Actions, 6 скриптов переведены
       на рекурсивный обход (19 файлов `references/v1/**` были не видны гейтам)

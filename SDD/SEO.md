@@ -76,7 +76,7 @@ robots, llms.txt и RSS.
 Сборка без `https://`-origin невозможна для деплоя: `run_all.py` и
 `web/preflight.mjs` её останавливают, `verify-seo.mjs` падает на `localhost`.
 
-> Origin по умолчанию — `https://blender-mcp-wiki.refertur.net`, это и есть рабочий
+> Origin по умолчанию — `https://blender-mcp-wiki.r00m.ru`, это и есть рабочий
 > домен, а не плейсхолдер. Он задан в `web/astro.config.mjs` (единый источник) и
 > дублируется в `PUBLIC_SITE_URL` для сборки. Менять нужно в обоих местах, либо
 > только в переменной окружения для локального прогона.

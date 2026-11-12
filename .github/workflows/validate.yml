@@ -39,7 +39,7 @@ jobs:
           # The site build bakes the origin into canonical/hreflang/sitemap.
           # Using the real host here means CI catches a config that would ship
           # a wrong canonical; localhost would defeat the check.
-          PUBLIC_SITE_URL: https://blender-mcp-wiki.refertur.net
+          PUBLIC_SITE_URL: https://blender-mcp-wiki.r00m.ru
         run: python WIKI/scripts/run_all.py
 
       - name: upload quality report
@@ -73,7 +73,7 @@ jobs:
       - name: build, test and verify
         working-directory: web
         env:
-          PUBLIC_SITE_URL: https://blender-mcp-wiki.refertur.net
+          PUBLIC_SITE_URL: https://blender-mcp-wiki.r00m.ru
         # `all` = build + unit tests + both SEO gates. The tests are not
         # optional: they cover the link and publication rules, which shipped
         # broken links and mismatched .md twins while the gates reported OK.
@@ -82,7 +82,7 @@ jobs:
       - name: preflight
         working-directory: web
         env:
-          PUBLIC_SITE_URL: https://blender-mcp-wiki.refertur.net
+          PUBLIC_SITE_URL: https://blender-mcp-wiki.r00m.ru
         run: npm run preflight
 
       - name: npm check

@@ -36,7 +36,7 @@ AI-агентов (эта база).
   индексируемые — `noindex`-дублей больше нет. `noindex` стоит только на 51 странице,
   и это не контент: `404.html`, 5 страниц поиска (бесконечный URL-пространство) и
   46 пустых категорий. Публикуется на Cloudflare Pages (`wrangler pages deploy`)
-  под доменом `blender-mcp-wiki.refertur.net`; apex-зону обслуживает Timeweb,
+  под доменом `blender-mcp-wiki.r00m.ru`; apex-зону обслуживает Timeweb,
   поэтому подключение домена — это CNAME во внешней DNS-зоне.
 - **Разметка для поиска и соцсетей:**
   - `TechArticle` + `BreadcrumbList` на **222/222** статьях. `TechArticle`, а не просто
@@ -93,7 +93,7 @@ AI-агентов (эта база).
 - Промпты, референсы и переводы `status` не имеют by design.
 
 ## 6. Открытые вопросы (ждут решения владельца)
-1. **DNS.** Домен зафиксирован: `blender-mcp-wiki.refertur.net`, origin задан в
+1. **DNS.** Домен зафиксирован: `blender-mcp-wiki.r00m.ru`, origin задан в
    `web/astro.config.mjs` и `PUBLIC_SITE_URL`. Остался ровно один шаг, который
    автоматика выполнить не может — CNAME в зоне Timeweb:
    `blender-mcp-wiki → blender-mcp-wiki.pages.dev`. Cloudflare примет домен раньше, чем

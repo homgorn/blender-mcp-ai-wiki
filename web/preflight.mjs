@@ -20,7 +20,7 @@ const ok = (m) => console.log(`  [OK] ${m}`);
 // that exists in no config file — and both gates stayed green, because they only
 // rejected localhost. A wrong canonical is the most expensive SEO mistake this
 // project can make and it was the one nothing checked.
-const EXPECTED_HOST = process.env.EXPECTED_SITE_HOST || 'blender-mcp-wiki.refertur.net';
+const EXPECTED_HOST = process.env.EXPECTED_SITE_HOST || 'blender-mcp-wiki.r00m.ru';
 
 console.log('== 1. Environment ==');
 const site = (process.env.PUBLIC_SITE_URL || '').trim();
@@ -101,10 +101,10 @@ console.log('== 4. Search index ==');
 if (existsSync(join(DIST, 'pagefind'))) ok('pagefind index present');
 else fail('dist/pagefind missing — search will 404. Run `npm run index`.');
 
-console.log('== 5. DNS reminder ==');
-console.log(`  The deploy alone will not make the hostname resolve. Add at the DNS host`);
-console.log(`  serving refertur.net (Timeweb, not the registrar):`);
-console.log(`      CNAME  blender-mcp-wiki  blender-mcp-wiki.pages.dev`);
+console.log("== 5. DNS reminder ==");
+console.log("  The deploy alone will not make the hostname resolve. Add at the DNS host");
+console.log("  serving blender-mcp-wiki.r00m.ru (the r00m.ru zone, not refertur.net any more):");
+console.log("      CNAME  blender-mcp-wiki  blender-mcp-wiki.pages.dev");
 
 console.log();
 if (fails.length) {

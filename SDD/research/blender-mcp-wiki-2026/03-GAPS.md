@@ -13,7 +13,7 @@
 
 ## Что стоит добавить руками (5 минут, вне моего доступа)
 
-1. Открыть https://blender-mcp-wiki.refertur.net/ в браузере — проверить, что новый build действительно live (предыдущие деплои были до переименования).
+1. Открыть https://blender-mcp-wiki.r00m.ru/ в браузере — проверить, что новый build действительно live (предыдущие деплои были до переименования).
 2. Поставить себе Cloudflare Web Analytics — без cookies.
 3. Верифицировать домен в Google Search Console и отправить sitemap (253 URL).
 4. GitHub: Settings → "About" → включить Discussions? 

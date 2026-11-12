@@ -4,7 +4,7 @@
 
 **A reference corpus for driving Blender from scripts and MCP servers — prompts, setups, workflows and worked cases, published as a static site and as machine-readable JSON.**
 
-[Live site](https://blender-mcp-wiki.refertur.net) · [MIT License](LICENSE) · [Changelog](CHANGELOG.md)
+[Live site](https://blender-mcp-wiki.r00m.ru) · [MIT License](LICENSE) · [Changelog](CHANGELOG.md)
 
 [English](README.md) · [Русский](README.ru.md)
 
@@ -28,7 +28,7 @@ differently:
 
 | Surface | For | Where |
 |---|---|---|
-| Static site | humans | [`blender-mcp-wiki.refertur.net`](https://blender-mcp-wiki.refertur.net) |
+| Static site | humans | [`blender-mcp-wiki.r00m.ru`](https://blender-mcp-wiki.r00m.ru) |
 | `.md` twin per article | anyone scripting against it | same URL + `.md` |
 | `llms.txt` / `llms-full.txt` | assistants and indexes | `/llms.txt` |
 | `wiki_database.json` | your own tooling | `WIKI/db/`, rebuilt from source |
@@ -67,7 +67,7 @@ SDD/                  spec, architecture, API contract, ADRs
 
 ```powershell
 # Everything: repair, build the database, build the site, run every gate
-$env:PUBLIC_SITE_URL="https://blender-mcp-wiki.refertur.net"
+$env:PUBLIC_SITE_URL="https://blender-mcp-wiki.r00m.ru"
 python WIKI/scripts/run_all.py
 ```
 

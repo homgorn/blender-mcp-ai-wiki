@@ -70,7 +70,7 @@ before(() => {
 /**
  * The origin the site was built for, read from the artifact on demand.
  *
- * It used to be written out twice as `blender-mcp-wiki.refertur.net`, so the suite
+ * It used to be written out twice as `blender-mcp-wiki.r00m.ru`, so the suite
  * failed the moment PUBLIC_SITE_URL changed â€” and pinning a domain is the wrong
  * invariant anyway: what matters is that every page agrees with the origin it was
  * built for, not which origin that is.
