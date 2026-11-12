@@ -19,7 +19,7 @@ concurrency:
 jobs:
   content:
     name: content pipeline
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,7 +52,7 @@ jobs:
 
   site:
     name: astro site
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -98,7 +98,7 @@ jobs:
 
   deploy-preview:
     name: deploy preview
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [content, site]
     # The `secrets` context is not available in job-level `if:` expressions -
     # GitHub rejects the whole workflow at parse time when it appears there,
